@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Task Scribe"
 include(":app")
+include(":shared:shared-ui")
+include(":shared:shared-data")
+include(":home")

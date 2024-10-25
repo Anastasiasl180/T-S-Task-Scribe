@@ -1,4 +1,4 @@
-package com.aopr.taskscribe.ui.theme
+package com.aopr.shared_ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

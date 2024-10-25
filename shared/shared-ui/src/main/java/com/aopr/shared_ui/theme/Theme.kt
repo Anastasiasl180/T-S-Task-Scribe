@@ -1,4 +1,4 @@
-package com.aopr.taskscribe.ui.theme
+package com.aopr.shared_ui.theme
 
 import android.app.Activity
 import android.os.Build
