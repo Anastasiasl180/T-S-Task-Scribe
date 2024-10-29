@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -51,12 +51,20 @@ android {
 
 dependencies {
 implementation(project(":shared:shared-ui"))
+    implementation(project(":notes:notes-data"))
     implementation(project(":home"))
+    implementation(project(":notes:notes-presentation"))
+    implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-data"))
+
     //koi
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp)
+    implementation(libs.koin.androidx.compose)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
