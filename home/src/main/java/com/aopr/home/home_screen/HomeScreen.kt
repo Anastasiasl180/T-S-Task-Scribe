@@ -48,7 +48,9 @@ fun HomeScreen() {
     BackHandler {
 
     }
+    HomeUiEventHandler()
     val viewModel = koinViewModel<NotesViewModel>()
+
     val tittleOfNote = viewModel.note.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -158,7 +160,6 @@ fun HomeScreen() {
 
 @Composable
 fun getNotesButtons(onShowBottomSheetChange: (Boolean) -> Unit): Array<@Composable () -> Unit> {
-
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
         }) {
@@ -174,7 +175,7 @@ fun getNotesButtons(onShowBottomSheetChange: (Boolean) -> Unit): Array<@Composab
 }
 
 @Composable
-fun getTasksButtons(): Array<@Composable () -> Unit> {
+internal fun getTasksButtons(): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
         }) {

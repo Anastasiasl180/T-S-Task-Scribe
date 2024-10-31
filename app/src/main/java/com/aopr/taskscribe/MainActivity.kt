@@ -10,8 +10,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.theme.TaskScribeTheme
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
@@ -37,13 +37,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-
         }
     }
-
-
 }
-
 @Composable
 fun GlobalUiEventHandler(navHost: NavHostController) {
     val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
@@ -61,9 +57,7 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
                             restoreState = true
                         }
                     }
-
                 }
-
                 MainViewModel.UiEvent.NavigateToDashBoardScreen -> {
                     navHost.navigate(MainNavRoutes.DashBoard) {
                         val currentRoute = navHost.currentDestination?.route
@@ -76,7 +70,6 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
                         }
                     }
                 }
-
                 MainViewModel.UiEvent.NavigateToHomeScreen -> {
                     navHost.navigate(MainNavRoutes.HomeNavHost) {
                         val currentRoute = navHost.currentDestination?.route
