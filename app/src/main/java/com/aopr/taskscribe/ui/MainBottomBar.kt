@@ -27,25 +27,12 @@ fun BottomBar(navController: NavHostController) {
     val currentDestination = currentBackStackEntry?.destination
     val currentRoute = currentDestination?.route
 
-    NavigationBar {
+    NavigationBar() {
         navItems.forEach { mainNavRoute ->
             val isSelected = mainNavRoute.routes::class.qualifiedName == currentRoute
             NavigationBarItem(selected = isSelected,
                 onClick = {
-                    when (mainNavRoute.routes) {
-                        MainNavRoutes.AI -> {
-                            mainViewModel.onEvent(MainViewModel.MainEvent.NavigateToAiScreen)
-                        }
-
-                        MainNavRoutes.DashBoard -> {
-                            mainViewModel.onEvent(MainViewModel.MainEvent.NavigateToDashBoardScreen)
-                        }
-
-                        MainNavRoutes.HomeNavHost -> {
-                            mainViewModel.onEvent(MainViewModel.MainEvent.NavigateToHomeScreen)
-                        }
-                    }
-
+                  mainViewModel.onEvent(mainNavRoute.event)
                 }, icon = {
                     Icon(
                         imageVector = mainNavRoute.icon,
