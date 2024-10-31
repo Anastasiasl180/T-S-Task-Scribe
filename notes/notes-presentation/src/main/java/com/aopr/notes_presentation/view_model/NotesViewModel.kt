@@ -8,6 +8,7 @@ import com.aopr.notes_domain.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.NotesEvent
 import com.aopr.shared_domain.Responses
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -16,12 +17,18 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
 
-
     private val _tittleOfNote = mutableStateOf("")
     val note: State<String> = _tittleOfNote
 
     private val _descriptionOfNote = mutableStateOf("")
     val descriptionOfNote: State<String> = _descriptionOfNote
+
+    private val _event = MutableSharedFlow<UiEvents>()
+    val event = _event
+
+    sealed class UiEvents{
+        data object NavigateToAllNotesScreen:UiEvents()
+    }
 
     private fun createNote(note: Note) {
         useCase.createNote(note).onEach { result ->
@@ -59,23 +66,7 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
         }
     }
 
-    private fun getAllNotes() {
-        useCase.getAllNotes().onEach { result ->
-            when (result) {
-                is Responses.Error -> {
 
-                }
-
-                is Responses.Loading -> {
-
-                }
-
-                is Responses.Success -> {
-
-                }
-            }
-        }
-    }
 
     private fun getNoteById(id: Int) {
         useCase.getNoteById(id).onEach { result ->
@@ -104,10 +95,10 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
                 }
             }
 
-            NotesEvent.GetAllNotes -> {
-                viewModelScope.launch {
-                    getAllNotes()
-                }
+            NotesEvent.NavigateToAllNotes -> {
+              viewModelScope.launch {
+                  _event.emit(UiEvents.NavigateToAllNotesScreen)
+              }
             }
 
             is NotesEvent.GetNoteById -> {
