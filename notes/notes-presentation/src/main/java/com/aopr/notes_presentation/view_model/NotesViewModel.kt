@@ -24,7 +24,7 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
     val descriptionOfNote: State<String> = _descriptionOfNote
 
     private val _event = MutableSharedFlow<UiEvents>()
-    val event = _event
+    val uiEvents = _event
 
     sealed class UiEvents{
         data object NavigateToAllNotesScreen:UiEvents()

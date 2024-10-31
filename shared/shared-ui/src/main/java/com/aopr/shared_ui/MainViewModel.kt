@@ -19,12 +19,6 @@ class MainViewModel : ViewModel() {
         data object NavigateToAiScreen : UiEvent()
         data object NavigateToDashBoardScreen : UiEvent()
     }
-    
-    init {
-        Log.wtf("Meerka", "kgjkltft: ")
-    }
-
-
     fun onEvent(event:MainEvent) {
         when(event){
             MainEvent.NavigateToAiScreen -> {
