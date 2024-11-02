@@ -1,10 +1,17 @@
 package com.aopr.notes_presentation.view_model
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.NotesUseCase
+import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.AllNotesEvent
 import com.aopr.shared_domain.Responses
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -12,8 +19,18 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
 
+    private val _listOfNotes = mutableStateOf<List<Note>?>(null)
+    val listOfNotes: State<List<Note>?> = _listOfNotes
+
+    private val _event = MutableSharedFlow<UiEvent>()
+    val event = _event.asSharedFlow()
+
+
     init {
         onEvent(AllNotesEvent.GetAllNotes)
+    }
+    sealed class UiEvent{
+        data object NavigateToCreateNoteScreen:UiEvent()
     }
 
     private fun getAllNotes() {
@@ -28,10 +45,12 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
                 }
 
                 is Responses.Success -> {
-
+                    result.data?.collect() { noteList ->
+                        _listOfNotes.value = noteList
+                    }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: AllNotesEvent) {
@@ -39,6 +58,12 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
             AllNotesEvent.GetAllNotes -> {
                 viewModelScope.launch {
                     getAllNotes()
+                }
+            }
+
+            AllNotesEvent.NavigateToCreateNoteScreen -> {
+                viewModelScope.launch {
+                    _event.emit(UiEvent.NavigateToCreateNoteScreen)
                 }
             }
         }

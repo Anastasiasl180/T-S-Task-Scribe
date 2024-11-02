@@ -50,7 +50,11 @@ android {
 }
 
 dependencies {
-implementation(project(":shared:shared-ui"))
+
+    //haze for mainBottomBar
+    implementation(libs.haze.jetpack.compose)
+
+    implementation(project(":shared:shared-ui"))
     implementation(project(":notes:notes-data"))
     implementation(project(":home"))
     implementation(project(":notes:notes-presentation"))

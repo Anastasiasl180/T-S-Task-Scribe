@@ -41,12 +41,19 @@ android {
 dependencies {
     implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-ui"))
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 
 
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
+    implementation(libs.koin.androidx.compose)
     ksp(libs.koin.ksp)
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
+import com.aopr.home.home_screen.viewModel.HomeViewModel
+import com.aopr.home.home_screen.viewModel.events.HomeEvent
 import com.aopr.notes_presentation.view_model.NotesViewModel
 import com.aopr.notes_presentation.view_model.events.NotesEvent
 import com.aopr.shared_ui.MainViewModel
@@ -48,8 +50,10 @@ fun HomeScreen() {
     BackHandler {
 
     }
-    HomeUiEventHandler()
+    HomeUiEventsHandler()
+
     val viewModel = koinViewModel<NotesViewModel>()
+    val homeViewModel = koinViewModel<HomeViewModel>()
 
     val tittleOfNote = viewModel.note.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
@@ -66,6 +70,8 @@ fun HomeScreen() {
     val listOfButtons = listOf(
         getNotesButtons(onShowBottomSheetChange = {
             showBottomSheet = it
+        }, navigateToAllNotes = {
+            homeViewModel.onEvent(HomeEvent.NavigateToAllNotes)
         }), getTasksButtons(), getBookMarksButtons(),
         getCalendarButton()
     )
@@ -159,9 +165,10 @@ fun HomeScreen() {
 }
 
 @Composable
-fun getNotesButtons(onShowBottomSheetChange: (Boolean) -> Unit): Array<@Composable () -> Unit> {
+fun getNotesButtons(onShowBottomSheetChange: (Boolean) -> Unit,navigateToAllNotes:()->Unit): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
+navigateToAllNotes()
         }) {
             Text(text = stringResource(id = R.string.AllNotes))
         }
