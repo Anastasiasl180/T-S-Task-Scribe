@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.2"
+hazeJetpackCompose = "0.4.1"
 kotlin = "2.0.10"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -22,6 +23,7 @@ navigationCompose = "2.8.3"
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 androidx-room-ktx ={module = "androidx.room:room-ktx",version.ref = "roomRuntime" }
+haze-jetpack-compose = { module = "dev.chrisbanes.haze:haze-jetpack-compose", version.ref = "hazeJetpackCompose" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
 koin-ksp = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }

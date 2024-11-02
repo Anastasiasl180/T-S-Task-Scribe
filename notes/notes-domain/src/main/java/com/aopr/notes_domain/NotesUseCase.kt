@@ -1,5 +1,6 @@
 package com.aopr.notes_domain
 
+import android.util.Log
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_domain.throws.EmptyDescriptionException
 import com.aopr.notes_domain.throws.EmptyTittleException
@@ -56,9 +57,13 @@ class NotesUseCase(private val repository: NotesRepository) {
             emit(Responses.Loading())
             val data = repository.getALlNotes()
             emit(Responses.Success(data))
+
         } catch (e: IOException) {
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+           emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         } catch (e: Exception) {
+            Log.wtf("Meerka23", e.localizedMessage.toString())
+            Log.wtf("Meerka24", e.stackTrace.toString())
+
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }

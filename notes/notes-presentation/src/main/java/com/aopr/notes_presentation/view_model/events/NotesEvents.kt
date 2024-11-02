@@ -14,4 +14,5 @@ sealed interface NotesEvent {
 
 sealed interface AllNotesEvent {
     data object GetAllNotes : AllNotesEvent
+    data object NavigateToCreateNoteScreen:AllNotesEvent
 }
