@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ fun AllNotesScreen() {
     }
     UiEvenHandler()
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -48,11 +50,14 @@ fun AllNotesScreen() {
                 items(listOfNotes) { note ->
                     NoteCard(
                         tittle = note.tittle,
-                        description = note.description,
-                        goToNote = { viewModel.onEvent(AllNotesEvent.NavigateToCreateNoteScreen) })
+                        description = note.description, deleteNote = {viewModel.onEvent(AllNotesEvent.DeleteNote(note))},
+                        goToNote = { viewModel.onEvent(AllNotesEvent.NavigateToCreateNoteScreen(note.id)) })
 
                 }
             }
+
+        }
+        Button(onClick = {viewModel.onEvent(AllNotesEvent.NavigateToCreateNoteScreen(null))}) {
 
         }
     }
@@ -60,7 +65,7 @@ fun AllNotesScreen() {
 }
 
 @Composable
-fun NoteCard(tittle: String, description: String, goToNote: () -> Unit) {
+fun NoteCard(tittle: String, description: String, goToNote: () -> Unit,deleteNote:()->Unit) {
 
     ElevatedCard(
         modifier = Modifier.height(200.dp),
@@ -89,6 +94,9 @@ fun NoteCard(tittle: String, description: String, goToNote: () -> Unit) {
                         contentDescription = "",
                         modifier = Modifier.clickable { goToNote() }
                     )
+                    Button(onClick = {deleteNote() }) {
+                        Text(text = "Delete")
+                    }
                 }
             }
         }

@@ -50,10 +50,9 @@ fun HomeScreen() {
     BackHandler {
 
     }
-    HomeUiEventsHandler()
+    HomeUiEventHandler()
 
     val viewModel = koinViewModel<NotesViewModel>()
-    val homeViewModel = koinViewModel<HomeViewModel>()
 
     val tittleOfNote = viewModel.note.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
@@ -71,7 +70,7 @@ fun HomeScreen() {
         getNotesButtons(onShowBottomSheetChange = {
             showBottomSheet = it
         }, navigateToAllNotes = {
-            homeViewModel.onEvent(HomeEvent.NavigateToAllNotes)
+            viewModel.onEvent(NotesEvent.NavigateToAllNotes)
         }), getTasksButtons(), getBookMarksButtons(),
         getCalendarButton()
     )

@@ -48,63 +48,14 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteNote(note: Note) {
-        useCase.deleteNote(note).onEach { result ->
-            when (result) {
-                is Responses.Error -> {
-
-                }
-
-                is Responses.Loading -> {
-
-                }
-
-                is Responses.Success -> {
-
-                }
-            }
-        }
-    }
-
-
-
-    private fun getNoteById(id: Int) {
-        useCase.getNoteById(id).onEach { result ->
-            when (result) {
-                is Responses.Error -> {
-
-                }
-
-                is Responses.Loading -> {
-
-                }
-
-                is Responses.Success -> {
-
-                }
-            }
-
-        }
-    }
 
     fun onEvent(event: NotesEvent) {
         when (event) {
-            is NotesEvent.DeleteNote -> {
-                viewModelScope.launch {
-                    deleteNote(event.note)
-                }
-            }
 
             NotesEvent.NavigateToAllNotes -> {
               viewModelScope.launch {
                   _event.emit(UiEvents.NavigateToAllNotesScreen)
               }
-            }
-
-            is NotesEvent.GetNoteById -> {
-                viewModelScope.launch {
-                    getNoteById(event.id)
-                }
             }
 
             is NotesEvent.SaveNote -> {

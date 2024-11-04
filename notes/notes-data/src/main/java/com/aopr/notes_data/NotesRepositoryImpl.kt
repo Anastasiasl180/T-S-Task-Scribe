@@ -8,6 +8,7 @@ import com.aopr.notes_domain.models.Note
 import com.aopr.notes_domain.throws.EmptyDescriptionException
 import com.aopr.notes_domain.throws.EmptyTittleException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
@@ -18,7 +19,13 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
 
         if (note.tittle.isBlank()) throw EmptyTittleException()
 
-        dao.insertNote(note.mapToEntity())
+        val existingId = dao.getNoteById(note.id).firstOrNull()
+        if (existingId != null){
+            dao.updateNote(note.mapToEntity())
+        }
+        else{
+            dao.insertNote(note.mapToEntity())
+        }
 
     }
 

@@ -11,5 +11,8 @@ sealed interface HomeNavRoutes {
     @Serializable
     data object HomeScreen: HomeNavRoutes
 
+    @Serializable
+    data object CratingNoteScreen:HomeNavRoutes
+
 
 }

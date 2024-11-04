@@ -61,9 +61,6 @@ class NotesUseCase(private val repository: NotesRepository) {
         } catch (e: IOException) {
            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         } catch (e: Exception) {
-            Log.wtf("Meerka23", e.localizedMessage.toString())
-            Log.wtf("Meerka24", e.stackTrace.toString())
-
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }
