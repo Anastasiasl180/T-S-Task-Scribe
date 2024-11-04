@@ -26,18 +26,3 @@ fun HomeUiEventHandler() {
     }
 
 }
-
-@Composable
-fun HomeUiEventsHandler(){
-    val navigator = LocalNavigator.currentOrThrow()
-    val viewModel = koinViewModel<HomeViewModel>()
-    LaunchedEffect(Unit) {
-        viewModel.uiEvents.collect{ uiEvents->
-            when(uiEvents){
-                HomeViewModel.UiEvent.NavigateToAllNotes -> {
-                    navigator.navigate(HomeNavRoutes.AllNotesScreen)
-                }
-            }
-        }
-    }
-}

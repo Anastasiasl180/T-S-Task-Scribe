@@ -1,7 +1,6 @@
 package com.aopr.notes_presentation.view_model
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,8 +28,9 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
     init {
         onEvent(AllNotesEvent.GetAllNotes)
     }
-    sealed class UiEvent{
-        data object NavigateToCreateNoteScreen:UiEvent()
+
+    sealed class UiEvent {
+        data class NavigateToCreateNoteScreen(val id: Int?) : UiEvent()
     }
 
     private fun getAllNotes() {
@@ -52,6 +52,24 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
             }
         }.launchIn(viewModelScope)
     }
+    private fun deleteNote(note: Note) {
+        useCase.deleteNote(note).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
 
     fun onEvent(event: AllNotesEvent) {
         when (event) {
@@ -61,9 +79,15 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
                 }
             }
 
-            AllNotesEvent.NavigateToCreateNoteScreen -> {
+            is AllNotesEvent.NavigateToCreateNoteScreen -> {
                 viewModelScope.launch {
-                    _event.emit(UiEvent.NavigateToCreateNoteScreen)
+                    _event.emit(UiEvent.NavigateToCreateNoteScreen(event.id))
+                }
+            }
+
+            is AllNotesEvent.DeleteNote -> {
+                viewModelScope.launch {
+                    deleteNote(event.note)
                 }
             }
         }
