@@ -64,5 +64,16 @@ class NotesUseCase(private val repository: NotesRepository) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }
+    fun updatedNote(note: Note):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.updateNote(note)
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        } catch (e: Exception) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
 
 }

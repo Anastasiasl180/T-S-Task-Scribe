@@ -23,6 +23,6 @@ interface NoteDao {
     @Query("SELECT * FROM NoteEntity WHERE id = :id LIMIT 1")
     fun getNoteById(id: Int): Flow<NoteEntity>
 
-    @Query("SELECT * FROM NoteEntity")
+    @Query("SELECT * FROM NoteEntity  ORDER BY isPinned DESC, timestamp DESC")
     fun getALlNotes(): Flow<List<NoteEntity>>
 }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="DefaultErrorMessage">Something went wrong</string>
+    <string name="tittle">Tittle</string>
+    <string name="description">Description</string>
 </resources>

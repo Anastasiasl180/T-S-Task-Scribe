@@ -9,8 +9,11 @@ import com.aopr.notes_domain.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.CreatingNoteEvent
 import com.aopr.shared_domain.Responses
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -28,6 +31,18 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
     private val _descriptionOfNote = MutableStateFlow("")
     val descriptionOfNote: StateFlow<String> = _descriptionOfNote
 
+    private val _isNotePinned = mutableStateOf(false)
+    val isNotePinned: State<Boolean> = _isNotePinned
+
+    private val _isAlreadyCreateNote = mutableStateOf(false)
+    val isAlreadyCreateNote: State<Boolean> = _isAlreadyCreateNote
+
+    private val _event = MutableSharedFlow<UiEvents>()
+    val event = _event.asSharedFlow()
+
+    sealed class UiEvents {
+        data object NavigateBack : UiEvents()
+    }
 
     private fun createNote(note: Note) {
         useCase.createNote(note).onEach { result ->
@@ -41,6 +56,8 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
                 }
 
                 is Responses.Success -> {
+                    _isAlreadyCreateNote.value = true
+
                 }
             }
 
@@ -79,13 +96,14 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
             CreatingNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     val noteId = _existingNote.value?.id ?: 0
-
                     val note = Note(
                         tittle = _tittleOfNote.value,
                         description = _descriptionOfNote.value,
-                        id = noteId
+                        id = noteId, isPinned = _isNotePinned.value
                     )
                     createNote(note)
+                    delay(500)
+                    onEvent(CreatingNoteEvent.NavigateToBack)
                 }
             }
 
@@ -95,6 +113,16 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
 
             is CreatingNoteEvent.UpdateTittle -> {
                 _tittleOfNote.value = event.tittle
+            }
+
+            CreatingNoteEvent.NavigateToBack -> {
+                viewModelScope.launch {
+                    _event.emit(UiEvents.NavigateBack)
+                }
+            }
+
+            CreatingNoteEvent.PinNote -> {
+                _isNotePinned.value = !_isNotePinned.value
             }
         }
     }

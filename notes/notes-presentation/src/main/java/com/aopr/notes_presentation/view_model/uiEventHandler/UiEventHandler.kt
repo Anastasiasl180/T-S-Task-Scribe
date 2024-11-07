@@ -35,8 +35,19 @@ fun UiHandlerForCreatingNote() {
     val idd = id?.id
     val viewModel = koinViewModel<CreatingNoteViewModel>()
     LaunchedEffect(Unit) {
+        viewModel.event.collect() { event ->
+            when (event) {
+                CreatingNoteViewModel.UiEvents.NavigateBack -> {
+                    navigator.popBackStack()
+                }
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
         if (idd != null) {
             viewModel.onEvent(CreatingNoteEvent.GetNoteById(idd))
+
+
         }
     }
 }
