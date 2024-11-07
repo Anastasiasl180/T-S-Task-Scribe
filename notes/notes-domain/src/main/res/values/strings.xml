@@ -2,4 +2,7 @@
 <resources>
     <string name="TittleExceptionMessage">Enter valid tittle</string>
     <string name="DescriptionExceptionMessage">Enter valid description</string>
+    <string name="Notes">Notes</string>
+    <string name="SaveNote">Save note></string>
+    <string name="Plus">+</string>
 </resources>

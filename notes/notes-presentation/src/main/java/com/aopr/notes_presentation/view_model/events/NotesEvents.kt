@@ -14,10 +14,13 @@ sealed interface AllNotesEvent {
     data object GetAllNotes : AllNotesEvent
     data class NavigateToCreateNoteScreen(val id:Int?):AllNotesEvent
     data class DeleteNote(val note: Note) : AllNotesEvent
+    data class PinNote(val note:Note):AllNotesEvent
 }
 sealed interface CreatingNoteEvent{
     data class GetNoteById(val id:Int?):CreatingNoteEvent
     data object SaveNote:CreatingNoteEvent
     data class UpdateTittle(val tittle:String):CreatingNoteEvent
     data class UpdateDescription(val description:String):CreatingNoteEvent
+    data object NavigateToBack:CreatingNoteEvent
+    data object PinNote:CreatingNoteEvent
 }

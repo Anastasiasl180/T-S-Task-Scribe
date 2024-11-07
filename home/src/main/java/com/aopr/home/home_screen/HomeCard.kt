@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
@@ -46,10 +47,9 @@ internal fun HomeCard(
     ElevatedCard(
         modifier = Modifier
             .height(200.dp)
-            .graphicsLayer(alpha = animatedAlpha)
             .blur(
                 radius = animatedBlur,
-                edgeTreatment = BlurredEdgeTreatment(
+               edgeTreatment = BlurredEdgeTreatment(
                     MaterialTheme.shapes.extraLarge
                 )
             )
