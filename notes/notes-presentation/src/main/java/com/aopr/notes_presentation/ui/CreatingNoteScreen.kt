@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvent
+import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
 import com.aopr.notes_presentation.view_model.uiEventHandler.UiHandlerForCreatingNote
 import org.koin.androidx.compose.koinViewModel
 

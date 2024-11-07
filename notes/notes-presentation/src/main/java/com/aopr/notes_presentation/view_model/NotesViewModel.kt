@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.NotesUseCase
 import com.aopr.notes_domain.models.Note
-import com.aopr.notes_presentation.view_model.events.NotesEvent
+import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
+import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
 import com.aopr.shared_domain.Responses
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,12 +24,10 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
     private val _descriptionOfNote = mutableStateOf("")
     val descriptionOfNote: State<String> = _descriptionOfNote
 
-    private val _event = MutableSharedFlow<UiEvents>()
+    private val _event = MutableSharedFlow<NotesUiEvents>()
     val uiEvents = _event
 
-    sealed class UiEvents{
-        data object NavigateToAllNotesScreen:UiEvents()
-    }
+
 
     private fun createNote(note: Note) {
         useCase.createNote(note).onEach { result ->
@@ -54,7 +53,7 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
 
             NotesEvent.NavigateToAllNotes -> {
               viewModelScope.launch {
-                  _event.emit(UiEvents.NavigateToAllNotesScreen)
+                  _event.emit(NotesUiEvents.NavigateToAllNotesScreen)
               }
             }
 

@@ -41,7 +41,7 @@ import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.viewModel.HomeViewModel
 import com.aopr.home.home_screen.viewModel.events.HomeEvent
 import com.aopr.notes_presentation.view_model.NotesViewModel
-import com.aopr.notes_presentation.view_model.events.NotesEvent
+import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
 import com.aopr.shared_ui.MainViewModel
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import kotlinx.coroutines.launch

@@ -40,8 +40,9 @@ android {
 }
 
 dependencies {
+    implementation (libs.info.bar.compose)
 
-    //koin
+//koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp)
