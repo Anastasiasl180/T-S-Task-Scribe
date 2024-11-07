@@ -7,7 +7,9 @@ import androidx.navigation.toRoute
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvent
+import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
+import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteUiEvents
+import com.aopr.notes_presentation.view_model.events.allNotesEvents.AllNotesUiEvent
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import org.koin.androidx.compose.koinViewModel
@@ -19,8 +21,10 @@ fun UiEvenHandler() {
     LaunchedEffect(Unit) {
         viewModel.event.collect { uiEvents ->
             when (uiEvents) {
-                is AllNotesViewModel.UiEvent.NavigateToCreateNoteScreen -> {
+
+                is AllNotesUiEvent.NavigateToCreateNoteScreen -> {
                     navigator.navigate(AllNotesRoutes.CreatingNoteScreen(uiEvents.id))
+
                 }
             }
         }
@@ -37,7 +41,7 @@ fun UiHandlerForCreatingNote() {
     LaunchedEffect(Unit) {
         viewModel.event.collect() { event ->
             when (event) {
-                CreatingNoteViewModel.UiEvents.NavigateBack -> {
+                CreatingNoteUiEvents.NavigateBack -> {
                     navigator.popBackStack()
                 }
             }
@@ -46,8 +50,6 @@ fun UiHandlerForCreatingNote() {
     LaunchedEffect(Unit) {
         if (idd != null) {
             viewModel.onEvent(CreatingNoteEvent.GetNoteById(idd))
-
-
         }
     }
 }

@@ -1,13 +1,13 @@
 package com.aopr.notes_presentation.view_model
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.NotesUseCase
 import com.aopr.notes_domain.models.Note
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvent
+import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
+import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteUiEvents
 import com.aopr.shared_domain.Responses
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,12 +37,10 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
     private val _isAlreadyCreateNote = mutableStateOf(false)
     val isAlreadyCreateNote: State<Boolean> = _isAlreadyCreateNote
 
-    private val _event = MutableSharedFlow<UiEvents>()
+    private val _event = MutableSharedFlow<CreatingNoteUiEvents>()
     val event = _event.asSharedFlow()
 
-    sealed class UiEvents {
-        data object NavigateBack : UiEvents()
-    }
+
 
     private fun createNote(note: Note) {
         useCase.createNote(note).onEach { result ->
@@ -117,7 +115,7 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) : ViewModel() {
 
             CreatingNoteEvent.NavigateToBack -> {
                 viewModelScope.launch {
-                    _event.emit(UiEvents.NavigateBack)
+                    _event.emit(CreatingNoteUiEvents.NavigateBack)
                 }
             }
 

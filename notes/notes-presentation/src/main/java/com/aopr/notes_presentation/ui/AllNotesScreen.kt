@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -32,20 +33,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
-import com.aopr.notes_presentation.view_model.events.AllNotesEvent
+import com.aopr.notes_presentation.view_model.events.allNotesEvents.AllNotesEvent
 import com.aopr.notes_presentation.view_model.uiEventHandler.UiEvenHandler
+import com.radusalagean.infobarcompose.InfoBar
+import com.radusalagean.infobarcompose.InfoBarMessage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -106,9 +111,10 @@ fun AllNotesScreen() {
                                         )
                                     }, time = note.date,
                                     pinNote = {
-                                        Log.wtf("Meerka", ": ")
                                         viewModel.onEvent(AllNotesEvent.PinNote(note))
-                                    }, isPinned = note.isPinned
+                                    }, isPinned = note.isPinned, showInfoBarMessage = {
+                                        viewModel.onEvent(AllNotesEvent.TapNoteCardMessage)
+                                    }, noteIndex = note.id
                                 )
 
                             }
@@ -117,8 +123,13 @@ fun AllNotesScreen() {
                     }
                 }
             }
+            InfoBar(offeredMessage = viewModel.infoBar.value) {
+
+            }
         }
     }
+
+
 }
 
 @Composable
@@ -129,30 +140,32 @@ fun NoteCard(
     isPinned: Boolean,
     goToNote: () -> Unit,
     deleteNote: () -> Unit,
-    pinNote: () -> Unit
+    pinNote: () -> Unit,
+    showInfoBarMessage: () -> Unit, noteIndex: Int
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-    val isPressed = interactionSource.collectIsPressedAsState()
+
+    val isPressed = remember { mutableStateOf(false) }
     val animation = animateFloatAsState(
         targetValue = if (isPressed.value) 0.9f else 1f,
         animationSpec = spring(Spring.DampingRatioLowBouncy),
         label = ""
     )
 
-    LaunchedEffect(isPressed.value) {
-        if (isPressed.value) {
-            pinNote()
-        }
-
-    }
-    ElevatedCard(modifier = Modifier
-        .height(220.dp).scale(animation.value),
+    ElevatedCard(
+        modifier = Modifier
+            .height(220.dp)
+            .scale(animation.value)
+            .pointerInput(noteIndex) {
+                this.detectTapGestures(onLongPress = {
+                    pinNote()
+                }, onPress = {
+                }) {
+                    showInfoBarMessage()
+                }
+            },
         colors = CardDefaults.cardColors(containerColor = Color.Blue),
         shape = MaterialTheme.shapes.extraLarge,
-        interactionSource = interactionSource,
-        onClick = { }) {
+    ) {
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 

@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.info.bar.compose)
+
     implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-domain"))
     implementation(project(":shared:shared-ui"))
