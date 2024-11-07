@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
+import com.aopr.home.home_screen.navigation.DrawerItems
+import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.viewModel.HomeViewModel
 import com.aopr.home.home_screen.viewModel.events.HomeEvent
 import com.aopr.notes_presentation.view_model.NotesViewModel
@@ -64,6 +66,9 @@ fun HomeScreen() {
         stringResource(id = R.string.Bookmarks),
         stringResource(id = R.string.Calendar)
     )
+    val drawerItems = remember {
+        DrawerItems.entries
+    }
     var showBottomSheet by remember { mutableStateOf(false) }
     var blurredCardIndex by remember { mutableIntStateOf(-1) }
     val listOfButtons = listOf(
@@ -78,7 +83,13 @@ fun HomeScreen() {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {}
+            ModalDrawerSheet {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    drawerItems.forEach { items ->
+
+                    }
+                }
+            }
         }) {
         Scaffold(modifier = Modifier.consumeWindowInsets(WindowInsets.ime)) { _ ->
             Box(
@@ -164,10 +175,13 @@ fun HomeScreen() {
 }
 
 @Composable
-fun getNotesButtons(onShowBottomSheetChange: (Boolean) -> Unit,navigateToAllNotes:()->Unit): Array<@Composable () -> Unit> {
+fun getNotesButtons(
+    onShowBottomSheetChange: (Boolean) -> Unit,
+    navigateToAllNotes: () -> Unit
+): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
-navigateToAllNotes()
+            navigateToAllNotes()
         }) {
             Text(text = stringResource(id = R.string.AllNotes))
         }
