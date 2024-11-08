@@ -1,5 +1,6 @@
 package com.aopr.notes_presentation.view_model
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +44,6 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModelKit<AllNot
         useCase.updatedNote(note).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
                 }
 
                 is Responses.Loading -> {
@@ -71,6 +71,7 @@ class AllNotesViewModel(private val useCase: NotesUseCase) : ViewModelKit<AllNot
                     result.data?.collect() { noteList ->
                         _listOfNotes.value = noteList
                     }
+
                 }
             }
         }.launchIn(viewModelScope)

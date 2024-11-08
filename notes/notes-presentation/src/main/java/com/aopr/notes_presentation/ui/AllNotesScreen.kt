@@ -1,14 +1,11 @@
 package com.aopr.notes_presentation.ui
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,12 +41,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
 import com.aopr.notes_presentation.view_model.events.allNotesEvents.AllNotesEvent
 import com.aopr.notes_presentation.view_model.uiEventHandler.UiEvenHandler
 import com.radusalagean.infobarcompose.InfoBar
-import com.radusalagean.infobarcompose.InfoBarMessage
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -114,7 +111,7 @@ fun AllNotesScreen() {
                                         viewModel.onEvent(AllNotesEvent.PinNote(note))
                                     }, isPinned = note.isPinned, showInfoBarMessage = {
                                         viewModel.onEvent(AllNotesEvent.TapNoteCardMessage)
-                                    }, noteIndex = note.id
+                                    }, note = note
                                 )
 
                             }
@@ -141,10 +138,9 @@ fun NoteCard(
     goToNote: () -> Unit,
     deleteNote: () -> Unit,
     pinNote: () -> Unit,
-    showInfoBarMessage: () -> Unit, noteIndex: Int
+    showInfoBarMessage: () -> Unit, note: Note
 ) {
-
-    val isPressed = remember { mutableStateOf(false) }
+    val isPressed = remember(note) { mutableStateOf(false) }
     val animation = animateFloatAsState(
         targetValue = if (isPressed.value) 0.9f else 1f,
         animationSpec = spring(Spring.DampingRatioLowBouncy),
@@ -155,11 +151,16 @@ fun NoteCard(
         modifier = Modifier
             .height(220.dp)
             .scale(animation.value)
-            .pointerInput(noteIndex) {
+            .pointerInput(note) {
                 this.detectTapGestures(onLongPress = {
                     pinNote()
                 }, onPress = {
+                    delay(30)
+                    isPressed.value = true
+                    this.awaitRelease()
+                    isPressed.value = false
                 }) {
+
                     showInfoBarMessage()
                 }
             },
