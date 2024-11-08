@@ -38,8 +38,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BottomBar(navController: NavHostController) {
-
-
     val hazeState = remember {
         HazeState()
     }
