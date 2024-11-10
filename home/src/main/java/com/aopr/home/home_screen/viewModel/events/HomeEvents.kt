@@ -1,5 +1,7 @@
 package com.aopr.home.home_screen.viewModel.events
 
-sealed interface HomeEvent{
+import com.aopr.shared_ui.util.events_type.EventsType
+
+sealed interface HomeEvent:EventsType{
     data object NavigateToAllNotes:HomeEvent
 }

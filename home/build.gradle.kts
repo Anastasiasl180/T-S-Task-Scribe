@@ -39,10 +39,14 @@ android {
 }
 
 dependencies {
+
+
     implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))
     implementation((project(":notes:notes-presentation")))
+
+    implementation(libs.info.bar.compose)
 
     //koin
     implementation(libs.koin.android)

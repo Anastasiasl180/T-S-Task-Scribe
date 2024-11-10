@@ -9,6 +9,7 @@ import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_ui.util.ViewModelKit
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
+class NotesViewModel(private val useCase: NotesUseCase) :
+    ViewModelKit<NotesEvent, NotesUiEvents>() {
 
     private val _tittleOfNote = mutableStateOf("")
     val note: State<String> = _tittleOfNote
@@ -28,12 +30,12 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
     val uiEvents = _event
 
 
-
     private fun createNote(note: Note) {
         useCase.createNote(note).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
+                    hideInfoBar()
+                    result.message?.let { showShortInfoBar(it, 2) }
                 }
 
                 is Responses.Loading -> {
@@ -48,13 +50,13 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
     }
 
 
-    fun onEvent(event: NotesEvent) {
+    override fun onEvent(event: NotesEvent) {
         when (event) {
 
             NotesEvent.NavigateToAllNotes -> {
-              viewModelScope.launch {
-                  _event.emit(NotesUiEvents.NavigateToAllNotesScreen)
-              }
+                viewModelScope.launch {
+                    _event.emit(NotesUiEvents.NavigateToAllNotesScreen)
+                }
             }
 
             is NotesEvent.SaveNote -> {
@@ -71,6 +73,7 @@ class NotesViewModel(private val useCase: NotesUseCase) : ViewModel() {
             is NotesEvent.UpdateDescription -> {
                 _descriptionOfNote.value = event.description
             }
+
             is NotesEvent.UpdateTittle -> {
                 _tittleOfNote.value = event.tittle
             }

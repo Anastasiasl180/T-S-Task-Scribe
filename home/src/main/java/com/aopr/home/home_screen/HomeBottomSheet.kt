@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
+import com.radusalagean.infobarcompose.InfoBar
+import com.radusalagean.infobarcompose.InfoBarMessage
 import kotlinx.coroutines.launch
 
 
@@ -41,7 +43,8 @@ internal fun BottomSheetContent(
     onDismiss: () -> Unit,
     saveNote: () -> Unit,
     updateTittle: (String) -> Unit,
-    updateDescription: (String) -> Unit
+    updateDescription: (String) -> Unit,
+    infoBarMessage:InfoBarMessage?
 ) {
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -57,6 +60,7 @@ internal fun BottomSheetContent(
                 .consumeWindowInsets(WindowInsets.ime)
                 .fillMaxSize(), contentAlignment = Alignment.Center
         ) {
+
             Column(
                 modifier = Modifier
                     .consumeWindowInsets(WindowInsets.ime)
@@ -77,8 +81,7 @@ internal fun BottomSheetContent(
                     }
 
                     Text(text = stringResource(id = R.string.NewNote))
-                    TextButton(onClick = { saveNote()
-                    onDismiss()}) {
+                    TextButton(onClick = { saveNote() }) {
                     Text(text = stringResource(id = R.string.Done))}
                 }
                 Row(
@@ -155,6 +158,9 @@ internal fun BottomSheetContent(
 
 
             }
+          InfoBar(offeredMessage = infoBarMessage) {
+
+          }
         }
     }
 }

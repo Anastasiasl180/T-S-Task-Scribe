@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -45,6 +43,7 @@ import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
 import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
 import com.aopr.notes_presentation.view_model.uiEventHandler.UiHandlerForCreatingNote
+import com.radusalagean.infobarcompose.InfoBar
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -59,9 +58,8 @@ fun CreatingNoteScreen() {
         topBar = {
             TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
                 navigationIcon = {
-
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = {  viewModel.onEvent(CreatingNoteEvent.NavigateToBack) },
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.White)
@@ -173,7 +171,11 @@ fun CreatingNoteScreen() {
                 )
 
             }
+            InfoBar(offeredMessage = viewModel.infoBar.value) {
+
+            }
         }
+
 
     }
 
