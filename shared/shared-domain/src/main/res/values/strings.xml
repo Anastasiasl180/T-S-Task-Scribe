@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="DefaultErrorMessage">Something went wrong</string>
+    <string name="EmptyTittle">Field cannot be without tittle</string>
+    <string name="EmptyDescription">Field cannot be without description</string>
     <string name="tittle">Tittle</string>
     <string name="description">Description</string>
 </resources>

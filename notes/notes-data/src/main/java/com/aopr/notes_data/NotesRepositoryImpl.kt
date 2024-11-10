@@ -1,17 +1,16 @@
 package com.aopr.notes_data
 
-import androidx.lifecycle.viewModelScope
 import com.aopr.notes_data.mapper.mapToEntity
 import com.aopr.notes_data.mapper.mapToNote
 import com.aopr.notes_data.room.notes.NoteDao
 import com.aopr.notes_domain.NotesRepository
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_domain.throws.EmptyDescriptionException
+import com.aopr.notes_domain.throws.EmptyFieldsException
 import com.aopr.notes_domain.throws.EmptyTittleException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
 
 @Single
@@ -20,6 +19,8 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
         if (note.description.isBlank()) throw EmptyDescriptionException()
 
         if (note.tittle.isBlank()) throw EmptyTittleException()
+
+        if (note.tittle.isBlank() && note.description.isBlank()) throw  EmptyFieldsException()
 
         val existingId = dao.getNoteById(note.id).firstOrNull()
         if (existingId != null) {

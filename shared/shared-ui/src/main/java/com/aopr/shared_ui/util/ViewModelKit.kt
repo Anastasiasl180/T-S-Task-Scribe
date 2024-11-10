@@ -3,6 +3,8 @@ package com.aopr.shared_ui.util
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.aopr.shared_ui.util.events_type.EventsType
+import com.aopr.shared_ui.util.events_type.UiEventsType
 import com.radusalagean.infobarcompose.InfoBarMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

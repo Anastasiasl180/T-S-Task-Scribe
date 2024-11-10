@@ -37,13 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
 import com.aopr.home.home_screen.navigation.DrawerItems
-import com.aopr.home.home_screen.navigation.DrawerNavRoutes
-import com.aopr.home.home_screen.viewModel.HomeViewModel
-import com.aopr.home.home_screen.viewModel.events.HomeEvent
 import com.aopr.notes_presentation.view_model.NotesViewModel
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
-import com.aopr.shared_ui.MainViewModel
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.radusalagean.infobarcompose.InfoBar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -155,7 +151,11 @@ fun HomeScreen() {
 
                     }
                 }
+                InfoBar(offeredMessage = viewModel.infoBar.value) {
+
+                }
             }
+
 
             if (showBottomSheet) {
                 BottomSheetContent(
@@ -166,7 +166,8 @@ fun HomeScreen() {
                         viewModel.onEvent(NotesEvent.UpdateDescription(it))
                     }, updateTittle = {
                         viewModel.onEvent(NotesEvent.UpdateTittle(it))
-                    })
+                    }, infoBarMessage = viewModel.infoBar.value
+                )
             }
 
         }

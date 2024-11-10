@@ -123,6 +123,7 @@ fun AllNotesScreen() {
             InfoBar(offeredMessage = viewModel.infoBar.value) {
 
             }
+
         }
     }
 
