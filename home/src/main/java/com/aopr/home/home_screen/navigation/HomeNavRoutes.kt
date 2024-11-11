@@ -17,8 +17,7 @@ sealed interface HomeNavRoutes {
     data object HomeScreen : HomeNavRoutes
 
     @Serializable
-    data object CratingNoteScreen : HomeNavRoutes
-
+    data object AllTasksScreen:HomeNavRoutes
 
 }
 

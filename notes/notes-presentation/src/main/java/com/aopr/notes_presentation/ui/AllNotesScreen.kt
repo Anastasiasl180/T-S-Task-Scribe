@@ -66,7 +66,7 @@ fun AllNotesScreen() {
                     )
                 )
             }, modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)) {
-                Text(text = stringResource(id = R.string.addNoteFloatButton))
+                Text(text = stringResource(id = com.aopr.shared_domain.R.string.addForIcon))
             }
         }
 

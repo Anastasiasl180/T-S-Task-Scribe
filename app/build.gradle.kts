@@ -54,12 +54,17 @@ dependencies {
     //haze for mainBottomBar
     implementation(libs.haze.jetpack.compose)
 
+    implementation(project(":home"))
+    implementation(project(":shared:shared-data"))
     implementation(project(":shared:shared-ui"))
     implementation(project(":notes:notes-data"))
-    implementation(project(":home"))
     implementation(project(":notes:notes-presentation"))
     implementation(project(":notes:notes-domain"))
-    implementation(project(":shared:shared-data"))
+    implementation(project(":tasks:tasks-presentation"))
+    implementation(project(":tasks:tasks-data"))
+    implementation(project(":tasks:tasks-domain"))
+
+
 
     //koi
     implementation(libs.koin.android)

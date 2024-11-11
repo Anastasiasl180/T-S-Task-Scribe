@@ -2,7 +2,6 @@ package com.aopr.notes_presentation.view_model
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.NotesUseCase
 import com.aopr.notes_domain.models.Note
@@ -21,10 +20,16 @@ class NotesViewModel(private val useCase: NotesUseCase) :
     ViewModelKit<NotesEvent, NotesUiEvents>() {
 
     private val _tittleOfNote = mutableStateOf("")
-    val note: State<String> = _tittleOfNote
+    val tittleOfNote: State<String> = _tittleOfNote
 
     private val _descriptionOfNote = mutableStateOf("")
     val descriptionOfNote: State<String> = _descriptionOfNote
+
+    private val _tittleOfTask = mutableStateOf("")
+    val tittleOfTask: State<String> = _tittleOfTask
+
+    private val _descriptionOfTask = mutableStateOf("")
+    val descriptionOfTask: State<String> = _descriptionOfTask
 
     private val _event = MutableSharedFlow<NotesUiEvents>()
     val uiEvents = _event
@@ -70,12 +75,29 @@ class NotesViewModel(private val useCase: NotesUseCase) :
                 }
             }
 
-            is NotesEvent.UpdateDescription -> {
+            is NotesEvent.UpdateDescriptionOfNote -> {
                 _descriptionOfNote.value = event.description
             }
 
-            is NotesEvent.UpdateTittle -> {
+            is NotesEvent.UpdateTittleOfNote -> {
                 _tittleOfNote.value = event.tittle
+            }
+
+            NotesEvent.NavigateToAllTasks -> {
+                viewModelScope.launch {
+                    _event.emit(NotesUiEvents.NavigateToAllTasks)
+                }
+            }
+
+            NotesEvent.SaveTask -> {
+
+            }
+            is NotesEvent.UpdateDescriptionOfTask -> {
+                _tittleOfTask.value = event.description
+            }
+
+            is NotesEvent.UpdateTittleOFTask -> {
+                _tittleOfTask.value = event.tittle
             }
         }
     }
