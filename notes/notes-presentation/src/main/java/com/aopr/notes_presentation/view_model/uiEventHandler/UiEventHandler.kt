@@ -21,7 +21,6 @@ fun UiEvenHandler() {
     LaunchedEffect(Unit) {
         viewModel.event.collect { uiEvents ->
             when (uiEvents) {
-
                 is AllNotesUiEvent.NavigateToCreateNoteScreen -> {
                     navigator.navigate(AllNotesRoutes.CreatingNoteScreen(uiEvents.id))
 

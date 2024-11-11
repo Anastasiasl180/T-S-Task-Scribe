@@ -52,8 +52,10 @@ fun HomeScreen() {
 
     val viewModel = koinViewModel<NotesViewModel>()
 
-    val tittleOfNote = viewModel.note.value
+    val tittleOfNote = viewModel.tittleOfNote.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
+    val tittleOfTask = viewModel.tittleOfTask.value
+    val descriptionOfTask = viewModel.descriptionOfTask.value
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val cardTexts = listOf(
@@ -65,14 +67,19 @@ fun HomeScreen() {
     val drawerItems = remember {
         DrawerItems.entries
     }
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showBottomSheetForNotes by remember { mutableStateOf(false) }
+    var showBottomSheetForTasks by remember { mutableStateOf(false) }
     var blurredCardIndex by remember { mutableIntStateOf(-1) }
     val listOfButtons = listOf(
         getNotesButtons(onShowBottomSheetChange = {
-            showBottomSheet = it
+            showBottomSheetForNotes = it
         }, navigateToAllNotes = {
             viewModel.onEvent(NotesEvent.NavigateToAllNotes)
-        }), getTasksButtons(), getBookMarksButtons(),
+        }), getTasksButtons(navigateToAllTasks = {
+            viewModel.onEvent(NotesEvent.NavigateToAllTasks)
+        }, onShowBottomSheetChange = {
+            showBottomSheetForTasks = it
+        }), getBookMarksButtons(),
         getCalendarButton()
     )
 
@@ -157,16 +164,27 @@ fun HomeScreen() {
             }
 
 
-            if (showBottomSheet) {
+            if (showBottomSheetForNotes) {
                 BottomSheetContent(
-                    onDismiss = { showBottomSheet = false },
+                    onDismiss = { showBottomSheetForNotes = false },
                     saveNote = {
                         viewModel.onEvent(NotesEvent.SaveNote)
                     }, tittle = tittleOfNote, description = descriptionOfNote, updateDescription = {
-                        viewModel.onEvent(NotesEvent.UpdateDescription(it))
+                        viewModel.onEvent(NotesEvent.UpdateDescriptionOfNote(it))
                     }, updateTittle = {
-                        viewModel.onEvent(NotesEvent.UpdateTittle(it))
+                        viewModel.onEvent(NotesEvent.UpdateTittleOfNote(it))
                     }, infoBarMessage = viewModel.infoBar.value
+                )
+            }
+            if (showBottomSheetForTasks) {
+                BottomSheetContentForTasks(
+                    tittle = tittleOfTask,
+                    description = descriptionOfTask,
+                    onDismiss = { showBottomSheetForTasks = false },
+                    saveTask = { viewModel.onEvent(NotesEvent.SaveTask) },
+                    updateTittle = { viewModel.onEvent(NotesEvent.UpdateTittleOFTask(it)) },
+                    updateDescription = { viewModel.onEvent(NotesEvent.UpdateDescriptionOfTask(it)) },
+                    infoBarMessage = viewModel.infoBar.value
                 )
             }
 
@@ -196,14 +214,19 @@ fun getNotesButtons(
 }
 
 @Composable
-internal fun getTasksButtons(): Array<@Composable () -> Unit> {
+internal fun getTasksButtons(
+    navigateToAllTasks: () -> Unit,
+    onShowBottomSheetChange: (Boolean) -> Unit
+): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
+            navigateToAllTasks()
         }) {
             Text(text = stringResource(id = R.string.AllTasks))
         }
     }, {
         Button(onClick = {
+            onShowBottomSheetChange(true)
         }) {
             Text(text = stringResource(id = R.string.NewTask))
         }

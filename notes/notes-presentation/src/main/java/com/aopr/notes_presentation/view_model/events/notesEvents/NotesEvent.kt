@@ -5,6 +5,10 @@ import com.aopr.shared_ui.util.events_type.EventsType
 sealed interface NotesEvent:EventsType {
     data object SaveNote : NotesEvent
     data object NavigateToAllNotes : NotesEvent
-    data class UpdateTittle(val tittle: String) : NotesEvent
-    data class UpdateDescription(val description: String) : NotesEvent
+    data class UpdateTittleOfNote(val tittle: String) : NotesEvent
+    data class UpdateDescriptionOfNote(val description: String) : NotesEvent
+    data class UpdateTittleOFTask(val tittle: String) : NotesEvent
+    data class UpdateDescriptionOfTask(val description: String) : NotesEvent
+    data object SaveTask:NotesEvent
+    data object NavigateToAllTasks:NotesEvent
 }

@@ -13,6 +13,9 @@ import com.aopr.notes_presentation.ui.CreatingNoteScreen
 import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
+import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
+import com.aopr.tasks_presentation.ui.AllTasksScreen
+import com.aopr.tasks_presentation.ui.CreatingTaskScreen
 
 @Composable
 fun AppNavHost() {
@@ -35,6 +38,12 @@ fun AppNavHost() {
                     }
                     composable<AllNotesRoutes.CreatingNoteScreen> {
                         CreatingNoteScreen()
+                    }
+                    composable<HomeNavRoutes.AllTasksScreen> {
+                        AllTasksScreen()
+                    }
+                    composable<AllTasksNavRoutes.CreatingTaskScreen> {
+                        CreatingTaskScreen()
                     }
                 }
             }

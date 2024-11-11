@@ -1,4 +1,4 @@
-package com.aopr.taskscribe
+package com.aopr.tasks_data
 
 import org.junit.Test
 
