@@ -1,12 +1,11 @@
 package com.aopr.notes_presentation.view_model
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.viewModelScope
-import com.aopr.notes_domain.NotesUseCase
+import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.events.allNotesEvents.AllNotesEvent

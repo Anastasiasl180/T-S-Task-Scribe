@@ -33,6 +33,7 @@ android {
 
 dependencies {
 implementation(project(":notes:notes-domain"))
+    implementation(project(":shared:shared-domain"))
 
     //koin
     implementation(libs.koin.android)

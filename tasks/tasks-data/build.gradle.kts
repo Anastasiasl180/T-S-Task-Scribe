@@ -34,6 +34,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":tasks:tasks-domain"))
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
@@ -42,6 +43,5 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
     implementation(libs.androidx.core.ktx)
 }

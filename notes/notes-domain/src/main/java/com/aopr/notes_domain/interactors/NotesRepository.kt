@@ -1,4 +1,4 @@
-package com.aopr.notes_domain
+package com.aopr.notes_domain.interactors
 
 import com.aopr.notes_domain.models.Note
 import kotlinx.coroutines.flow.Flow

@@ -3,7 +3,7 @@ package com.aopr.notes_presentation.view_model
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import com.aopr.notes_domain.NotesUseCase
+import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents

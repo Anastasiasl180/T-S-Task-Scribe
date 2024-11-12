@@ -1,6 +1,5 @@
-package com.aopr.notes_data.room.notes
+package com.aopr.notes_data.room
 
-import android.icu.util.LocaleData
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
