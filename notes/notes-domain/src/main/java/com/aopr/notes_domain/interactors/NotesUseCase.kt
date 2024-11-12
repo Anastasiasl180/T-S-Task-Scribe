@@ -1,9 +1,9 @@
-package com.aopr.notes_domain
+package com.aopr.notes_domain.interactors
 
-import android.util.Log
+import com.aopr.notes_domain.R
 import com.aopr.notes_domain.models.Note
-import com.aopr.notes_domain.throws.EmptyDescriptionException
-import com.aopr.notes_domain.throws.EmptyTittleException
+import com.aopr.shared_domain.throws.EmptyDescriptionException
+import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.resource_manager.SharedStringResourceManager
 import kotlinx.coroutines.flow.Flow

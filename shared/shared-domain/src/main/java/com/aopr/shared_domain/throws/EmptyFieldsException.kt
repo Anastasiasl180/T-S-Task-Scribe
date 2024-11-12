@@ -1,4 +1,4 @@
-package com.aopr.notes_domain.throws
+package com.aopr.shared_domain.throws
 
 class EmptyFieldsException:Exception() {
 }

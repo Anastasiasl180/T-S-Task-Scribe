@@ -1,4 +1,4 @@
-package com.aopr.notes_data.room.notes
+package com.aopr.notes_data.room
 
 import androidx.room.Dao
 import androidx.room.Delete
