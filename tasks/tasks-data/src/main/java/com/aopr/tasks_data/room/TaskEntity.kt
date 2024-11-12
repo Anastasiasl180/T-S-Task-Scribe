@@ -2,6 +2,7 @@ package com.aopr.tasks_data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import java.time.LocalDate
@@ -19,3 +20,27 @@ data class TaskEntity(
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
     val listOfSubtasks:List<Subtasks>
 )
+
+class Converts {
+    @TypeConverter
+    fun fromLocalDate(value: LocalDate?): String? {
+        return value?.toString()
+    }
+    @TypeConverter
+    fun toLocalDate(value: String?): LocalDate? {
+        return value?.let { LocalDate.parse(it) }
+    }
+    @TypeConverter
+    fun fromLocalTime(value:LocalTime?):String?{
+        return value?.toString()
+    }
+    @TypeConverter
+    fun toLocalTime(value:String?):LocalTime?{
+        return value?.let {
+            LocalTime.parse(it)
+        }
+    }
+
+
+
+}
