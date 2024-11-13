@@ -2,6 +2,8 @@ package com.aopr.tasks_domain.interactors
 
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.Singleton
+
 
 interface TasksRepository {
     suspend fun createTask(task:Task)

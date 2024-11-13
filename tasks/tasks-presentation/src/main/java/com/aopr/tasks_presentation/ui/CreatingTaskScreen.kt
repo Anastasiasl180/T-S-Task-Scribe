@@ -26,6 +26,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,20 +37,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
+import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatingTaskScreen() {
+    CreatingTaskUiEventHandler()
     val viewModel = koinViewModel<CreatingTaskViewModel>()
+    val tittle by viewModel.tittleOfTask.collectAsState()
+    val description by viewModel.descriptionOfTask.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
                 navigationIcon = {
                     IconButton(
-                        onClick = { },
+                        onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack)},
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.White)
@@ -64,7 +71,7 @@ fun CreatingTaskScreen() {
 
                     Spacer(modifier = Modifier.width(10.dp))
                     IconButton(
-                        onClick = { },
+                        onClick = {viewModel.onEvent(CreatingTaskEvents.SaveTask) },
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.White)
@@ -114,8 +121,12 @@ fun CreatingTaskScreen() {
                             unfocusedIndicatorColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent
                         ),
-                        value = "",
+                        value = tittle,
                         onValueChange = { tittle ->
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateTittle
+                                    (tittle)
+                            )
                         },
                         textStyle = TextStyle(
                             fontSize = 35.sp
@@ -124,7 +135,7 @@ fun CreatingTaskScreen() {
                 }
                 TextField(
                     modifier = Modifier.fillMaxSize(),
-                    value = "",
+                    value = description,
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -139,6 +150,7 @@ fun CreatingTaskScreen() {
                         )
                     },
                     onValueChange = { description ->
+                        viewModel.onEvent(CreatingTaskEvents.UpdateDescription(description))
                     },
                     textStyle = TextStyle(
                         fontSize = 20.sp
