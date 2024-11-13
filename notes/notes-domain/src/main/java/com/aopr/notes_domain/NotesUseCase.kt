@@ -14,6 +14,7 @@ import java.io.IOException
 @Single
 class NotesUseCase(private val repository: NotesRepository) {
 
+    
     fun createNote(note: Note): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
