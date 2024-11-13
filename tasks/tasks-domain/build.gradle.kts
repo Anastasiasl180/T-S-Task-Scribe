@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)

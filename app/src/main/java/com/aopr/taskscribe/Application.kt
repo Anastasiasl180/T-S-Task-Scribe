@@ -25,9 +25,10 @@ class Application : Application() {
                 NotesDomainModule().module,
                 NotesDataModule().module,
                 SharedUiModule().module,
+                SharedDataModule().module,
                 TasksPresentationModule().module,
                 TasksDataModule().module,
-                TasksDomainModule().module
+                TasksDomainModule().module,
             )
 
         }
