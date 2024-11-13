@@ -14,11 +14,11 @@ data class TaskEntity(
     val id:Int=0,
     val tittle:String,
     val description:String,
-    val date:LocalDate,
-    val time:LocalTime,
+    val date:LocalDate?,
+    val time:LocalTime?,
     val isCompleted:Boolean,
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
-    val listOfSubtasks:List<Subtasks>
+    val listOfSubtasks:List<Subtasks>?
 )
 
 class Converts {
@@ -38,6 +38,18 @@ class Converts {
     fun toLocalTime(value:String?):LocalTime?{
         return value?.let {
             LocalTime.parse(it)
+        }
+    }
+    @TypeConverter
+    fun fromListOfSubtasks(value: List<Subtasks>?): String? {
+        return value?.joinToString(separator = ",") { "${it.description}|${it.isCompleted}" }
+    }
+
+    @TypeConverter
+    fun toListOfSubtasks(value: String?): List<Subtasks>? {
+        return value?.split(",")?.map {
+            val parts = it.split("|")
+            Subtasks(parts[0], parts[1].toBoolean())
         }
     }
 

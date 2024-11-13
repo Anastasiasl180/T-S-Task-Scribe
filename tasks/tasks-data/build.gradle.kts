@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation(project(":tasks:tasks-domain"))
+    implementation(project(":shared:shared-domain"))
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)

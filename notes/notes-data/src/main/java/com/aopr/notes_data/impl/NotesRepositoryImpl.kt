@@ -1,4 +1,4 @@
-package com.aopr.notes_data
+package com.aopr.notes_data.impl
 
 import com.aopr.notes_data.mapper.mapToEntity
 import com.aopr.notes_data.mapper.mapToNote

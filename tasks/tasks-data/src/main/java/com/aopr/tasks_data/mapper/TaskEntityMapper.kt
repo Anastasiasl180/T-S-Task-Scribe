@@ -15,3 +15,15 @@ internal fun Task.mapToEntity():TaskEntity{
         listOfSubtasks = this.listOfSubtasks
     )
 }
+internal fun TaskEntity.mapToTask():Task{
+    return Task(
+        id = this.id,
+        tittle = this.tittle,
+        description = this.description,
+        date = this.date,
+        time = this.time,
+        isCompleted = this.isCompleted,
+        importance = this.importance,
+        listOfSubtasks = this.listOfSubtasks
+    )
+}

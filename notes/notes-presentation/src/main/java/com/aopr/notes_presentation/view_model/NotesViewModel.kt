@@ -1,6 +1,7 @@
 package com.aopr.notes_presentation.view_model
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.interactors.NotesUseCase
@@ -9,14 +10,22 @@ import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
+import com.aopr.tasks_domain.interactors.TasksUseCase
+import com.aopr.tasks_domain.models.Subtasks
+import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
+import java.time.LocalDate
+import java.time.LocalTime
 
 @KoinViewModel
-class NotesViewModel(private val useCase: NotesUseCase) :
+class NotesViewModel(
+    private val notesUseCase: NotesUseCase,
+    private val tasksUseCase: TasksUseCase
+) :
     ViewModelKit<NotesEvent, NotesUiEvents>() {
 
     private val _tittleOfNote = mutableStateOf("")
@@ -31,12 +40,21 @@ class NotesViewModel(private val useCase: NotesUseCase) :
     private val _descriptionOfTask = mutableStateOf("")
     val descriptionOfTask: State<String> = _descriptionOfTask
 
+    private val _dataOfTask = mutableStateOf<LocalDate?>(null)
+    val dataOfTask: State<LocalDate?> = _dataOfTask
+
+    private val _timeOfTask = mutableStateOf<LocalTime?>(null)
+    val timeOfTask: State<LocalTime?> = _timeOfTask
+
+    private val _listOfSubTasks = mutableStateListOf<Subtasks>()
+    val listOfSubTasks:List<Subtasks> = _listOfSubTasks
+
     private val _event = MutableSharedFlow<NotesUiEvents>()
     val uiEvents = _event
 
 
     private fun createNote(note: Note) {
-        useCase.createNote(note).onEach { result ->
+        notesUseCase.createNote(note).onEach { result ->
             when (result) {
                 is Responses.Error -> {
                     hideInfoBar()
@@ -54,6 +72,24 @@ class NotesViewModel(private val useCase: NotesUseCase) :
         }.launchIn(viewModelScope)
     }
 
+    private fun createTask(task: Task) {
+        tasksUseCase.createTask(task).onEach { result ->
+            when (result) {
+                is Responses.Error<*> -> {
+
+                }
+
+                is Responses.Loading<*> -> {
+
+                }
+
+                is Responses.Success<*> -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
 
     override fun onEvent(event: NotesEvent) {
         when (event) {
@@ -90,10 +126,22 @@ class NotesViewModel(private val useCase: NotesUseCase) :
             }
 
             NotesEvent.SaveTask -> {
-
+                viewModelScope.launch {
+                    val task = Task(
+                        id = 0,
+                        tittle = _tittleOfTask.value,
+                        description = _descriptionOfTask.value,
+                        date = _dataOfTask.value,
+                        time = _timeOfTask.value,
+                        listOfSubtasks = _listOfSubTasks as List<Subtasks>,
+                        isCompleted = false
+                    )
+                    createTask(task)
+                }
             }
+
             is NotesEvent.UpdateDescriptionOfTask -> {
-                _tittleOfTask.value = event.description
+                _descriptionOfTask.value = event.description
             }
 
             is NotesEvent.UpdateTittleOFTask -> {
