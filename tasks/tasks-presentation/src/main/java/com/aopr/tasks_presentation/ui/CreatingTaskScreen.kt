@@ -1,6 +1,8 @@
 package com.aopr.tasks_presentation.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +12,16 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
@@ -47,6 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatingTaskScreen() {
     CreatingTaskUiEventHandler()
     val viewModel = koinViewModel<CreatingTaskViewModel>()
+    val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittle by viewModel.tittleOfTask.collectAsState()
     val description by viewModel.descriptionOfTask.collectAsState()
     Scaffold(
@@ -55,7 +63,7 @@ fun CreatingTaskScreen() {
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
                 navigationIcon = {
                     IconButton(
-                        onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack)},
+                        onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack) },
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.White)
@@ -71,7 +79,7 @@ fun CreatingTaskScreen() {
 
                     Spacer(modifier = Modifier.width(10.dp))
                     IconButton(
-                        onClick = {viewModel.onEvent(CreatingTaskEvents.SaveTask) },
+                        onClick = { viewModel.onEvent(CreatingTaskEvents.SaveTask) },
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.White)
@@ -94,68 +102,147 @@ fun CreatingTaskScreen() {
                 )
                 .background(Color.DarkGray), contentAlignment = Alignment.Center
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.15f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextField(
+                item {
+                    Row(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = com.aopr.shared_domain.R.string.tittle),
-                                fontSize = 35.sp,
-                                color = Color.White
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent
-                        ),
-                        value = tittle,
-                        onValueChange = { tittle ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.UpdateTittle
-                                    (tittle)
-                            )
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 35.sp
-                        ),
-                    )
-                }
-                TextField(
-                    modifier = Modifier.fillMaxSize(),
-                    value = description,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = com.aopr.shared_domain.R.string.description),
-                            color = Color.White, fontSize = 20.sp
+                            .fillMaxWidth()
+                            .background(Color.Black)
+                            .height((heightScreen * 0.1).dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = com.aopr.shared_domain.R.string.tittle),
+                                    fontSize = 35.sp,
+                                    color = Color.White
+                                )
+                            },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent
+                            ),
+                            value = tittle,
+                            onValueChange = { tittle ->
+                                viewModel.onEvent(
+                                    CreatingTaskEvents.UpdateTittle
+                                        (tittle)
+                                )
+                            },
+                            textStyle = TextStyle(
+                                fontSize = 35.sp
+                            ),
                         )
-                    },
-                    onValueChange = { description ->
-                        viewModel.onEvent(CreatingTaskEvents.UpdateDescription(description))
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 20.sp
-                    )
-                )
+                    }
+                }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height((heightScreen * 0.3).dp)
+                            .background(Color.Red)
+                    ) {
+                        TextField(
+                            modifier = Modifier.fillMaxSize(),
+                            value = description,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent
+                            ),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = com.aopr.shared_domain.R.string.description),
+                                    color = Color.White, fontSize = 20.sp
+                                )
+                            },
+                            onValueChange = { description ->
+                                viewModel.onEvent(CreatingTaskEvents.UpdateDescription(description))
+                            },
+                            textStyle = TextStyle(
+                                fontSize = 20.sp
+                            )
+                        )
+                    }
+
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Green)
+                            .height((heightScreen * 0.15).dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .background(Color.Magenta)
+                                .fillMaxWidth(0.5f),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "date")
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.4f)
+                                    .fillMaxHeight(0.9f)
+                            ) {
+                                Text(text = "fdgd")
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(0.5f),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "time")
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.4f)
+                                    .fillMaxHeight(0.9f)
+                            ) {
+                                Text(text = "dgf")
+                            }
+                        }
+                    }
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .height((heightScreen * 0.15).dp)
+                            .fillMaxWidth()
+                            .background(Color.Blue)
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .fillMaxHeight(0.9f)
+                        ) { }
+                    }
+                }
+
+                if (viewModel.listOfSubTasks.isNotEmpty()) {
+
+                    items(viewModel.listOfSubTasks){
+
+
+
+                    }
+                }
+
 
             }
 
