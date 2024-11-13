@@ -7,11 +7,11 @@ data class Task(
     val id:Int=0,
     val tittle:String,
     val description:String,
-    val date: LocalDate,
-    val time: LocalTime,
+    val date: LocalDate?,
+    val time: LocalTime?,
     val isCompleted:Boolean,
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
-    val listOfSubtasks:List<Subtasks>
+    val listOfSubtasks:List<Subtasks>?
 )
 
 data class Subtasks(

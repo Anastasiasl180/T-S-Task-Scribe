@@ -41,6 +41,7 @@ android {
 dependencies {
     implementation(project(":shared:shared-domain"))
     implementation(project(":shared:shared-ui"))
+    implementation(project(":tasks:tasks-domain"))
     implementation(libs.info.bar.compose)
 
 

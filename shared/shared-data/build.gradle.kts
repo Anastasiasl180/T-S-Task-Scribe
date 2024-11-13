@@ -36,9 +36,6 @@ android {
 
 dependencies {
 
-implementation(project(":notes:notes-data"))
-    implementation(project(":tasks:tasks-data"))
-
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
