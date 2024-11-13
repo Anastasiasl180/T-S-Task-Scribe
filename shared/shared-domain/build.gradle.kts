@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -33,7 +35,11 @@ android {
 }
 
 dependencies {
-
+//koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

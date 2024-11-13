@@ -10,7 +10,10 @@ import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Singleton
 
+@Factory
 class TasksRepositoryImpl(private val dao: TasksDao) : TasksRepository {
     override suspend fun createTask(task: Task) {
         if (task.tittle.isBlank()) throw EmptyTittleException()

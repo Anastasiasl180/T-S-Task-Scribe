@@ -57,6 +57,7 @@ dependencies {
     implementation(project(":home"))
     implementation(project(":shared:shared-data"))
     implementation(project(":shared:shared-ui"))
+    implementation(project(":shared:shared-domain"))
     implementation(project(":notes:notes-data"))
     implementation(project(":notes:notes-presentation"))
     implementation(project(":notes:notes-domain"))

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
-import com.aopr.tasks_presentation.ui.UiHandlers.UiEventHandler
+import com.aopr.tasks_presentation.ui.UiHandlers.AllTasksUiEventHandler
 import com.aopr.tasks_presentation.viewModels.AllTasksViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -23,7 +23,7 @@ fun AllTasksScreen() {
     BackHandler {
 
     }
-    UiEventHandler()
+    AllTasksUiEventHandler()
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = { viewModel.onEvent(AllTasksEvents.NavigateToCreatingTaskScreen(null)) },

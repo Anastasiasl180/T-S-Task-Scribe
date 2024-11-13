@@ -6,6 +6,7 @@ import com.aopr.notes_data.di.NotesDataModule
 import com.aopr.notes_domain.di.NotesDomainModule
 import com.aopr.notes_presentation.di.NotesPresentationModule
 import com.aopr.shared_data.di.SharedDataModule
+import com.aopr.shared_domain.di.SharedDomainModule
 import com.aopr.shared_ui.SharedUiModule
 import com.aopr.tasks_data.di.TasksDataModule
 import com.aopr.tasks_domain.di.TasksDomainModule
@@ -26,6 +27,7 @@ class Application : Application() {
                 NotesDataModule().module,
                 SharedUiModule().module,
                 SharedDataModule().module,
+                SharedDomainModule().module,
                 TasksPresentationModule().module,
                 TasksDataModule().module,
                 TasksDomainModule().module,

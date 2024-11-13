@@ -12,6 +12,8 @@ import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,11 +24,11 @@ import java.time.LocalTime
 @KoinViewModel
 class CreatingTaskViewModel(private val tasksUseCase:TasksUseCase):ViewModel() {
 
-    private val _tittleOfTask = mutableStateOf("")
-    val tittleOfTask: State<String> = _tittleOfTask
+    private val _tittleOfTask = MutableStateFlow("")
+    val tittleOfTask: StateFlow<String> = _tittleOfTask
 
-    private val _descriptionOfTask = mutableStateOf("")
-    val descriptionOfTask: State<String> = _descriptionOfTask
+    private val _descriptionOfTask = MutableStateFlow("")
+    val descriptionOfTask: StateFlow<String> = _descriptionOfTask
 
     private val _dataOfTask = mutableStateOf<LocalDate?>(null)
     val dataOfTask: State<LocalDate?> = _dataOfTask
