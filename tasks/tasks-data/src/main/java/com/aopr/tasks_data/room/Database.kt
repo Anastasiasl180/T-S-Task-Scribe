@@ -9,22 +9,22 @@ import org.koin.core.annotation.Single
 
 
 @Single
-fun provideAppDataBase(context: Context): AppDatabase {
+fun provideTaskDataBase(context: Context): TaskDatabase {
     return Room.databaseBuilder(
         context = context,
-        AppDatabase::class.java,
-        "app-database"
+        TaskDatabase::class.java,
+        "task-database"
     ).build()
 }
 
 
 @Single
-fun provideTaskDao(appDataBase: AppDatabase):TasksDao {
-    return appDataBase.taskDao()
+fun provideTaskDao(taskDataBase: TaskDatabase):TasksDao {
+    return taskDataBase.taskDao()
 }
 
-@Database(entities = [TaskEntity::class], version = 1)
+@Database(entities = [TaskEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converts::class)
-abstract class AppDatabase: RoomDatabase(){
+abstract class TaskDatabase: RoomDatabase(){
     abstract fun taskDao():TasksDao
 }

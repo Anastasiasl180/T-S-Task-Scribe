@@ -8,21 +8,21 @@ import org.koin.core.annotation.Single
 
 
 @Single
-fun provideAppDataBase(context: Context): AppDatabase {
+fun provideNotesDataBase(context: Context): NotesDatabase {
     return Room.databaseBuilder(
         context = context,
-        AppDatabase::class.java,
-        "app-database"
+        NotesDatabase::class.java,
+        "notes-database"
     ).build()
 }
 
 @Single
-fun provideNoteDao(appDataBase: AppDatabase): NoteDao {
-    return appDataBase.noteDao()
+fun provideNoteDao(notesDataBase: NotesDatabase): NoteDao {
+    return notesDataBase.noteDao()
 }
 
 
-@Database(entities = [NoteEntity::class], version = 1)
-abstract class AppDatabase: RoomDatabase(){
+@Database(entities = [NoteEntity::class], version = 1, exportSchema = false)
+abstract class NotesDatabase: RoomDatabase(){
     abstract fun noteDao(): NoteDao
 }

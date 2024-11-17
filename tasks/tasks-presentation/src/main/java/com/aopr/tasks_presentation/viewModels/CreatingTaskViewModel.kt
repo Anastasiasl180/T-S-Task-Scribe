@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @KoinViewModel
-class CreatingTaskViewModel(private val tasksUseCase:TasksUseCase):ViewModel() {
+class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
@@ -36,8 +36,12 @@ class CreatingTaskViewModel(private val tasksUseCase:TasksUseCase):ViewModel() {
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
 
+    private val _isDoneTask = mutableStateOf<Boolean>(false)
+    val isDoneTask: State<Boolean> = _isDoneTask
+
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
-    val listOfSubTasks:List<Subtasks> = _listOfSubTasks
+    val listOfSubTasks: List<Subtasks> = _listOfSubTasks
+
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
@@ -61,16 +65,18 @@ class CreatingTaskViewModel(private val tasksUseCase:TasksUseCase):ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-    fun onEvent(event:CreatingTaskEvents){
-        when(event){
+    fun onEvent(event: CreatingTaskEvents) {
+        when (event) {
             is CreatingTaskEvents.GetTakById -> {
 
             }
+
             CreatingTaskEvents.NavigateToBack -> {
                 viewModelScope.launch {
                     _event.emit(CreatingTaskUiEvents.NavigateToBack)
                 }
             }
+
             CreatingTaskEvents.SaveTask -> {
                 viewModelScope.launch {
                     val task = Task(
@@ -85,11 +91,39 @@ class CreatingTaskViewModel(private val tasksUseCase:TasksUseCase):ViewModel() {
                     createTask(task)
                 }
             }
-            is CreatingTaskEvents.UpdateDescription -> {
+
+            is CreatingTaskEvents.UpdateDescriptionOfTask -> {
                 _descriptionOfTask.value = event.description
             }
-            is CreatingTaskEvents.UpdateTittle -> {
+
+            is CreatingTaskEvents.UpdateTittleOfTask -> {
                 _tittleOfTask.value = event.tittle
+            }
+
+            is CreatingTaskEvents.UpdateDateOfTask -> {
+                _dataOfTask.value = event.date
+            }
+
+            is CreatingTaskEvents.UpdateIsDoneTask -> {
+                _isDoneTask.value = event.isDone
+            }
+
+            is CreatingTaskEvents.UpdateTimeOfTask -> {
+                _timeOfTask.value = event.time
+            }
+
+            CreatingTaskEvents.AddTextFieldForSubTask -> {
+                _listOfSubTasks.add(Subtasks(description = "", isCompleted = false))
+
+            }
+
+            is CreatingTaskEvents.UpdateTempSubTaskDescription -> {
+                _listOfSubTasks[event.index] = _listOfSubTasks[event.index].copy(description = event.description)
+
+            }
+            is CreatingTaskEvents.UpdateTempSubTaskIsDone ->{
+                _listOfSubTasks[event.index] = _listOfSubTasks[event.index].copy(isCompleted = event.isDone)
+
             }
         }
     }
