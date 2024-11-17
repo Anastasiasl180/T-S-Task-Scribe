@@ -1,5 +1,6 @@
 package com.aopr.tasks_domain.interactors
 
+import android.util.Log
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.resource_manager.SharedStringResourceManager
 import com.aopr.shared_domain.throws.EmptyDescriptionException
@@ -7,6 +8,7 @@ import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_domain.R
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
 import java.io.IOException
@@ -54,16 +56,21 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }
-
     fun getAllTasks(): Flow<Responses<Flow<List<Task>>>> = flow {
-        try {
-            emit(Responses.Loading())
-            val data = repository.getAllTasks()
-            emit(Responses.Success(data))
-        } catch (e: IOException) {
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-        } catch (e: Exception) {
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        emit(Responses.Loading())
+        val data = repository.getAllTasks()
+        Log.wtf("Meeawe", "lj")
+        emit(Responses.Success(data))
+    }.catch { e ->
+        when (e) {
+            is IOException -> {
+                emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+            }
+            else -> {
+                Log.wtf("Meerkawe", e.message.toString())
+                Log.wtf("Meerkawew", e.localizedMessage.toString())
+                emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+            }
         }
     }
 }

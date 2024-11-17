@@ -37,7 +37,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
 
-    private val _isDoneTask = mutableStateOf<Boolean>(false)
+    private val _isDoneTask = mutableStateOf(false)
     val isDoneTask: State<Boolean> = _isDoneTask
 
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
@@ -45,7 +45,6 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
 
     private val _priority = MutableStateFlow(ImportanceOfTask.MEDIUM)
     val priority: StateFlow<ImportanceOfTask> = _priority
-
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
@@ -69,10 +68,39 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
         }.launchIn(viewModelScope)
     }
 
+    private fun getTaskById(id: Int) {
+        tasksUseCase.getTaskById(id).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    result.data?.collect() { task ->
+                        _priority.value = task.importance
+                        _dataOfTask.value = task.date
+                        _timeOfTask.value = task.time
+                        _isDoneTask.value = task.isCompleted
+                        task.listOfSubtasks?.let { _listOfSubTasks.addAll(it) }
+                        _descriptionOfTask.value = task.description
+                        _tittleOfTask.value = task.tittle
+                    }
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
     fun onEvent(event: CreatingTaskEvents) {
         when (event) {
             is CreatingTaskEvents.GetTakById -> {
-
+                viewModelScope.launch {
+                    event.id?.let { getTaskById(it) }
+                }
             }
 
             CreatingTaskEvents.NavigateToBack -> {
@@ -91,7 +119,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
                         time = _timeOfTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
                         isCompleted = false,
-                        importance =_priority.value
+                        importance = _priority.value
                     )
                     createTask(task)
                 }
@@ -123,11 +151,14 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
             }
 
             is CreatingTaskEvents.UpdateTempSubTaskDescription -> {
-                _listOfSubTasks[event.index] = _listOfSubTasks[event.index].copy(description = event.description)
+                _listOfSubTasks[event.index] =
+                    _listOfSubTasks[event.index].copy(description = event.description)
 
             }
-            is CreatingTaskEvents.UpdateTempSubTaskIsDone ->{
-                _listOfSubTasks[event.index] = _listOfSubTasks[event.index].copy(isCompleted = event.isDone)
+
+            is CreatingTaskEvents.UpdateTempSubTaskIsDone -> {
+                _listOfSubTasks[event.index] =
+                    _listOfSubTasks[event.index].copy(isCompleted = event.isDone)
 
             }
 

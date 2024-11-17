@@ -20,26 +20,19 @@ data class TaskEntity(
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
     val listOfSubtasks:List<Subtasks>?
 )
-
 class Converts {
     @TypeConverter
-    fun fromLocalDate(value: LocalDate?): String? {
-        return value?.toString()
-    }
+    fun fromLocalDate(value: LocalDate?): String? = value?.toString()
+
     @TypeConverter
-    fun toLocalDate(value: String?): LocalDate? {
-        return value?.let { LocalDate.parse(it) }
-    }
+    fun toLocalDate(value: String?): LocalDate? = value?.let { LocalDate.parse(it) }
+
     @TypeConverter
-    fun fromLocalTime(value:LocalTime?):String?{
-        return value?.toString()
-    }
+    fun fromLocalTime(value: LocalTime?): String? = value?.toString()
+
     @TypeConverter
-    fun toLocalTime(value:String?):LocalTime?{
-        return value?.let {
-            LocalTime.parse(it)
-        }
-    }
+    fun toLocalTime(value: String?): LocalTime? = value?.let { LocalTime.parse(it) }
+
     @TypeConverter
     fun fromListOfSubtasks(value: List<Subtasks>?): String? {
         return value?.joinToString(separator = ",") { "${it.description}|${it.isCompleted}" }
@@ -47,12 +40,13 @@ class Converts {
 
     @TypeConverter
     fun toListOfSubtasks(value: String?): List<Subtasks>? {
-        return value?.split(",")?.map {
+        return value?.split(",")?.mapNotNull {
             val parts = it.split("|")
-            Subtasks(parts[0], parts[1].toBoolean())
+            if (parts.size == 2) {
+                Subtasks(parts[0], parts[1].toBoolean())
+            } else {
+                 null
+            }
         }
     }
-
-
-
 }

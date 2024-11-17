@@ -29,7 +29,6 @@ fun CreatingTaskUiEventHandler() {
         }
     }
     LaunchedEffect(Unit) {
-
         viewModel.onEvent(CreatingTaskEvents.GetTakById(idd))
     }
 
