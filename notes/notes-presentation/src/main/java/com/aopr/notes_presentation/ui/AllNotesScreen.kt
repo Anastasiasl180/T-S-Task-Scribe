@@ -54,9 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AllNotesScreen() {
     val viewModel = koinViewModel<AllNotesViewModel>()
     val listOfNotes = viewModel.listOfNotes.value?.toList()
-    BackHandler {
 
-    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
