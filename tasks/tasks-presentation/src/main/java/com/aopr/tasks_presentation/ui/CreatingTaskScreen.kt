@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,7 +21,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -81,6 +84,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -97,7 +101,7 @@ fun CreatingTaskScreen() {
 
     val viewModel = koinViewModel<CreatingTaskViewModel>()
     val priority by viewModel.priority.collectAsState()
-
+    val items = ImportanceOfTask.entries
     val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittle by viewModel.tittleOfTask.collectAsState()
     val description by viewModel.descriptionOfTask.collectAsState()
@@ -157,7 +161,7 @@ fun CreatingTaskScreen() {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .fillMaxWidth(0.95f)
+                        .fillMaxWidth(0.95f), contentPadding = paddingValues
                 ) {
                     item {
                         Column(
@@ -284,29 +288,38 @@ fun CreatingTaskScreen() {
                     item {
                         Row(
                             modifier = Modifier
-                                .fillMaxHeight()
+                                .height((heightScreen * 0.25).dp)
                                 .fillMaxWidth(), horizontalArrangement = Arrangement.End
                         ) {
-                            val items = ImportanceOfTask.entries
-                            SegmentedDemo(
-                                items = items,
-                                selectedItem = priority,
-                                onImportanceChange = { selectedPriority ->
-                                    viewModel.onEvent(
-                                        CreatingTaskEvents.UpdatePriorityOfTask(
-                                            selectedPriority
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Text(text = "Priority")
+                                SegmentedDemo(
+                                    items = items,
+                                    selectedItem = priority, heightOfTrack = 0.4f,
+                                    onImportanceChange = { selectedPriority ->
+                                        viewModel.onEvent(
+                                            CreatingTaskEvents.UpdatePriorityOfTask(
+                                                selectedPriority
+                                            )
                                         )
-                                    )
-                                }
-                            )
+                                    }
+                                )
+                            }
                         }
                     }
                     item {
                         Row(
                             modifier = Modifier
-                                .height((heightScreen * 0.05).dp)
-                                .fillMaxWidth(), horizontalArrangement = Arrangement.End
+                                .height((heightScreen * 0.1).dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
+                            Text(text = "Add subtask")
+                            Spacer(modifier = Modifier.width(10.dp))
                             IconButton(
                                 onClick = { viewModel.onEvent(CreatingTaskEvents.AddTextFieldForSubTask) },
                             ) {
@@ -314,9 +327,21 @@ fun CreatingTaskScreen() {
                             }
                         }
                     }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .height((heightScreen * 0.1).dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "Subtasks:")
+Text(text = viewModel.listOfSubTasks.size.toString() )
+                        }
+                    }
                     itemsIndexed(viewModel.listOfSubTasks) { index, subTask ->
                         SubTaskCard(
-                            modifier = Modifier.padding(8.dp),
+                            modifier = Modifier.height((heightScreen*0.12).dp),
                             tittle = subTask.description,
                             onValueChange = { newDescription ->
                                 viewModel.onEvent(
@@ -357,9 +382,14 @@ fun SubTaskCard(
     isCompleted: Boolean,
 ) {
 
-    Card(modifier = modifier) {
-        Column {
-            TextField(value = tittle, onValueChange = onValueChange)
+    Card(modifier = modifier.padding(vertical = 10.dp).fillMaxWidth(0.7f)) {
+        Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
+            TextField(  placeholder = {
+                Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
+            } , value = tittle, onValueChange = onValueChange,colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ))
             Checkbox(checked = isCompleted, onCheckedChange = onCheckedChange)
         }
     }
@@ -370,28 +400,25 @@ fun SubTaskCard(
 
 @Composable
 fun SegmentedDemo(
-    items: List<ImportanceOfTask>,
+    items: List<ImportanceOfTask>, heightOfTrack: Float,
     selectedItem: ImportanceOfTask, onImportanceChange: (ImportanceOfTask) -> Unit
 ) {
-
-    Column(Modifier.padding(16.dp), verticalArrangement = spacedBy(16.dp)) {
-        Text("Priority", style = MaterialTheme.typography.bodyLarge)
-
-        SegmentedControl(
-            items,
-            selectedItem,
-            onSegmentSelected = { onImportanceChange(it) }
-        ) {
-            Text(it)
-        }
+    SegmentedControl(
+        items,
+        selectedItem,
+        heigt = heightOfTrack,
+        onSegmentSelected = { onImportanceChange(it) }
+    ) {
+        Text(it)
     }
 }
 
 
 private const val NO_SEGMENT_INDEX = -1
-
-/** Padding inside the track. */
-private val TRACK_PADDING = 2.dp
+/*
+*/
+/** Padding inside the track. *//*
+private val TRACK_PADDING = 20.dp*/
 
 private val TRACK_COLOR = Color.LightGray.copy(alpha = .5f)
 
@@ -399,7 +426,7 @@ private val TRACK_COLOR = Color.LightGray.copy(alpha = .5f)
 private val PRESSED_TRACK_PADDING = 1.dp
 
 /** Padding inside individual segments. */
-private val SEGMENT_PADDING = 5.dp
+private val SEGMENT_PADDING = 20.dp
 
 /** Alpha to use to indicate pressed state when unselected segments are pressed. */
 private const val PRESSED_UNSELECTED_ALPHA = .6f
@@ -411,6 +438,7 @@ fun SegmentedControl(
     selectedSegment: ImportanceOfTask,
     onSegmentSelected: (ImportanceOfTask) -> Unit,
     modifier: Modifier = Modifier,
+    heigt: Float,
     content: @Composable (String) -> Unit
 ) {
     val state = remember { SegmentedControlState() }
@@ -432,10 +460,11 @@ fun SegmentedControl(
             Segments(state, segments, content)
         },
         modifier = modifier
+            .fillMaxHeight(heigt)
             .fillMaxWidth()
             .then(state.inputModifier)
             .background(TRACK_COLOR, BACKGROUND_SHAPE)
-            .padding(TRACK_PADDING)
+
     ) { measurable, constraints ->
         val (thumbMeasurable, dividersMeasurable, segmentsMeasurable) = measurable
 
@@ -499,7 +528,7 @@ private fun Dividers(state: SegmentedControlState) {
 
     Canvas(Modifier.fillMaxSize()) {
         val segmentWidth = size.width / state.segmentCount
-        val dividerPadding = TRACK_PADDING + PRESSED_TRACK_PADDING
+        val dividerPadding = 20.dp + PRESSED_TRACK_PADDING
 
         alphas.forEachIndexed { i, alpha ->
             val x = i * segmentWidth
@@ -526,7 +555,7 @@ private fun Segments(
         LocalTextStyle provides TextStyle(fontWeight = FontWeight.Medium)
     ) {
         Row(
-            horizontalArrangement = spacedBy(TRACK_PADDING),
+            horizontalArrangement = spacedBy(20.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .selectableGroup()
