@@ -1,12 +1,10 @@
 package com.aopr.tasks_presentation.ui
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,16 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,10 +40,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
@@ -61,33 +59,37 @@ fun CreatingTaskScreen() {
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
-                navigationIcon = {
-                    IconButton(
-                        onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack) },
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .size(50.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "",
-                            tint = Color.Black
-                        )
-                    }
-                }, actions = {
+                actions = {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.95f),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            IconButton(
+                                onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack) },
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color.White)
+                                    .size(50.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    contentDescription = "",
+                                    tint = Color.Black
+                                )
+                            }
+                            IconButton(
+                                onClick = { viewModel.onEvent(CreatingTaskEvents.SaveTask) },
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(Color.White)
+                                    .size(50.dp)
+                            ) {
+                                Text(text = stringResource(id = com.aopr.shared_ui.R.string.PlusOnButton))
+                            }
 
-                    Spacer(modifier = Modifier.width(10.dp))
-                    IconButton(
-                        onClick = { viewModel.onEvent(CreatingTaskEvents.SaveTask) },
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(Color.White)
-                            .size(50.dp)
-                    ) {
-                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.PlusOnButton))
+                        }
                     }
-
                 },
                 title = { /*TODO*/ })
         }
@@ -100,155 +102,190 @@ fun CreatingTaskScreen() {
                     top = paddingValues.calculateTopPadding(),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                 )
-                .background(Color.DarkGray), contentAlignment = Alignment.Center
+                .background(Color.DarkGray)
         ) {
-            LazyColumn(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(), contentAlignment = Alignment.Center
             ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Black)
-                            .height((heightScreen * 0.1).dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextField(
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(0.95f)
+                ) {
+                    item {
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = com.aopr.shared_domain.R.string.tittle),
-                                    fontSize = 35.sp,
-                                    color = Color.White
-                                )
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent
-                            ),
-                            value = tittle,
-                            onValueChange = { tittle ->
-                                viewModel.onEvent(
-                                    CreatingTaskEvents.UpdateTittle
-                                        (tittle)
-                                )
-                            },
-                            textStyle = TextStyle(
-                                fontSize = 35.sp
-                            ),
-                        )
-                    }
-                }
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((heightScreen * 0.3).dp)
-                            .background(Color.Red)
-                    ) {
-                        TextField(
-                            modifier = Modifier.fillMaxSize(),
-                            value = description,
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = com.aopr.shared_domain.R.string.description),
-                                    color = Color.White, fontSize = 20.sp
-                                )
-                            },
-                            onValueChange = { description ->
-                                viewModel.onEvent(CreatingTaskEvents.UpdateDescription(description))
-                            },
-                            textStyle = TextStyle(
-                                fontSize = 20.sp
-                            )
-                        )
-                    }
+                                .height((heightScreen * 0.15).dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
+                            TextField(
+                                shape = MaterialTheme.shapes.medium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(60.dp),
+                                placeholder = {
+                                    Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
+                                },
+                                value = tittle,
+                                onValueChange = {
+                                    viewModel.onEvent(
+                                        CreatingTaskEvents.UpdateTittleOfTask(
+                                            it
+                                        )
+                                    )
+                                },
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
 
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.Green)
-                            .height((heightScreen * 0.15).dp),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .background(Color.Magenta)
-                                .fillMaxWidth(0.5f),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "date")
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.4f)
-                                    .fillMaxHeight(0.9f)
-                            ) {
-                                Text(text = "fdgd")
-                            }
+                                )
                         }
+
+                    }
+                    item {
                         Column(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(0.5f),
-                            verticalArrangement = Arrangement.SpaceBetween
+                                .height((heightScreen * 0.28f).dp)
+                                .fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            Text(text = "time")
-                            Card(
+                            Text(text = stringResource(id = com.aopr.shared_domain.R.string.description))
+                            Row(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.4f)
-                                    .fillMaxHeight(0.9f)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Text(text = "dgf")
+
+                                TextField(
+                                    value = description,
+                                    shape = MaterialTheme.shapes.medium,
+                                    placeholder = {
+                                        Text(text = stringResource(id = com.aopr.shared_domain.R.string.description))
+                                    },
+                                    onValueChange = {
+                                        viewModel.onEvent(
+                                            CreatingTaskEvents.UpdateDescriptionOfTask(
+                                                it
+                                            )
+                                        )
+                                    },
+                                    colors = TextFieldDefaults.colors(
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(170.dp),
+                                    maxLines = 20,
+                                )
                             }
                         }
                     }
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .height((heightScreen * 0.15).dp)
-                            .fillMaxWidth()
-                            .background(Color.Blue)
-                    ) {
-                        Card(
+                    item {
+                        Row(
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
-                                .fillMaxHeight(0.9f)
-                        ) { }
+                                .fillMaxWidth()
+                                .height((heightScreen * 0.2).dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(0.5f),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Text(text = "date")
+                                }
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .fillMaxHeight(0.6f)
+                                ) {
+                                    Text(text = "fdgd")
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Text(text = "time")
+                                }
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.9f)
+                                        .fillMaxHeight(0.6f)
+                                ) {
+                                    Text(text = "dgf")
+                                }
+                            }
+                        }
                     }
-                }
-
-                if (viewModel.listOfSubTasks.isNotEmpty()) {
-
-                    items(viewModel.listOfSubTasks){
-
-
-
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .height((heightScreen * 0.05).dp)
+                                .fillMaxWidth(), horizontalArrangement = Arrangement.End
+                        ) {
+                            IconButton(  onClick = { viewModel.onEvent(CreatingTaskEvents.AddTextFieldForSubTask) },
+                        ) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                            }
+                        }
                     }
-                }
+                    itemsIndexed(viewModel.listOfSubTasks) { index, subTask ->
+                        SubTaskCard(
+                            modifier = Modifier.padding(8.dp),
+                            tittle = subTask.description,
+                            onValueChange = { newDescription ->
+                                viewModel.onEvent(CreatingTaskEvents.UpdateTempSubTaskDescription(index, newDescription))
+                            },
+                            onCheckedChange = { isChecked ->
+                                viewModel.onEvent(CreatingTaskEvents.UpdateTempSubTaskIsDone(index, isChecked))
+                            },
+                            isCompleted = subTask.isCompleted
+                        )
+                    }
 
+                }
 
             }
-
         }
 
 
     }
+
+}
+
+@Composable
+fun SubTaskCard(
+    modifier: Modifier,
+    tittle: String,
+    onValueChange: (String) -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
+    isCompleted: Boolean,
+) {
+
+    Card(modifier = modifier) {
+        Column {
+            TextField(value = tittle, onValueChange = onValueChange)
+            Checkbox(checked = isCompleted, onCheckedChange = onCheckedChange)
+        }
+    }
+
 
 }
