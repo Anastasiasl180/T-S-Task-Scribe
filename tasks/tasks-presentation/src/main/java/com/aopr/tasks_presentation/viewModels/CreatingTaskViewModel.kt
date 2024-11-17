@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.aopr.tasks_domain.interactors.TasksUseCase
+import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
@@ -41,6 +42,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
 
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
     val listOfSubTasks: List<Subtasks> = _listOfSubTasks
+
+    private val _priority = MutableStateFlow(ImportanceOfTask.MEDIUM)
+    val priority: StateFlow<ImportanceOfTask> = _priority
 
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
@@ -86,7 +90,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
                         date = _dataOfTask.value,
                         time = _timeOfTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
-                        isCompleted = false
+                        isCompleted = false,
+                        importance =_priority.value
                     )
                     createTask(task)
                 }
@@ -124,6 +129,10 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
             is CreatingTaskEvents.UpdateTempSubTaskIsDone ->{
                 _listOfSubTasks[event.index] = _listOfSubTasks[event.index].copy(isCompleted = event.isDone)
 
+            }
+
+            is CreatingTaskEvents.UpdatePriorityOfTask -> {
+                _priority.value = event.priority
             }
         }
     }
