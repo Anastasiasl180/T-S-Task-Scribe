@@ -5,7 +5,12 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 sealed interface CreatingTaskEvents {
-    data class GetTakById(val id:Int?):CreatingTaskEvents
+
+ data object ShowCalendar : CreatingTaskEvents
+ data object HideCalendar : CreatingTaskEvents
+    data class DateSelect(val date:LocalDate):CreatingTaskEvents
+
+ data class GetTakById(val id:Int?):CreatingTaskEvents
     data object SaveTask:CreatingTaskEvents
     data class UpdateTittleOfTask(val tittle:String):CreatingTaskEvents
     data class UpdateDescriptionOfTask(val description:String):CreatingTaskEvents

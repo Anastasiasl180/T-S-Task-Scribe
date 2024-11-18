@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Singleton
+import java.time.LocalDate
 
 @Factory
 class TasksRepositoryImpl(private val dao: TasksDao) : TasksRepository {
@@ -46,4 +47,11 @@ class TasksRepositoryImpl(private val dao: TasksDao) : TasksRepository {
             list.map { entity -> entity.mapToTask() }
         }
     }
-}
+
+    override suspend fun getTasksForDate(date: LocalDate): Flow<List<Task>> {
+
+        return dao.getTasksForDate(date).map { it ->
+            it.map { it.mapToTask() }
+
+        }
+    }}

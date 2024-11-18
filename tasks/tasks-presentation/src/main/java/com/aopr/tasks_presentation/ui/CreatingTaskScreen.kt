@@ -5,6 +5,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.horizontalDrag
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +30,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -33,6 +39,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,12 +53,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -82,6 +98,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -93,6 +110,10 @@ import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvent
 import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,6 +121,11 @@ fun CreatingTaskScreen() {
     CreatingTaskUiEventHandler()
 
     val viewModel = koinViewModel<CreatingTaskViewModel>()
+    val dataOfTask by viewModel.dataOfTask
+    val isCalendarVisible by viewModel.isCalendarVisible.collectAsState()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     val priority by viewModel.priority.collectAsState()
     val items = ImportanceOfTask.entries
     val heightScreen = LocalConfiguration.current.screenHeightDp
@@ -154,15 +180,43 @@ fun CreatingTaskScreen() {
                 )
                 .background(Color.DarkGray)
         ) {
+
             Box(
                 modifier = Modifier
                     .fillMaxSize(), contentAlignment = Alignment.Center
             ) {
+                if (isCalendarVisible) {
+                    ModalBottomSheet(
+                        onDismissRequest = {
+                            viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+                        },
+                        sheetState = bottomSheetState
+                    ) {
+                        // Adjust the height as needed
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height((heightScreen * 0.9f).dp)
+                        ) {
+                            CustomCalendar(
+                                initialSelectedDate = viewModel.dataOfTask.value,
+                                onDateSelected = { selectedDate ->
+                                    viewModel.onEvent(CreatingTaskEvents.DateSelect(selectedDate))
+                                },
+                                onDismiss = {
+                                    viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+                                }
+                            )
+                        }
+                    }
+                }
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxHeight()
                         .fillMaxWidth(0.95f), contentPadding = paddingValues
                 ) {
+
                     item {
                         Column(
                             modifier = Modifier
@@ -259,7 +313,10 @@ fun CreatingTaskScreen() {
                                         .fillMaxWidth(0.9f)
                                         .fillMaxHeight(0.6f)
                                 ) {
-                                    Text(text = "fdgd")
+                                    IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowCalendar)}) {
+                                        Icon(imageVector = Icons.Default.DateRange, contentDescription = "")
+                                    }
+                                    Text(  text = dataOfTask?.format(DateTimeFormatter.ofPattern("dd MMM yyyy")) ?: "Select Date",)
                                 }
                             }
                             Column(
@@ -280,7 +337,9 @@ fun CreatingTaskScreen() {
                                         .fillMaxWidth(0.9f)
                                         .fillMaxHeight(0.6f)
                                 ) {
-                                    Text(text = "dgf")
+                                   IconButton(onClick = { /*TODO*/ }) {
+                                       Icon(imageVector = Icons.Default.Notifications, contentDescription ="" )
+                                   }
                                 }
                             }
                         }
@@ -371,7 +430,178 @@ Text(text = viewModel.listOfSubTasks.size.toString() )
 
     }
 
+}@Composable
+fun CustomCalendar(
+    initialSelectedDate: LocalDate? = null,
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val currentDate = remember { mutableStateOf(LocalDate.now()) }
+    val selectedDate = remember { mutableStateOf(initialSelectedDate) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        // CalendarHeader with selectedDate
+        CalendarHeader(
+            currentDate = currentDate.value,
+            selectedDate = selectedDate.value,
+            onPreviousMonth = {
+                currentDate.value = currentDate.value.minusMonths(1)
+            },
+            onNextMonth = {
+                currentDate.value = currentDate.value.plusMonths(1)
+            }
+        )
+
+        // Weekday labels
+        WeekdayLabels()
+
+        // Dates grid
+        DatesGrid(
+            currentDate = currentDate.value,
+            selectedDate = selectedDate.value,
+            onDateSelected = { date ->
+                selectedDate.value = date
+            }
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Save and Cancel buttons
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            TextButton(onClick = onDismiss) {
+                Text(text = "Cancel")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                onClick = {
+                    selectedDate.value?.let {
+                        onDateSelected(it)
+                    }
+                    onDismiss()
+                },
+                enabled = selectedDate.value != null
+            ) {
+                Text(text = "Save")
+            }
+        }
+    }
 }
+
+@Composable
+fun CalendarHeader(
+    currentDate: LocalDate,
+    selectedDate: LocalDate?,
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onPreviousMonth) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Previous Month")
+            }
+            Text(
+                text = currentDate.format(DateTimeFormatter.ofPattern("MMMM yyyy")),
+                style = MaterialTheme.typography.titleLarge
+            )
+            IconButton(onClick = onNextMonth) {
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = "Next Month")
+            }
+        }
+
+        selectedDate?.let {
+            Text(
+                text = "Selected: ${it.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 8.dp),
+
+            )
+        }
+    }
+}
+
+@Composable
+fun WeekdayLabels() {
+    val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+    Row(modifier = Modifier.fillMaxWidth()) {
+        daysOfWeek.forEach { day ->
+            Text(
+                text = day,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+        }
+    }
+}
+
+@Composable
+fun DatesGrid(
+    currentDate: LocalDate,
+    selectedDate: LocalDate?,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    val firstDayOfMonth = currentDate.withDayOfMonth(1)
+    val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7)
+    val daysInMonth = currentDate.lengthOfMonth()
+
+    val dates = mutableListOf<LocalDate?>()
+    for (i in 0 until firstDayOfWeek) {
+        dates.add(null)
+    }
+    for (day in 1..daysInMonth) {
+        dates.add(firstDayOfMonth.withDayOfMonth(day))
+    }
+
+    Column {
+        dates.chunked(7).forEach { week ->
+            Row(modifier = Modifier.fillMaxWidth()) {
+                week.forEach { date ->
+                    val isSelected = date == selectedDate
+                    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                    val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Black
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .padding(4.dp)
+                            .background(backgroundColor, shape = CircleShape)
+                            .clickable(enabled = date != null) {
+                                date?.let { onDateSelected(it) }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        date?.let {
+                            Text(
+                                text = it.dayOfMonth.toString(),
+                                color = textColor,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 
 @Composable
 fun SubTaskCard(
@@ -382,7 +612,9 @@ fun SubTaskCard(
     isCompleted: Boolean,
 ) {
 
-    Card(modifier = modifier.padding(vertical = 10.dp).fillMaxWidth(0.7f)) {
+    Card(modifier = modifier
+        .padding(vertical = 10.dp)
+        .fillMaxWidth(0.7f)) {
         Column(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
             TextField(  placeholder = {
                 Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
@@ -396,8 +628,6 @@ fun SubTaskCard(
 
 
 }
-
-
 @Composable
 fun SegmentedDemo(
     items: List<ImportanceOfTask>, heightOfTrack: Float,
@@ -743,3 +973,4 @@ private suspend fun AwaitPointerEventScope.waitForUpOrCancellation(inBounds: Rec
         }
     }
 }
+

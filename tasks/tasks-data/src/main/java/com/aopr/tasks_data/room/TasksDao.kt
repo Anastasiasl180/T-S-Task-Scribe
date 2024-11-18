@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
 
 @Dao
 interface TasksDao {
@@ -25,6 +26,9 @@ interface TasksDao {
 
     @Query("SELECT * FROM TaskEntity")
     fun getALlTasks(): Flow<List<TaskEntity>>
+
+    @Query("SELECT * FROM TaskEntity WHERE date = :date")
+    fun getTasksForDate(date: LocalDate): Flow<List<TaskEntity>>
 
 
 }
