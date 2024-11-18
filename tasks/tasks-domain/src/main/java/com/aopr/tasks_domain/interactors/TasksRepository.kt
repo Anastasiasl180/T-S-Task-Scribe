@@ -3,6 +3,7 @@ package com.aopr.tasks_domain.interactors
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Singleton
+import java.time.LocalDate
 
 
 interface TasksRepository {
@@ -11,4 +12,5 @@ interface TasksRepository {
     suspend fun updateTask(task: Task)
     suspend fun getTaskBuId(id:Int):Flow<Task>
     suspend fun getAllTasks():Flow<List<Task>>
+    suspend fun getTasksForDate(date:LocalDate):Flow<List<Task>>
 }

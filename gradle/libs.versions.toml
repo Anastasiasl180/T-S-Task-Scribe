@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.2"
+compose = "0.1.0"
 hazeJetpackCompose = "0.4.1"
 infoBarCompose = "1.0.0"
 kotlin = "2.0.10"
@@ -14,6 +15,7 @@ activityCompose = "1.9.3"
 composeBom = "2024.10.00"
 appcompat = "1.7.0"
 material = "1.12.0"
+material3 = "1.3.1"
 roomRuntime = "2.6.1"
 koin = "4.0.0"
 koin-annotations = "2.0.0-Beta1"
@@ -24,6 +26,7 @@ navigationCompose = "2.8.3"
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 androidx-room-ktx ={module = "androidx.room:room-ktx",version.ref = "roomRuntime" }
+compose = { module = "io.github.kizitonwose.calendar:compose", version.ref = "compose" }
 haze-jetpack-compose = { module = "dev.chrisbanes.haze:haze-jetpack-compose", version.ref = "hazeJetpackCompose" }
 info-bar-compose = { module = "com.radusalagean:info-bar-compose", version.ref = "infoBarCompose" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -50,6 +53,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 
 [plugins]
 

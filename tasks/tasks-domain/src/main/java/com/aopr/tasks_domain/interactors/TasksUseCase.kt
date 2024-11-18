@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
 import java.io.IOException
+import java.time.LocalDate
 
 @Single
 class TasksUseCase(private val repository: TasksRepository) {
@@ -29,7 +30,17 @@ class TasksUseCase(private val repository: TasksRepository) {
         }
 
     }
-
+    fun getTasksForDate(date: LocalDate): Flow<Responses<Flow<List<Task>>>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.getTasksForDate(date)
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        } catch (e: Exception) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
     fun deleteTask(task: Task): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())

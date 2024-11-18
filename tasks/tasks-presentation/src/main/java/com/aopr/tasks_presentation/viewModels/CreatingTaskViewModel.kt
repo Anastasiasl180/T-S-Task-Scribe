@@ -46,6 +46,11 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
     private val _priority = MutableStateFlow(ImportanceOfTask.MEDIUM)
     val priority: StateFlow<ImportanceOfTask> = _priority
 
+
+    private val _isCalendarVisible = MutableStateFlow(false)
+    val isCalendarVisible: StateFlow<Boolean> = _isCalendarVisible
+
+
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
 
@@ -164,6 +169,17 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
 
             is CreatingTaskEvents.UpdatePriorityOfTask -> {
                 _priority.value = event.priority
+            }
+
+            CreatingTaskEvents.HideCalendar -> {
+                _isCalendarVisible.value = false
+            }
+            CreatingTaskEvents.ShowCalendar -> {
+                _isCalendarVisible.value = true
+            }
+
+            is CreatingTaskEvents.DateSelect -> {
+                _dataOfTask.value = event.date
             }
         }
     }
