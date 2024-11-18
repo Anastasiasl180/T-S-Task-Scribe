@@ -8,6 +8,10 @@ sealed interface CreatingTaskEvents {
 
  data object ShowCalendar : CreatingTaskEvents
  data object HideCalendar : CreatingTaskEvents
+
+    data object ShowClock : CreatingTaskEvents
+    data object HideClock : CreatingTaskEvents
+
     data class DateSelect(val date:LocalDate):CreatingTaskEvents
 
  data class GetTakById(val id:Int?):CreatingTaskEvents
