@@ -31,8 +31,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
     private val _descriptionOfTask = MutableStateFlow("")
     val descriptionOfTask: StateFlow<String> = _descriptionOfTask
 
-    private val _dataOfTask = mutableStateOf<LocalDate?>(null)
-    val dataOfTask: State<LocalDate?> = _dataOfTask
+    private val _dateOfTask = mutableStateOf<LocalDate?>(null)
+    val dataOfTask: State<LocalDate?> = _dateOfTask
 
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
@@ -49,6 +49,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
 
     private val _isCalendarVisible = MutableStateFlow(false)
     val isCalendarVisible: StateFlow<Boolean> = _isCalendarVisible
+
+    private val _isClockVisible = MutableStateFlow(false)
+    val isClockVisible: StateFlow<Boolean> = _isClockVisible
 
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
@@ -87,7 +90,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
                 is Responses.Success -> {
                     result.data?.collect() { task ->
                         _priority.value = task.importance
-                        _dataOfTask.value = task.date
+                        _dateOfTask.value = task.date
                         _timeOfTask.value = task.time
                         _isDoneTask.value = task.isCompleted
                         task.listOfSubtasks?.let { _listOfSubTasks.addAll(it) }
@@ -120,7 +123,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
                         id = 0,
                         tittle = _tittleOfTask.value,
                         description = _descriptionOfTask.value,
-                        date = _dataOfTask.value,
+                        date = _dateOfTask.value,
                         time = _timeOfTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
                         isCompleted = false,
@@ -139,7 +142,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
             }
 
             is CreatingTaskEvents.UpdateDateOfTask -> {
-                _dataOfTask.value = event.date
+                _dateOfTask.value = event.date
             }
 
             is CreatingTaskEvents.UpdateIsDoneTask -> {
@@ -179,7 +182,14 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
             }
 
             is CreatingTaskEvents.DateSelect -> {
-                _dataOfTask.value = event.date
+                _dateOfTask.value = event.date
+            }
+
+            CreatingTaskEvents.HideClock -> {
+                _isClockVisible.value = false
+            }
+            CreatingTaskEvents.ShowClock -> {
+                _isClockVisible.value = true
             }
         }
     }
