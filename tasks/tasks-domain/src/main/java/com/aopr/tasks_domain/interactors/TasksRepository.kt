@@ -12,5 +12,5 @@ interface TasksRepository {
     suspend fun updateTask(task: Task)
     suspend fun getTaskBuId(id:Int):Flow<Task>
     suspend fun getAllTasks():Flow<List<Task>>
-    suspend fun getTasksForDate(date:LocalDate):Flow<List<Task>>
+    suspend fun getTasksByDate(date:LocalDate):Flow<List<Task>>
 }

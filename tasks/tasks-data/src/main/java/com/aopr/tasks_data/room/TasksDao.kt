@@ -28,7 +28,6 @@ interface TasksDao {
     fun getALlTasks(): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM TaskEntity WHERE date = :date")
-    fun getTasksForDate(date: LocalDate): Flow<List<TaskEntity>>
-
+    fun getTasksByDate(date:LocalDate):Flow<List<TaskEntity>>
 
 }

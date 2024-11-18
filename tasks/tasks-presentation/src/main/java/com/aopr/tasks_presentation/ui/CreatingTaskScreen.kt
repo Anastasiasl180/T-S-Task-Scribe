@@ -73,15 +73,14 @@ fun CreatingTaskScreen() {
     val dateOfTask by viewModel.dataOfTask
     val isCalendarVisible by viewModel.isCalendarVisible.collectAsState()
     val isClockVisible by viewModel.isClockVisible.collectAsState()
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val timeOfTask by viewModel.timeOfTask
     val priorityOfTask by viewModel.priority.collectAsState()
     val importanceItems = ImportanceOfTask.entries
     val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittleOfTask by viewModel.tittleOfTask.collectAsState()
     val descriptionOfTask by viewModel.descriptionOfTask.collectAsState()
+    val listOfDatesWithTasks = viewModel.datesWithTasks
     Scaffold(
         topBar = {
             TopAppBar(
@@ -195,11 +194,13 @@ fun CreatingTaskScreen() {
                     CustomCalendar(
                         initialSelectedDate = viewModel.dataOfTask.value,
                         onDateSelected = { selectedDate ->
-                            viewModel.onEvent(CreatingTaskEvents.DateSelect(selectedDate))
+                            viewModel.onEvent(CreatingTaskEvents.UpdateDateOfTask(selectedDate))
                         },
                         onDismiss = {
                             viewModel.onEvent(CreatingTaskEvents.HideCalendar)
-                        }
+                        }, listOfDates = listOfDatesWithTasks, getTasks = {
+                            viewModel.onEvent(CreatingTaskEvents.GetTasksByDate(it))
+                        }, listOfTasks = viewModel.tasksByDate
                     )
                 }
             }
@@ -307,7 +308,8 @@ fun CreatingTaskScreen() {
                                 .fillMaxWidth(0.9f)
                                 .fillMaxHeight(0.6f)
                         ) {
-                            IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowCalendar) }) {
+                            IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowCalendar)
+                           }) {
                                 Icon(imageVector = Icons.Default.DateRange, contentDescription = "")
                             }
                             Text(

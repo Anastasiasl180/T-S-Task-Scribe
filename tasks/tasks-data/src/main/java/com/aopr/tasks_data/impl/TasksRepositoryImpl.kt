@@ -48,10 +48,11 @@ class TasksRepositoryImpl(private val dao: TasksDao) : TasksRepository {
         }
     }
 
-    override suspend fun getTasksForDate(date: LocalDate): Flow<List<Task>> {
-
-        return dao.getTasksForDate(date).map { it ->
-            it.map { it.mapToTask() }
+    override suspend fun getTasksByDate(date: LocalDate): Flow<List<Task>> {
+        return dao.getTasksByDate(date).map { list ->
+            list.map { task -> task.mapToTask() }
 
         }
-    }}
+    }
+
+}
