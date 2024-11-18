@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aopr.tasks_domain.models.Task
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -38,7 +40,9 @@ import java.time.format.DateTimeFormatter
 fun CustomCalendar(
     initialSelectedDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    listOfDates: List<LocalDate?>,
+    getTasks: (LocalDate) -> Unit, listOfTasks: List<Task?>
 ) {
     val currentDate = remember { mutableStateOf(LocalDate.now()) }
     val selectedDate = remember { mutableStateOf(initialSelectedDate) }
@@ -67,9 +71,13 @@ fun CustomCalendar(
         DatesGrid(
             currentDate = currentDate.value,
             selectedDate = selectedDate.value,
+            listOfDates = listOfDates,
             onDateSelected = { date ->
                 selectedDate.value = date
-            }
+            },
+            getTasks = {
+                getTasks(it)
+            }, listOfTasks = listOfTasks
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -159,7 +167,10 @@ fun WeekdayLabels() {
 fun DatesGrid(
     currentDate: LocalDate,
     selectedDate: LocalDate?,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    listOfDates: List<LocalDate?>,
+    getTasks: (LocalDate) -> Unit,
+    listOfTasks: List<Task?>
 ) {
     val firstDayOfMonth = currentDate.withDayOfMonth(1)
     val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7)
@@ -178,10 +189,10 @@ fun DatesGrid(
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { date ->
                     val isSelected = date == selectedDate
+                    val datesWithTasksColor =
+                        if (listOfDates.contains(date)) Color.Red else Color.Black
                     val backgroundColor =
                         if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
-                    val textColor =
-                        if (isSelected) MaterialTheme.colorScheme.onPrimary else Color.Black
 
                     Box(
                         modifier = Modifier
@@ -191,18 +202,35 @@ fun DatesGrid(
                             .background(backgroundColor, shape = CircleShape)
                             .clickable(enabled = date != null) {
                                 date?.let { onDateSelected(it) }
+                                if (date != null) {
+                                    getTasks(date)
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {
                         date?.let {
                             Text(
                                 text = it.dayOfMonth.toString(),
-                                color = textColor,
+                                color = datesWithTasksColor,
                             )
                         }
                     }
                 }
             }
+        }
+        if (listOfTasks.isNotEmpty()) {
+            Column {
+                listOfTasks.forEach { task ->
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        if (task != null) {
+                            Text(text = task.tittle)
+                        }
+                    }
+                }
+
+            }
+        }else{
+            Text(text = "NoTask")
         }
     }
 }

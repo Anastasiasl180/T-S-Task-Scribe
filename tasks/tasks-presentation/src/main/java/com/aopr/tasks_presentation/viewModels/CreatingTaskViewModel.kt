@@ -46,16 +46,69 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
     private val _priority = MutableStateFlow(ImportanceOfTask.MEDIUM)
     val priority: StateFlow<ImportanceOfTask> = _priority
 
-
     private val _isCalendarVisible = MutableStateFlow(false)
     val isCalendarVisible: StateFlow<Boolean> = _isCalendarVisible
 
     private val _isClockVisible = MutableStateFlow(false)
     val isClockVisible: StateFlow<Boolean> = _isClockVisible
 
+    private val _datesWithTasks = mutableStateListOf<LocalDate?>()
+    val datesWithTasks: List<LocalDate?> = _datesWithTasks
+
+    private val _tasksByDate = mutableStateListOf<Task?>(null)
+    val tasksByDate: List<Task?> = _tasksByDate
+
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
+
+    init {
+        onEvent(CreatingTaskEvents.LoadDatesWithTask)
+    }
+
+    fun getTasksByDate(date: LocalDate) {
+        tasksUseCase.getTasksByDate(date).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    result.data?.collect() {
+                        _tasksByDate.clear()
+                        _tasksByDate.addAll(it)
+                    }
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getDatesWithTasks() {
+        tasksUseCase.getAllTasks().onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    result.data?.collect() {
+                        val dates = it.mapNotNull { it.date }
+                        _datesWithTasks.addAll(dates)
+                    }
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
 
     private fun createTask(task: Task) {
         tasksUseCase.createTask(task).onEach { result ->
@@ -177,19 +230,29 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
             CreatingTaskEvents.HideCalendar -> {
                 _isCalendarVisible.value = false
             }
+
             CreatingTaskEvents.ShowCalendar -> {
                 _isCalendarVisible.value = true
-            }
-
-            is CreatingTaskEvents.DateSelect -> {
-                _dateOfTask.value = event.date
             }
 
             CreatingTaskEvents.HideClock -> {
                 _isClockVisible.value = false
             }
+
             CreatingTaskEvents.ShowClock -> {
                 _isClockVisible.value = true
+            }
+
+            CreatingTaskEvents.LoadDatesWithTask -> {
+                viewModelScope.launch {
+                    getDatesWithTasks()
+                }
+            }
+
+            is CreatingTaskEvents.GetTasksByDate -> {
+                viewModelScope.launch {
+                    getTasksByDate(event.date)
+                }
             }
         }
     }

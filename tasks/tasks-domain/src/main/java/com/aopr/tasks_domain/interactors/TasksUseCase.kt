@@ -30,17 +30,7 @@ class TasksUseCase(private val repository: TasksRepository) {
         }
 
     }
-    fun getTasksForDate(date: LocalDate): Flow<Responses<Flow<List<Task>>>> = flow {
-        try {
-            emit(Responses.Loading())
-            val data = repository.getTasksForDate(date)
-            emit(Responses.Success(data))
-        } catch (e: IOException) {
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-        } catch (e: Exception) {
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-        }
-    }
+
     fun deleteTask(task: Task): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
@@ -76,6 +66,19 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         } catch (e: Exception) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
+    fun getTasksByDate(date:LocalDate):Flow<Responses<Flow<List<Task>>>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.getTasksByDate(date)
+            emit(Responses.Success(data))
+        }catch (e:IOException){
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+
+        }catch (e:Exception){
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+
         }
     }
 }
