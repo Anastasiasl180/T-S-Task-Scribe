@@ -3,12 +3,11 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
-
 }
 
 android {
     namespace = "com.aopr.taskscribe"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.aopr.taskscribe"

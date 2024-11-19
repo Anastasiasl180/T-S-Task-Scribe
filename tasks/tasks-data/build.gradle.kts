@@ -34,6 +34,9 @@ android {
 }
 
 dependencies {
+    //worker
+    implementation (libs.androidx.work.runtime.ktx)
+
     implementation(project(":tasks:tasks-domain"))
     implementation(project(":shared:shared-domain"))
     //koin
