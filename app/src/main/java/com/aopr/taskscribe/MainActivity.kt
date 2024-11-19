@@ -1,6 +1,10 @@
 package com.aopr.taskscribe
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -8,6 +12,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.aopr.shared_ui.MainViewModel
@@ -18,10 +24,13 @@ import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.aopr.taskscribe.ui.AppNavHost
 import com.aopr.taskscribe.ui.BottomBar
 import org.koin.androidx.compose.koinViewModel
-
 class MainActivity : ComponentActivity() {
+
+    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 1001
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkAndRequestNotificationPermission()
         enableEdgeToEdge()
         setContent {
             val navHost = rememberNavController()
@@ -39,7 +48,44 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_REQUEST_CODE
+                )
+            } else {
+                Log.d("MainActivity", "Notification permission already granted.")
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Permission granted
+                Log.d("MainActivity", "Notification permission granted.")
+            } else {
+                // Permission denied
+                Log.d("MainActivity", "Notification permission denied.")
+                // Optionally, inform the user that notifications won't appear
+            }
+        }
+    }
 }
+
 @Composable
 fun GlobalUiEventHandler(navHost: NavHostController) {
     val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
@@ -86,3 +132,4 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
         }
     }
 }
+

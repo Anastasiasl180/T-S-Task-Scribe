@@ -1,6 +1,7 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
+import android.util.Log
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_data.mapper.mapToEntity
@@ -22,17 +23,16 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
     override suspend fun createTask(task: Task) {
         if (task.tittle.isBlank()) throw EmptyTittleException()
         if (task.description.isBlank()) throw EmptyDescriptionException()
+
+        var res= false
+
         if (task.time != null) {
             if (task.date == null) {
                 throw EmptyTittleException()
             } else {
-                scheduleTaskReminder(
-                    context = context,
-                    task.id,
-                    task.tittle,
-                    date = task.date!!,
-                    time = task.time!!
-                )
+                Log.wtf("Meerka", "ioio2: ")
+                res = true
+
             }
         }
 
@@ -41,6 +41,16 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             dao.updateTask(task.mapToEntity())
         } else {
             dao.insertTask(task.mapToEntity())
+            if (res == true){
+                Log.wtf("Meerka", "ioio2: ")
+                scheduleTaskReminder(
+                    context = context,
+                    task.id,
+                    task.tittle,
+                    date = task.date!!,
+                    time = task.time!!
+                )
+            }
         }
 
 
