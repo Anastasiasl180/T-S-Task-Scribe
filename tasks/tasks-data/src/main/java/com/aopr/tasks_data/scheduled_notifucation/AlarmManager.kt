@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -16,6 +17,7 @@ fun scheduleTaskReminder(
     time: LocalTime
 ) {
     val timeInMillis = getTimeInMillis(date, time)
+    Log.d("ReminderScheduler", "Scheduling reminder for taskId: $taskId at $timeInMillis")
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
@@ -38,6 +40,7 @@ fun scheduleTaskReminder(
 }
 
 fun getTimeInMillis(localDate: LocalDate, localTime: LocalTime): Long {
+    Log.wtf("Meerkafdf", localTime.toString())
     val localDateTime = localDate.atTime(localTime)
     val zoneId = ZoneId.systemDefault()
     val zoneDateTime = localDateTime.atZone(zoneId)
