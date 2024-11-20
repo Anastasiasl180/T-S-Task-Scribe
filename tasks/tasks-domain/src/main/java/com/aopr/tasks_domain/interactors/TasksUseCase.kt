@@ -1,9 +1,10 @@
 package com.aopr.tasks_domain.interactors
 
-import android.util.Log
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.resource_manager.SharedStringResourceManager
+import com.aopr.shared_domain.throws.EmptyDateForReminderException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
+import com.aopr.shared_domain.throws.EmptyTimeForReminderException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_domain.R
 import com.aopr.tasks_domain.models.Task
@@ -27,6 +28,10 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDescription))
         } catch (e: EmptyTittleException) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
+        }catch (e:EmptyDateForReminderException){
+            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDateReminder))
+        }catch (e:EmptyTimeForReminderException){
+            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTimeReminder))
         }
 
     }

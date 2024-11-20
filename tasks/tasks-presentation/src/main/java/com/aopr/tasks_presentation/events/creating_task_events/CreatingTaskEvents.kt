@@ -1,10 +1,12 @@
 package com.aopr.tasks_presentation.events.creating_task_events
 
+import com.aopr.shared_ui.util.events_type.EventsType
+import com.aopr.shared_ui.util.events_type.UiEventsType
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import java.time.LocalDate
 import java.time.LocalTime
 
-sealed interface CreatingTaskEvents {
+sealed interface CreatingTaskEvents: EventsType {
     data class GetTasksByDate(val date: LocalDate) : CreatingTaskEvents
     data object LoadDatesWithTask : CreatingTaskEvents
     data object ShowCalendar : CreatingTaskEvents

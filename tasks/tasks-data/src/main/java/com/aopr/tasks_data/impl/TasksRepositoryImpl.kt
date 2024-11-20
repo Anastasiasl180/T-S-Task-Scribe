@@ -2,7 +2,9 @@ package com.aopr.tasks_data.impl
 
 import android.content.Context
 import android.util.Log
+import com.aopr.shared_domain.throws.EmptyDateForReminderException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
+import com.aopr.shared_domain.throws.EmptyTimeForReminderException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_data.mapper.mapToEntity
 import com.aopr.tasks_data.mapper.mapToTask
@@ -24,25 +26,26 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         if (task.tittle.isBlank()) throw EmptyTittleException()
         if (task.description.isBlank()) throw EmptyDescriptionException()
 
-        var res= false
-
-        if (task.time != null) {
-            if (task.date == null) {
-                throw EmptyTittleException()
-            } else {
-                Log.wtf("Meerka", "ioio2: ")
+        var res = false
+        if (task.date != null) {
+            if (task.time != null) {
                 res = true
-
             }
         }
+        if (task.date == null) {
+            throw EmptyDateForReminderException()
+        }
+        if (task.time == null) {
+            throw EmptyTimeForReminderException()
+        }
+
 
         val existingTask = dao.getTaskById(task.id).firstOrNull()
         if (existingTask != null) {
-            dao.updateTask(task.mapToEntity())
+            updateTask(task)
         } else {
             dao.insertTask(task.mapToEntity())
-            if (res == true){
-                Log.wtf("Meerka", "ioio2: ")
+            if (res == true) {
                 scheduleTaskReminder(
                     context = context,
                     task.id,
@@ -61,6 +64,21 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
     }
 
     override suspend fun updateTask(task: Task) {
+        if (task.tittle.isBlank()) throw EmptyTittleException()
+        if (task.description.isBlank()) throw EmptyDescriptionException()
+
+        var res = false
+        if (task.date != null) {
+            if (task.time != null) {
+                res = true
+            }
+        }
+        if (task.date == null) {
+            throw EmptyDateForReminderException()
+        }
+        if (task.time == null) {
+            throw EmptyTimeForReminderException()
+        }
         dao.updateTask(task.mapToEntity())
     }
 

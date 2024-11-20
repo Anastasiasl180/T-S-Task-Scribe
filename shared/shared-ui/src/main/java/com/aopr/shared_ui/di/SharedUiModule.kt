@@ -1,4 +1,4 @@
-package com.aopr.shared_ui
+package com.aopr.shared_ui.di
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
