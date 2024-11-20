@@ -7,7 +7,7 @@ import com.aopr.notes_domain.di.NotesDomainModule
 import com.aopr.notes_presentation.di.NotesPresentationModule
 import com.aopr.shared_data.di.SharedDataModule
 import com.aopr.shared_domain.di.SharedDomainModule
-import com.aopr.shared_ui.SharedUiModule
+import com.aopr.shared_ui.di.SharedUiModule
 import com.aopr.tasks_data.di.TasksDataModule
 import com.aopr.tasks_domain.di.TasksDomainModule
 import com.aopr.tasks_presentation.di.TasksPresentationModule

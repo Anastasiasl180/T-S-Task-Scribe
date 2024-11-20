@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
@@ -23,7 +24,8 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @KoinViewModel
-class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
+class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
+    ViewModelKit<CreatingTaskEvents, CreatingTaskUiEvents>() {
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
@@ -66,11 +68,12 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
         onEvent(CreatingTaskEvents.LoadDatesWithTask)
     }
 
-    fun getTasksByDate(date: LocalDate) {
+    private fun getTasksByDate(date: LocalDate) {
         tasksUseCase.getTasksByDate(date).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
+                    hideInfoBar()
+                    result.message?.let { showShortInfoBar(it, 2) }
                 }
 
                 is Responses.Loading -> {
@@ -156,7 +159,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) : ViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun onEvent(event: CreatingTaskEvents) {
+    override fun onEvent(event: CreatingTaskEvents) {
         when (event) {
             is CreatingTaskEvents.GetTakById -> {
                 viewModelScope.launch {

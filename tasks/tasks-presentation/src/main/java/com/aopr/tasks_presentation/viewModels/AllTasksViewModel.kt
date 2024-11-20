@@ -36,6 +36,7 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         tasksUseCase.getAllTasks().onEach { result ->
             when (result) {
                 is Responses.Error -> {
+
                 }
 
                 is Responses.Loading -> {

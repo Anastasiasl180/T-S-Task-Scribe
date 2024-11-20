@@ -131,12 +131,13 @@ fun CreatingTaskScreen() {
                 .background(Color.DarkGray)
         ) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(), contentAlignment = Alignment.Center
-            ) {
+
 
                 if (isClockVisible) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
                     ModalBottomSheet(
                         onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
                         sheetState = bottomSheetState,
