@@ -30,7 +30,17 @@ class Application : Application() {
                 SharedDomainModule().module,
                 TasksPresentationModule().module,
                 TasksDataModule().module,
-                TasksDomainModule().module,
+                TasksDomainModule().module
+               /* HomeModule().module,
+                NotesPresentationModule().module,
+                NotesDomainModule().module,
+                NotesDataModule().module,
+                SharedUiModule().module,
+                SharedDataModule().module,
+                SharedDomainModule().module,
+                TasksPresentationModule().module,
+                TasksDataModule().module,
+                TasksDomainModule().module,*/
             )
 
         }
