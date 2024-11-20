@@ -6,7 +6,6 @@ import com.aopr.notes_data.room.NoteDao
 import com.aopr.notes_domain.interactors.NotesRepository
 import com.aopr.notes_domain.models.Note
 import com.aopr.shared_domain.throws.EmptyDescriptionException
-import com.aopr.shared_domain.throws.EmptyFieldsException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -20,7 +19,7 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
 
         if (note.tittle.isBlank()) throw EmptyTittleException()
 
-        if (note.tittle.isBlank() && note.description.isBlank()) throw EmptyFieldsException()
+        if (note.tittle.isBlank() && note.description.isBlank()) throw EmptyTittleException()
 
         val existingId = dao.getNoteById(note.id).firstOrNull()
         if (existingId != null) {

@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.aopr.shared_data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
