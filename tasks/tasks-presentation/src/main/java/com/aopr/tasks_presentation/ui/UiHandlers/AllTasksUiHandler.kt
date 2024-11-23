@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui.UiHandlers
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.aopr.shared_ui.util.LocalNavigator
@@ -18,7 +19,9 @@ fun AllTasksUiEventHandler() {
         viewModel.events.collect {event->
             when(event){
                 is AllTasksUiEvents.NavigateToCreateTaskScreen -> {
+
                     navigator.navigate(AllTasksNavRoutes.CreatingTaskScreen(event.id))
+                    Log.wtf("Meerkaifififif", event.id.toString())
                 }
             }
         }
