@@ -58,6 +58,7 @@ import com.aopr.tasks_presentation.ui.ui_elements.ClockPicker
 import com.aopr.tasks_presentation.ui.ui_elements.CustomCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTaskCard
+import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalTime
@@ -462,26 +463,13 @@ fun CreatingTaskScreen() {
                     }
                 }
                 itemsIndexed(viewModel.listOfSubTasks) { index, subTask ->
-                    SubTaskCard(
-                        modifier = Modifier.height((heightScreen * 0.12).dp),
-                        tittle = subTask.description,
-                        onValueChange = { newDescription ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.UpdateTempSubTaskDescription(
-                                    index,
-                                    newDescription
-                                )
-                            )
+                    SubTasksList(
+                        subtasks = viewModel.listOfSubTasks,
+                        onAddSubTask = { viewModel.addSubTaskField() },
+                        onUpdateSubTask = { index, description, isCompleted ->
+                            viewModel.updateSubTask(index, description, isCompleted)
                         },
-                        onCheckedChange = { isChecked ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.UpdateTempSubTaskIsDone(
-                                    index,
-                                    isChecked
-                                )
-                            )
-                        },
-                        isCompleted = subTask.isCompleted,
+                        onDeleteSubTask = { index -> viewModel.removeSubTask(index) }
                     )
                 }
 

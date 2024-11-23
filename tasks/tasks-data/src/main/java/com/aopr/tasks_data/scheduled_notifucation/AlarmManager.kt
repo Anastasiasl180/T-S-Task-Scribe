@@ -17,13 +17,6 @@ fun scheduleTaskReminder(
     time: LocalTime
 ) {
     val timeInMillis = getTimeInMillis(date, time)
-    val currentTimeInMillis = System.currentTimeMillis()
-
-    if (timeInMillis <= currentTimeInMillis){
-        Log.wtf("Meerka", "NOOOOO: ")
-        return
-    }
-
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
         putExtra("TASK_TITLE", taskTitle)
