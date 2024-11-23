@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui.UiHandlers
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.toRoute
@@ -29,7 +30,13 @@ fun CreatingTaskUiEventHandler() {
         }
     }
     LaunchedEffect(Unit) {
-        viewModel.onEvent(CreatingTaskEvents.GetTakById(idd))
+        if (idd != null) {
+            Log.wtf("Meerka", "Merno1")
+            Log.wtf("Meerka", idd.toString())
+            viewModel.onEvent(CreatingTaskEvents.GetTakById(idd))
+        }else{
+            Log.wtf("Meerka"," Merno ")
+        }
     }
 
 }

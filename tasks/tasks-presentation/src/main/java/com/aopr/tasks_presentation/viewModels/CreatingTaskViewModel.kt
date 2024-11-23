@@ -1,9 +1,9 @@
 package com.aopr.tasks_presentation.viewModels
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
@@ -13,6 +13,7 @@ import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
+
+    private val _idOfTask = mutableStateOf<Int?>(null)
+    val idOfTask:State<Int?> = _idOfTask
 
     private val _descriptionOfTask = MutableStateFlow("")
     val descriptionOfTask: StateFlow<String> = _descriptionOfTask
@@ -145,6 +149,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
                 is Responses.Success -> {
                     result.data?.collect() { task ->
+                        _idOfTask.value = task.id
                         _priority.value = task.importance
                         _dateOfTask.value = task.date
                         _timeOfTask.value = task.time
@@ -176,7 +181,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             CreatingTaskEvents.SaveTask -> {
                 viewModelScope.launch {
                     val task = Task(
-                        id = 0,
+                        id = _idOfTask.value ?: 0,
                         tittle = _tittleOfTask.value,
                         description = _descriptionOfTask.value,
                         date = _dateOfTask.value,
@@ -186,6 +191,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         importance = _priority.value
                     )
                     createTask(task)
+                    delay(500)
+                    onEvent(CreatingTaskEvents.NavigateToBack)
                 }
             }
 

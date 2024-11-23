@@ -253,6 +253,7 @@ fun CreatingTaskScreen() {
                         .fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Text(text = stringResource(id = com.aopr.shared_domain.R.string.description))
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
