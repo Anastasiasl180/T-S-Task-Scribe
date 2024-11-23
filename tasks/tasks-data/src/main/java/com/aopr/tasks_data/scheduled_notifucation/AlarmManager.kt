@@ -17,7 +17,12 @@ fun scheduleTaskReminder(
     time: LocalTime
 ) {
     val timeInMillis = getTimeInMillis(date, time)
-    Log.d("ReminderScheduler", "Scheduling reminder for taskId: $taskId at $timeInMillis")
+    val currentTimeInMillis = System.currentTimeMillis()
+
+    if (timeInMillis <= currentTimeInMillis){
+        Log.wtf("Meerka", "NOOOOO: ")
+        return
+    }
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
@@ -40,7 +45,6 @@ fun scheduleTaskReminder(
 }
 
 fun getTimeInMillis(localDate: LocalDate, localTime: LocalTime): Long {
-    Log.wtf("Meerkafdf", localTime.toString())
     val localDateTime = localDate.atTime(localTime)
     val zoneId = ZoneId.systemDefault()
     val zoneDateTime = localDateTime.atZone(zoneId)

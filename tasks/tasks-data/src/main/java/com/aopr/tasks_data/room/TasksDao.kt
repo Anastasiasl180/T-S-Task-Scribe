@@ -27,7 +27,11 @@ interface TasksDao {
     @Query("SELECT * FROM TaskEntity")
     fun getALlTasks(): Flow<List<TaskEntity>>
 
-    @Query("SELECT * FROM TaskEntity WHERE date = :date")
+    @Query("UPDATE TaskEntity SET listOfSubtasks = :updatedSubtasks WHERE id = :taskId")
+    suspend fun updateTaskSubtasks(taskId: Int, updatedSubtasks: String)
+
+
+    @Query("SELECT * FROM TaskEntity WHERE dateToBeDone = :date")
     fun getTasksByDate(date:LocalDate):Flow<List<TaskEntity>>
 
 }

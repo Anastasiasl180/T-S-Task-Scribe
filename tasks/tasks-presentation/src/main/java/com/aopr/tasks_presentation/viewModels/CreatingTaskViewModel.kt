@@ -32,13 +32,16 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     val tittleOfTask: StateFlow<String> = _tittleOfTask
 
     private val _idOfTask = mutableStateOf<Int?>(null)
-    val idOfTask:State<Int?> = _idOfTask
+    val idOfTask: State<Int?> = _idOfTask
 
     private val _descriptionOfTask = MutableStateFlow("")
     val descriptionOfTask: StateFlow<String> = _descriptionOfTask
 
-    private val _dateOfTask = mutableStateOf<LocalDate?>(null)
-    val dataOfTask: State<LocalDate?> = _dateOfTask
+    private val _dateOfTaskForReminder = mutableStateOf<LocalDate?>(null)
+    val dataOfTaskForReminder: State<LocalDate?> = _dateOfTaskForReminder
+
+    private val _dateOfTaskToBeDone = mutableStateOf<LocalDate?>(null)
+    val dataOfTaskToBeDone: State<LocalDate?> = _dateOfTaskToBeDone
 
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
@@ -67,6 +70,12 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
+    private val _calendarMode = mutableStateOf(CalendarMode.TASK_DONE)
+    val calendarMode: State<CalendarMode> = _calendarMode
+
+    enum class CalendarMode {
+        TASK_DONE, REMINDER
+    }
 
     init {
         onEvent(CreatingTaskEvents.LoadDatesWithTask)
@@ -108,7 +117,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
                 is Responses.Success -> {
                     result.data?.collect() {
-                        val dates = it.mapNotNull { it.date }
+                        val dates = it.mapNotNull { it.dateOfTaskToBeDone }
                         _datesWithTasks.addAll(dates)
                     }
                 }
@@ -151,12 +160,13 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                     result.data?.collect() { task ->
                         _idOfTask.value = task.id
                         _priority.value = task.importance
-                        _dateOfTask.value = task.date
-                        _timeOfTask.value = task.time
+                        _dateOfTaskForReminder.value = task.dateForReminder
+                        _timeOfTask.value = task.timeForReminder
                         _isDoneTask.value = task.isCompleted
                         task.listOfSubtasks?.let { _listOfSubTasks.addAll(it) }
                         _descriptionOfTask.value = task.description
                         _tittleOfTask.value = task.tittle
+                        _dateOfTaskToBeDone.value = task.dateOfTaskToBeDone
                     }
                 }
             }
@@ -184,8 +194,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         id = _idOfTask.value ?: 0,
                         tittle = _tittleOfTask.value,
                         description = _descriptionOfTask.value,
-                        date = _dateOfTask.value,
-                        time = _timeOfTask.value,
+                        dateForReminder = _dateOfTaskForReminder.value,
+                        dateOfTaskToBeDone = _dateOfTaskToBeDone.value,
+                        timeForReminder = _timeOfTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
                         isCompleted = false,
                         importance = _priority.value
@@ -204,8 +215,10 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 _tittleOfTask.value = event.tittle
             }
 
-            is CreatingTaskEvents.UpdateDateOfTask -> {
-                _dateOfTask.value = event.date
+            is CreatingTaskEvents.UpdateDateOfTaskForReminder -> {
+                if (_calendarMode.value == CalendarMode.REMINDER) {
+                    _dateOfTaskForReminder.value = event.date
+                }
             }
 
             is CreatingTaskEvents.UpdateIsDoneTask -> {
@@ -241,7 +254,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 _isCalendarVisible.value = false
             }
 
-            CreatingTaskEvents.ShowCalendar -> {
+            CreatingTaskEvents.ShowCalendarForToBeDone -> {
+                _calendarMode.value = CalendarMode.TASK_DONE
                 _isCalendarVisible.value = true
             }
 
@@ -264,6 +278,18 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                     getTasksByDate(event.date)
                 }
             }
+
+            is CreatingTaskEvents.UpdateDateOfTaskToBeDone -> {
+                if (_calendarMode.value == CalendarMode.TASK_DONE) {
+                    _dateOfTaskToBeDone.value = event.date
+                }
+            }
+
+            CreatingTaskEvents.ShowCalendarForReminder -> {
+                _calendarMode.value = CalendarMode.REMINDER
+                _isCalendarVisible.value = true
+            }
+
         }
     }
 }

@@ -1,24 +1,21 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
-import android.util.Log
 import com.aopr.shared_domain.throws.EmptyDateForReminderException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTimeForReminderException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_data.mapper.mapToEntity
 import com.aopr.tasks_data.mapper.mapToTask
+import com.aopr.tasks_data.room.Converts
 import com.aopr.tasks_data.room.TasksDao
 import com.aopr.tasks_data.scheduled_notifucation.scheduleTaskReminder
 import com.aopr.tasks_domain.interactors.TasksRepository
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Single
-import org.koin.core.annotation.Singleton
 import java.time.LocalDate
 
 @Single
@@ -29,23 +26,22 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         if (task.description.isBlank()) throw EmptyDescriptionException()
 
         var res = false
-        if (task.date != null) {
-            if (task.time != null) {
+        if (task.dateForReminder != null) {
+            if (task.timeForReminder != null) {
                 res = true
             }
         }
-        if (task.date == null) {
+        if (task.dateForReminder == null) {
             throw EmptyDateForReminderException()
         }
-        if (task.time == null) {
+        if (task.timeForReminder == null) {
             throw EmptyTimeForReminderException()
         }
 
 
         val existingTask = dao.getTaskById(task.id).firstOrNull()
-        if (existingTask!=null) {
-            Log.wtf("Meerka", "dfdf23: ")
-           dao.updateTask(task.mapToEntity())
+        if (existingTask != null) {
+            dao.updateTask(task.mapToEntity())
         } else {
             dao.insertTask(task.mapToEntity())
             if (res == true) {
@@ -53,8 +49,8 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
                     context = context,
                     task.id,
                     task.tittle,
-                    date = task.date!!,
-                    time = task.time!!
+                    date = task.dateForReminder!!,
+                    time = task.timeForReminder!!
                 )
             }
         }
