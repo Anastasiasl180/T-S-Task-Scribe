@@ -67,11 +67,12 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     private val _tasksByDate = mutableStateListOf<Task?>(null)
     val tasksByDate: List<Task?> = _tasksByDate
 
+    private val _calendarMode = mutableStateOf(CalendarMode.TASK_DONE)
+    val calendarMode: State<CalendarMode> = _calendarMode
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
-    private val _calendarMode = mutableStateOf(CalendarMode.TASK_DONE)
-    val calendarMode: State<CalendarMode> = _calendarMode
+
 
     enum class CalendarMode {
         TASK_DONE, REMINDER
@@ -80,32 +81,17 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     init {
         onEvent(CreatingTaskEvents.LoadDatesWithTask)
     }
-    fun addSubTaskField() {
+
+    private fun addSubTaskField() {
         _listOfSubTasks.add(Subtasks(description = "", isCompleted = false))
     }
 
-    fun updateSubTask(index: Int, description: String, isCompleted: Boolean) {
-        if (index in _listOfSubTasks.indices) {
-            _listOfSubTasks[index] = _listOfSubTasks[index].copy(description = description, isCompleted = isCompleted)
-        }
-    }
-
-    fun removeSubTask(index: Int) {
+    private fun removeSubTask(index: Int) {
         if (index in _listOfSubTasks.indices) {
             _listOfSubTasks.removeAt(index)
         }
     }
 
-    fun validateAndSaveTask(): Boolean {
-        val nonEmptySubTasks = _listOfSubTasks.filter { it.description.isNotBlank() }
-        if (nonEmptySubTasks.isEmpty()) {
-            // Notify user that at least one valid subtask is required
-                return false
-        }
-        _listOfSubTasks.clear()
-        _listOfSubTasks.addAll(nonEmptySubTasks)
-        return true
-    }
     private fun getTasksByDate(date: LocalDate) {
         tasksUseCase.getTasksByDate(date).onEach { result ->
             when (result) {
@@ -255,8 +241,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
 
             CreatingTaskEvents.AddTextFieldForSubTask -> {
-                _listOfSubTasks.add(Subtasks(description = "", isCompleted = false))
-
+                Log.wtf("Meerka", "12112121: ")
+                addSubTaskField()
             }
 
             is CreatingTaskEvents.UpdateTempSubTaskDescription -> {
@@ -315,6 +301,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 _isCalendarVisible.value = true
             }
 
+            is CreatingTaskEvents.RemoveTextFieldForSubTask -> {
+                removeSubTask(event.index)
+            }
         }
     }
 }
