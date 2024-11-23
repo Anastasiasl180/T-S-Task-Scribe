@@ -57,7 +57,6 @@ import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
 import com.aopr.tasks_presentation.ui.ui_elements.ClockPicker
 import com.aopr.tasks_presentation.ui.ui_elements.CustomCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
-import com.aopr.tasks_presentation.ui.ui_elements.SubTaskCard
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -201,14 +200,17 @@ fun CreatingTaskScreen() {
                     ) {
                         CustomCalendar(
                             initialSelectedDate = viewModel.dataOfTaskToBeDone.value,
-                            onDateSelected = {  selectedDate ->
+                            onDateSelected = { selectedDate ->
                                 when (viewModel.calendarMode.value) {
                                     CreatingTaskViewModel.CalendarMode.TASK_DONE -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskToBeDone(selectedDate)
                                     )
+
                                     CreatingTaskViewModel.CalendarMode.REMINDER -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskForReminder(selectedDate)
-                                    )} },
+                                    )
+                                }
+                            },
                             onDismiss = {
                                 viewModel.onEvent(CreatingTaskEvents.HideCalendar)
                             }, listOfDates = listOfDatesWithTasks, getTasks = {
@@ -331,7 +333,11 @@ fun CreatingTaskScreen() {
                                     )
                                 }
                                 Text(
-                                    text = dateOfTaskForReminder?.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+                                    text = dateOfTaskForReminder?.format(
+                                        DateTimeFormatter.ofPattern(
+                                            "dd MMM yyyy"
+                                        )
+                                    )
                                         ?: "Select Date for reminder",
                                 )
                             }
@@ -450,26 +456,32 @@ fun CreatingTaskScreen() {
                         }
                     }
                 }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .height((heightScreen * 0.1).dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Subtasks:")
-                        Text(text = viewModel.listOfSubTasks.size.toString())
-                    }
-                }
-                itemsIndexed(viewModel.listOfSubTasks) { index, subTask ->
+
+                item{
                     SubTasksList(
                         subtasks = viewModel.listOfSubTasks,
-                        onAddSubTask = { viewModel.addSubTaskField() },
-                        onUpdateSubTask = { index, description, isCompleted ->
-                            viewModel.updateSubTask(index, description, isCompleted)
+                        onUpdateDescription = { index, description ->
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateTempSubTaskDescription(
+                                    index,
+                                    description
+                                )
+                            )
+                        }, onUpdateIsCompleted = { index, isCompleted ->
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateTempSubTaskIsDone(
+                                    index,
+                                    isCompleted
+                                )
+                            )
                         },
-                        onDeleteSubTask = { index -> viewModel.removeSubTask(index) }
+                        onDeleteSubTask = { index ->
+                            viewModel.onEvent(
+                                CreatingTaskEvents.RemoveTextFieldForSubTask(
+                                    index
+                                )
+                            )
+                        }
                     )
                 }
 

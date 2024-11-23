@@ -39,9 +39,19 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         }
 
 
+
         val existingTask = dao.getTaskById(task.id).firstOrNull()
+
+        val updatedListOfSubtasks = task.listOfSubtasks
+            ?.filter { it.description.isNotBlank() }
+            ?.takeIf { it.isNotEmpty() }
+
+
         if (existingTask != null) {
-            dao.updateTask(task.mapToEntity())
+            val updatedTaskEntity = task.mapToEntity().copy(
+                listOfSubtasks = updatedListOfSubtasks
+            )
+            dao.updateTask(updatedTaskEntity)
         } else {
             dao.insertTask(task.mapToEntity())
             if (res == true) {

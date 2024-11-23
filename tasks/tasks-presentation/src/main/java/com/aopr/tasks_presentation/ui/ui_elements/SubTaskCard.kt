@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -27,8 +26,8 @@ import com.aopr.tasks_domain.models.Subtasks
 fun SubTaskCard(
     index: Int,
     tittle: String,
-    onValueChange: (Int, String) -> Unit,
-    onCheckedChange: (Int, Boolean) -> Unit,
+    onValueDescriptionChange: (Int, String) -> Unit,
+    onIsCompletedChange: (Int, Boolean) -> Unit,
     onDelete: (Int) -> Unit,
     isCompleted: Boolean
 ) {
@@ -49,7 +48,7 @@ fun SubTaskCard(
                     Text(text = "Enter Subtask")
                 },
                 value = tittle,
-                onValueChange = { newValue -> onValueChange(index, newValue) },
+                onValueChange = { newValue -> onValueDescriptionChange(index, newValue) },
                 modifier = Modifier.weight(1f),
                 singleLine = true,
                 colors = TextFieldDefaults.colors(
@@ -58,7 +57,7 @@ fun SubTaskCard(
                 )
             )
             Checkbox(checked = isCompleted, onCheckedChange = { isChecked ->
-                onCheckedChange(index, isChecked)
+                onIsCompletedChange(index, isChecked)
             })
             IconButton(onClick = { onDelete(index) }) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Subtask")
@@ -70,8 +69,8 @@ fun SubTaskCard(
 @Composable
 fun SubTasksList(
     subtasks: List<Subtasks>,
-    onAddSubTask: () -> Unit,
-    onUpdateSubTask: (Int, String, Boolean) -> Unit,
+    onUpdateIsCompleted: (Int,Boolean) -> Unit,
+    onUpdateDescription:(Int,String)->Unit,
     onDeleteSubTask: (Int) -> Unit
 ) {
     Column {
@@ -80,14 +79,12 @@ fun SubTasksList(
                 index = index,
                 tittle = subtask.description,
                 isCompleted = subtask.isCompleted,
-                onValueChange = { i, newValue -> onUpdateSubTask(i, newValue, subtasks[i].isCompleted) },
-                onCheckedChange = { i, isChecked -> onUpdateSubTask(i, subtasks[i].description, isChecked) },
+                onValueDescriptionChange = {  i, isChecked -> onUpdateDescription(i, subtasks[i].description) },
+                onIsCompletedChange = { i, newValue -> onUpdateIsCompleted(i, subtasks[i].isCompleted)},
                 onDelete = onDeleteSubTask
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = onAddSubTask, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Add Subtask")
-        }
+
     }
 }
