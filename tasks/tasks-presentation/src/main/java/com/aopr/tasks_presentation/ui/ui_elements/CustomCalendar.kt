@@ -42,7 +42,8 @@ fun CustomCalendar(
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
     listOfDates: List<LocalDate?>,
-    getTasks: (LocalDate) -> Unit, listOfTasks: List<Task?>
+    getTasks: (LocalDate) -> Unit,
+    listOfTasks: List<Task?>
 ) {
     val currentDate = remember { mutableStateOf(LocalDate.now()) }
     val selectedDate = remember { mutableStateOf(initialSelectedDate) }
@@ -52,7 +53,6 @@ fun CustomCalendar(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // CalendarHeader with selectedDate
         CalendarHeader(
             currentDate = currentDate.value,
             selectedDate = selectedDate.value,
@@ -162,7 +162,6 @@ fun WeekdayLabels() {
         }
     }
 }
-
 @Composable
 fun DatesGrid(
     currentDate: LocalDate,
@@ -189,8 +188,15 @@ fun DatesGrid(
             Row(modifier = Modifier.fillMaxWidth()) {
                 week.forEach { date ->
                     val isSelected = date == selectedDate
-                    val datesWithTasksColor =
-                        if (listOfDates.contains(date)) Color.Red else Color.Black
+                    val isPastDate = date?.isBefore(LocalDate.now()) == true
+                    val isTaskDate = listOfDates.contains(date)
+
+                    val textColor = when {
+                        isPastDate -> Color.Gray
+                        isTaskDate -> Color.Red
+                        else -> Color.Black
+                    }
+
                     val backgroundColor =
                         if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
 
@@ -200,7 +206,7 @@ fun DatesGrid(
                             .aspectRatio(1f)
                             .padding(4.dp)
                             .background(backgroundColor, shape = CircleShape)
-                            .clickable(enabled = date != null) {
+                            .clickable(enabled = date != null && !isPastDate) {
                                 date?.let { onDateSelected(it) }
                                 if (date != null) {
                                     getTasks(date)
@@ -211,7 +217,7 @@ fun DatesGrid(
                         date?.let {
                             Text(
                                 text = it.dayOfMonth.toString(),
-                                color = datesWithTasksColor,
+                                color = textColor,
                             )
                         }
                     }
@@ -227,11 +233,11 @@ fun DatesGrid(
                         }
                     }
                 }
-
             }
-        }else{
+        } else {
             Text(text = "NoTask")
         }
     }
 }
+
 

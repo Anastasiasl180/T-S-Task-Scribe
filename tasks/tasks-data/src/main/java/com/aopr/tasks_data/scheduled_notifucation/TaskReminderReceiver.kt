@@ -15,12 +15,10 @@ import com.aopr.tasks_data.R
 
 class TaskReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.wtf("Meerka", "gfgfg32: ")
         val taskId = intent.getIntExtra("TASK_ID", -1)
         val taskTittle = intent.getStringExtra("TASK_TITLE") ?: "Task reminder"
 
         if (taskId != -1) {
-            Log.wtf("Meerka", "ioio: ")
             showNotifications(context, taskId, taskTittle)
         }
     }
@@ -28,9 +26,7 @@ class TaskReminderReceiver : BroadcastReceiver() {
 
     private fun showNotifications(context: Context, taskId: Int, taskTittle: String) {
         try {
-            
-        Log.wtf("Meerka", "gfgfg323: ")
-        val channelId = "task_reminder_channel"
+      val channelId = "task_reminder_channel"
         val channelName = "Task Reminders"
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -54,7 +50,5 @@ class TaskReminderReceiver : BroadcastReceiver() {
         notificationManager.notify(taskId, notification)
 
     }catch (e:Exception){
-        Log.wtf("Meerka", e.message.toString())
-            Log.wtf("Meerka", e.localizedMessage.toString())
-    } }
+        } }
 }

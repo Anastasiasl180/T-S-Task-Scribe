@@ -11,6 +11,7 @@ import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
+import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,8 +41,10 @@ class NotesViewModel(
     private val _descriptionOfTask = mutableStateOf("")
     val descriptionOfTask: State<String> = _descriptionOfTask
 
-    private val _dataOfTask = mutableStateOf<LocalDate?>(null)
-    val dataOfTask: State<LocalDate?> = _dataOfTask
+    private val _dataOfTaskToBeDone = mutableStateOf<LocalDate?>(null)
+    val dataOfTaskToBeDone: State<LocalDate?> = _dataOfTaskToBeDone
+    private val _dataOfTaskForReminder = mutableStateOf<LocalDate?>(null)
+    val dataOfTaskForReminder: State<LocalDate?> = _dataOfTaskForReminder
 
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
@@ -131,10 +134,12 @@ class NotesViewModel(
                         id = 0,
                         tittle = _tittleOfTask.value,
                         description = _descriptionOfTask.value,
-                        date = _dataOfTask.value,
-                        time = _timeOfTask.value,
+                        dateForReminder = _dataOfTaskForReminder.value,
+                        timeForReminder = _timeOfTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
-                        isCompleted = false
+                        isCompleted = false,
+                        importance = ImportanceOfTask.MEDIUM,
+                        dateOfTaskToBeDone = _dataOfTaskToBeDone.value
                     )
                     createTask(task)
                 }

@@ -28,9 +28,9 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDescription))
         } catch (e: EmptyTittleException) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
-        }catch (e:EmptyDateForReminderException){
+        } catch (e: EmptyDateForReminderException) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDateReminder))
-        }catch (e:EmptyTimeForReminderException){
+        } catch (e: EmptyTimeForReminderException) {
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTimeReminder))
         }
 
@@ -73,17 +73,19 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }
-    fun getTasksByDate(date:LocalDate):Flow<Responses<Flow<List<Task>>>> = flow {
+
+    fun getTasksByDate(date: LocalDate): Flow<Responses<Flow<List<Task>>>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.getTasksByDate(date)
             emit(Responses.Success(data))
-        }catch (e:IOException){
+        } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
 
         }
     }
+
 }

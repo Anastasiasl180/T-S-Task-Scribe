@@ -8,11 +8,12 @@ internal fun Task.mapToEntity():TaskEntity{
         id = this.id,
         tittle = this.tittle,
         description = this.description,
-        date = this.date,
-        time = this.time,
+        dateToBeDone = this.dateOfTaskToBeDone,
+        time = this.timeForReminder,
         isCompleted = this.isCompleted,
         importance = this.importance,
-        listOfSubtasks = this.listOfSubtasks
+        listOfSubtasks = this.listOfSubtasks,
+        dateForReminder = this.dateForReminder
     )
 }
 internal fun TaskEntity.mapToTask():Task{
@@ -20,10 +21,11 @@ internal fun TaskEntity.mapToTask():Task{
         id = this.id,
         tittle = this.tittle,
         description = this.description,
-        date = this.date,
-        time = this.time,
+        dateForReminder = this.dateForReminder,
+        timeForReminder = this.time,
         isCompleted = this.isCompleted,
         importance = this.importance,
-        listOfSubtasks = this.listOfSubtasks
+        listOfSubtasks = this.listOfSubtasks,
+        dateOfTaskToBeDone = this.dateToBeDone
     )
 }
