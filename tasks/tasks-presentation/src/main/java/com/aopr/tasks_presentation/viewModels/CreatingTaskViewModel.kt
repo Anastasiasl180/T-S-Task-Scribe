@@ -80,7 +80,32 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     init {
         onEvent(CreatingTaskEvents.LoadDatesWithTask)
     }
+    fun addSubTaskField() {
+        _listOfSubTasks.add(Subtasks(description = "", isCompleted = false))
+    }
 
+    fun updateSubTask(index: Int, description: String, isCompleted: Boolean) {
+        if (index in _listOfSubTasks.indices) {
+            _listOfSubTasks[index] = _listOfSubTasks[index].copy(description = description, isCompleted = isCompleted)
+        }
+    }
+
+    fun removeSubTask(index: Int) {
+        if (index in _listOfSubTasks.indices) {
+            _listOfSubTasks.removeAt(index)
+        }
+    }
+
+    fun validateAndSaveTask(): Boolean {
+        val nonEmptySubTasks = _listOfSubTasks.filter { it.description.isNotBlank() }
+        if (nonEmptySubTasks.isEmpty()) {
+            // Notify user that at least one valid subtask is required
+                return false
+        }
+        _listOfSubTasks.clear()
+        _listOfSubTasks.addAll(nonEmptySubTasks)
+        return true
+    }
     private fun getTasksByDate(date: LocalDate) {
         tasksUseCase.getTasksByDate(date).onEach { result ->
             when (result) {
