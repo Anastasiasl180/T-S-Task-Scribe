@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -21,11 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aopr.tasks_domain.models.Subtasks
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun SubTaskCard(
     index: Int,
     tittle: String,
+    data: LocalDate?,
+    time: LocalTime?,
+    showCalendarForReminder: () -> Unit,
+    showClockForReminder: () -> Unit,
     onValueDescriptionChange: (Int, String) -> Unit,
     onIsCompletedChange: (Int, Boolean) -> Unit,
     onDelete: (Int) -> Unit,
@@ -33,16 +41,18 @@ fun SubTaskCard(
 ) {
     Card(
         modifier = Modifier
-            .padding(vertical = 10.dp)
+            .height(
+                500.dp
+            )
             .fillMaxWidth()
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+          //  horizontalArrangement = Arrangement.SpaceBetween,
 
-        ) {
+            ) {
             TextField(
                 placeholder = {
                     Text(text = "Enter Subtask")
@@ -56,6 +66,35 @@ fun SubTaskCard(
                     unfocusedIndicatorColor = Color.Transparent,
                 )
             )
+
+            Card(modifier = Modifier) {
+                Row() {
+                    Text(
+                        text = data?.format(
+                            DateTimeFormatter.ofPattern(
+                                "dd MMM yyyy"
+                            )
+                        )
+                            ?: "Select Date for reminder",
+                    )
+                    Button(onClick = showCalendarForReminder) {
+
+                    }
+                }
+                Row() {
+                    Text(
+                        text = time?.format(DateTimeFormatter.ofPattern("HH:mm"))
+                            ?: "",
+                    )
+                    Button(onClick = showClockForReminder) {
+
+                    }
+                }
+
+            }
+
+
+
             Checkbox(checked = isCompleted, onCheckedChange = { isChecked ->
                 onIsCompletedChange(index, isChecked)
             })
@@ -69,9 +108,13 @@ fun SubTaskCard(
 @Composable
 fun SubTasksList(
     subtasks: List<Subtasks>,
-    onUpdateIsCompleted: (Int,Boolean) -> Unit,
-    onUpdateDescription:(Int,String)->Unit,
-    onDeleteSubTask: (Int) -> Unit
+    onUpdateIsCompleted: (Int, Boolean) -> Unit,
+    onUpdateDescription: (Int, String) -> Unit,
+    onDeleteSubTask: (Int) -> Unit,
+    data: LocalDate?,
+    time: LocalTime?,
+    showCalendarForReminder: (Int) -> Unit,
+    showClockForReminder: (Int) -> Unit,
 ) {
     Column {
         subtasks.forEachIndexed { index, subtask ->
@@ -79,9 +122,23 @@ fun SubTasksList(
                 index = index,
                 tittle = subtask.description,
                 isCompleted = subtask.isCompleted,
-                onValueDescriptionChange = {  i, isChecked -> onUpdateDescription(i, subtasks[i].description) },
-                onIsCompletedChange = { i, newValue -> onUpdateIsCompleted(i, subtasks[i].isCompleted)},
-                onDelete = onDeleteSubTask
+                onValueDescriptionChange = { i, isChecked ->
+                    onUpdateDescription(
+                        i,
+                       isChecked
+                    )
+                },
+                onIsCompletedChange = { i, newValue ->
+                    onUpdateIsCompleted(
+                        i,
+                       newValue
+                    )
+                },
+                onDelete = onDeleteSubTask,
+                data = data,
+                time = time,
+                showClockForReminder = {showClockForReminder(index)},
+                showCalendarForReminder = {showCalendarForReminder(index)}
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

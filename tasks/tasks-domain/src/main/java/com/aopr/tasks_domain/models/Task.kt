@@ -7,9 +7,9 @@ data class Task(
     val id:Int,
     val tittle:String,
     val description:String,
-    val dateForReminder: LocalDate?,
-    val dateOfTaskToBeDone: LocalDate?,
-    val timeForReminder: LocalTime?,
+    val dateForReminder: LocalDate?=null,
+    val dateOfTaskToBeDone: LocalDate,
+    val timeForReminder: LocalTime? = null,
     val isCompleted:Boolean,
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
     val listOfSubtasks:List<Subtasks>?
@@ -17,7 +17,9 @@ data class Task(
 
 data class Subtasks(
     val description:String,
-    val isCompleted:Boolean
+    val isCompleted:Boolean,
+    val date:LocalDate? = null,
+    val time:LocalTime?=null
 )
 enum class ImportanceOfTask{
     HIGH,MEDIUM,LOW

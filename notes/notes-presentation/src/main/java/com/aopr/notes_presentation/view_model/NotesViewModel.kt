@@ -41,8 +41,9 @@ class NotesViewModel(
     private val _descriptionOfTask = mutableStateOf("")
     val descriptionOfTask: State<String> = _descriptionOfTask
 
-    private val _dataOfTaskToBeDone = mutableStateOf<LocalDate?>(null)
-    val dataOfTaskToBeDone: State<LocalDate?> = _dataOfTaskToBeDone
+    private val _dataOfTaskToBeDone = mutableStateOf<LocalDate>(LocalDate.now())
+    val dataOfTaskToBeDone: State<LocalDate> = _dataOfTaskToBeDone
+
     private val _dataOfTaskForReminder = mutableStateOf<LocalDate?>(null)
     val dataOfTaskForReminder: State<LocalDate?> = _dataOfTaskForReminder
 
@@ -139,7 +140,8 @@ class NotesViewModel(
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
                         isCompleted = false,
                         importance = ImportanceOfTask.MEDIUM,
-                        dateOfTaskToBeDone = _dataOfTaskToBeDone.value
+                        dateOfTaskToBeDone = _dataOfTaskToBeDone.value,
+
                     )
                     createTask(task)
                 }

@@ -10,8 +10,10 @@ sealed interface CreatingTaskEvents: EventsType {
     data object LoadDatesWithTask : CreatingTaskEvents
     data object ShowCalendarForToBeDone : CreatingTaskEvents
     data object ShowCalendarForReminder : CreatingTaskEvents
+    data class ShowCalendarForSubTask(val index:Int):CreatingTaskEvents
     data object HideCalendar : CreatingTaskEvents
-    data object ShowClock : CreatingTaskEvents
+    data object ShowClockForTaskReminder : CreatingTaskEvents
+    data class ShowClockForSubTaskReminder(val index:Int) : CreatingTaskEvents
     data object HideClock : CreatingTaskEvents
     data class GetTakById(val id: Int?) : CreatingTaskEvents
     data object SaveTask : CreatingTaskEvents
@@ -19,8 +21,10 @@ sealed interface CreatingTaskEvents: EventsType {
     data class UpdateDescriptionOfTask(val description: String) : CreatingTaskEvents
     data class UpdatePriorityOfTask(val priority: ImportanceOfTask) : CreatingTaskEvents
     data class UpdateIsDoneTask(val isDone: Boolean) : CreatingTaskEvents
+    data class UpdateDateForSubtask(val date:LocalDate?):CreatingTaskEvents
+    data class UpdateTimeForSubTask(val time:LocalTime?):CreatingTaskEvents
     data class UpdateDateOfTaskForReminder(val date: LocalDate?) : CreatingTaskEvents
-    data class UpdateDateOfTaskToBeDone(val date: LocalDate?) : CreatingTaskEvents
+    data class UpdateDateOfTaskToBeDone(val date: LocalDate) : CreatingTaskEvents
     data class UpdateTimeOfTask(val time: LocalTime?) : CreatingTaskEvents
     data object AddTextFieldForSubTask : CreatingTaskEvents
     data class RemoveTextFieldForSubTask(val index:Int) : CreatingTaskEvents

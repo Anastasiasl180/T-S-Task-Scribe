@@ -14,9 +14,9 @@ data class TaskEntity(
     val id:Int=0,
     val tittle:String,
     val description:String,
-    val dateToBeDone:LocalDate?,
-    val dateForReminder:LocalDate?,
-    val time:LocalTime?,
+    val dateToBeDone:LocalDate,
+    val dateForReminder:LocalDate? = null,
+    val time:LocalTime? = null,
     val isCompleted:Boolean,
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
     val listOfSubtasks:List<Subtasks>?
