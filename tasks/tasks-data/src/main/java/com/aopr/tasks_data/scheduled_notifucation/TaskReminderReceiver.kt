@@ -17,16 +17,16 @@ class TaskReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val taskId = intent.getIntExtra("TASK_ID", -1)
         val taskTittle = intent.getStringExtra("TASK_TITLE") ?: "Task reminder"
-
+val subTaskDescription = intent.getStringExtra("SUBTASK_DESCRIPTION")
         if (taskId != -1) {
-            showNotifications(context, taskId, taskTittle)
+            showNotifications(context, taskId, taskTittle,subTaskDescription)
         }
     }
 
 
-    private fun showNotifications(context: Context, taskId: Int, taskTittle: String) {
-        try {
-      val channelId = "task_reminder_channel"
+    private fun showNotifications(context: Context, taskId: Int, taskTittle: String,subTaskDescription:String?) {
+
+        val channelId = "task_reminder_channel"
         val channelName = "Task Reminders"
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -37,18 +37,20 @@ class TaskReminderReceiver : BroadcastReceiver() {
             channelName,
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Channel for task reminders"
+            description = "Channel for task and subtask reminders"
         }
         notificationManager.createNotificationChannel(channel)
+        val notificationText = subTaskDescription?.let {
+            "Subtask from task \"$taskTittle\":$it"
+        } ?:taskTittle
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Reminder")
-            .setContentText(taskTittle)
+            .setContentText(notificationText)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
         notificationManager.notify(taskId, notification)
 
-    }catch (e:Exception){
-        } }
+    }
 }

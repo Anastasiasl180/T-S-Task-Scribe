@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -76,12 +76,18 @@ fun CreatingTaskScreen() {
     val isClockVisible by viewModel.isClockVisible.collectAsState()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val timeOfTask by viewModel.timeOfTask
+
+    val timeOfSubTask by viewModel.timeOfSubTask
+    val dateOfSubTask by viewModel.dateOfSubTask
+
     val priorityOfTask by viewModel.priority.collectAsState()
     val importanceItems = ImportanceOfTask.entries
     val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittleOfTask by viewModel.tittleOfTask.collectAsState()
     val descriptionOfTask by viewModel.descriptionOfTask.collectAsState()
     val listOfDatesWithTasks = viewModel.datesWithTasks
+
+    Log.wtf("Meeruiuika", dateOfSubTask.toString())
     Scaffold(
         topBar = {
             TopAppBar(
@@ -156,30 +162,65 @@ fun CreatingTaskScreen() {
                                 var selectedTime by remember {
                                     mutableStateOf(timeOfTask ?: LocalTime.now())
                                 }
+                                var selectedTimeSub by remember {
+                                    mutableStateOf(timeOfSubTask ?: LocalTime.now())
+                                }
 
                                 ClockPicker(
-                                    initialTime = selectedTime,
+                                    initialTime = when(viewModel.clockMode.value){
+                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                            selectedTime
+                                        }
+                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> selectedTimeSub
+                                    },
                                     onTimeChanged = { newTime ->
-                                        // Update the local state variable
-                                        selectedTime = newTime
+                                        when(viewModel.clockMode.value){
+                                            CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                                selectedTime = newTime
+                                            }
+                                            CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
+                                                selectedTimeSub = newTime
+                                            }
+                                        }
+
+
                                     }
                                 )
 
                                 Text(
-                                    text = selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                                    text =
+                                    when(viewModel.clockMode.value){
+                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                            selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+                                        }
+                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
+                                            selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+                                        }
+                                    },
                                     modifier = Modifier.padding(top = 16.dp)
                                 )
 
                                 Button(onClick = {
-                                    viewModel.onEvent(
-                                        CreatingTaskEvents.UpdateTimeOfTask(
-                                            selectedTime
-                                        )
-                                    )
-                                    viewModel.onEvent(CreatingTaskEvents.HideClock)
+                                    when (viewModel.clockMode.value) {
+                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                            viewModel.onEvent(
+                                                CreatingTaskEvents.UpdateTimeOfTask(selectedTime)
+                                            )
+                                            viewModel.onEvent(CreatingTaskEvents.HideClock)
+                                        }
+                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
+                                            viewModel.onEvent(
+                                                CreatingTaskEvents.UpdateTimeForSubTask(selectedTimeSub)
+                                            )
+                                            viewModel.onEvent(CreatingTaskEvents.HideClock)
+                                        }
+                                    }
                                 }) {
                                     Text("Save")
                                 }
+
                             }
                         }
                     }
@@ -205,9 +246,11 @@ fun CreatingTaskScreen() {
                                     CreatingTaskViewModel.CalendarMode.TASK_DONE -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskToBeDone(selectedDate)
                                     )
-
                                     CreatingTaskViewModel.CalendarMode.REMINDER -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskForReminder(selectedDate)
+                                    )
+                                    CreatingTaskViewModel.CalendarMode.REMINDERSUB -> viewModel.onEvent(
+                                        CreatingTaskEvents.UpdateDateForSubtask(selectedDate)
                                     )
                                 }
                             },
@@ -363,7 +406,7 @@ fun CreatingTaskScreen() {
                                     .fillMaxWidth(0.9f)
                                     .fillMaxHeight(0.6f)
                             ) {
-                                IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowClock) }) {
+                                IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowClockForTaskReminder) }) {
                                     Icon(
                                         imageVector = Icons.Default.Notifications,
                                         contentDescription = ""
@@ -407,7 +450,7 @@ fun CreatingTaskScreen() {
                                     )
                                 }
                                 Text(
-                                    text = dateOfTaskToBeDone?.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+                                    text = dateOfTaskToBeDone.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
                                         ?: "Select Date to be done",
                                 )
                             }
@@ -457,7 +500,7 @@ fun CreatingTaskScreen() {
                     }
                 }
 
-                item{
+                item {
                     SubTasksList(
                         subtasks = viewModel.listOfSubTasks,
                         onUpdateDescription = { index, description ->
@@ -467,7 +510,8 @@ fun CreatingTaskScreen() {
                                     description
                                 )
                             )
-                        }, onUpdateIsCompleted = { index, isCompleted ->
+                        },
+                        onUpdateIsCompleted = { index, isCompleted ->
                             viewModel.onEvent(
                                 CreatingTaskEvents.UpdateTempSubTaskIsDone(
                                     index,
@@ -481,7 +525,11 @@ fun CreatingTaskScreen() {
                                     index
                                 )
                             )
-                        }
+                        },
+                        data = dateOfSubTask,
+                        time = timeOfSubTask,
+                        showCalendarForReminder = { viewModel.onEvent(CreatingTaskEvents.ShowCalendarForSubTask(it)) },
+                        showClockForReminder = { viewModel.onEvent(CreatingTaskEvents.ShowClockForSubTaskReminder(it)) }
                     )
                 }
 

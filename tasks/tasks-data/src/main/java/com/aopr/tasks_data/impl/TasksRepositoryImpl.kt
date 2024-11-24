@@ -1,13 +1,13 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
+import android.util.Log
 import com.aopr.shared_domain.throws.EmptyDateForReminderException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTimeForReminderException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import com.aopr.tasks_data.mapper.mapToEntity
 import com.aopr.tasks_data.mapper.mapToTask
-import com.aopr.tasks_data.room.Converts
 import com.aopr.tasks_data.room.TasksDao
 import com.aopr.tasks_data.scheduled_notifucation.scheduleTaskReminder
 import com.aopr.tasks_domain.interactors.TasksRepository
@@ -38,8 +38,6 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             throw EmptyTimeForReminderException()
         }
 
-
-
         val existingTask = dao.getTaskById(task.id).firstOrNull()
 
         val updatedListOfSubtasks = task.listOfSubtasks
@@ -51,6 +49,27 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             val updatedTaskEntity = task.mapToEntity().copy(
                 listOfSubtasks = updatedListOfSubtasks
             )
+            if (res == true) {
+                scheduleTaskReminder(
+                    context = context,
+                    task.id,
+                    task.tittle,
+                    date = task.dateForReminder!!,
+                    time = task.timeForReminder!!
+                )
+                updatedListOfSubtasks?.forEach {
+                    if (it.time != null && it.date != null) {
+                        scheduleTaskReminder(
+                            context = context,
+                            taskId = task.id,
+                            taskTitle = task.tittle,
+                            it.date!!,
+                            it.time!!
+                        )
+                    }
+                }
+            }
+
             dao.updateTask(updatedTaskEntity)
         } else {
             dao.insertTask(task.mapToEntity())
@@ -62,6 +81,17 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
                     date = task.dateForReminder!!,
                     time = task.timeForReminder!!
                 )
+                updatedListOfSubtasks?.forEach {
+                    if (it.time != null && it.date != null) {
+                        scheduleTaskReminder(
+                            context = context,
+                            taskId = task.id,
+                            taskTitle = task.tittle,
+                            it.date!!,
+                            it.time!!
+                        )
+                    }
+                }
             }
         }
 

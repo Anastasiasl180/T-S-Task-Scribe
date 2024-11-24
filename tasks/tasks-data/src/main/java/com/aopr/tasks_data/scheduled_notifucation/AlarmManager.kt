@@ -14,12 +14,14 @@ fun scheduleTaskReminder(
     taskId: Int,
     taskTitle: String,
     date: LocalDate,
-    time: LocalTime
+    time: LocalTime,
+    subTaskDescription:String? = null
 ) {
     val timeInMillis = getTimeInMillis(date, time)
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
         putExtra("TASK_TITLE", taskTitle)
+        putExtra("SUBTASK_DESCRIPTION",subTaskDescription)
     }
 
     val pendingIntent = PendingIntent.getBroadcast(

@@ -2,6 +2,7 @@ package com.aopr.tasks_presentation.ui.ui_elements
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -54,7 +55,12 @@ fun ClockPicker(
                         val x = touchPoint.x - center.x
                         val y = touchPoint.y - center.y
 
-                        val touchAngle = ((Math.toDegrees(atan2(y.toDouble(), x.toDouble())) + 360 + 90) % 360).toFloat()
+                        val touchAngle = ((Math.toDegrees(
+                            atan2(
+                                y.toDouble(),
+                                x.toDouble()
+                            )
+                        ) + 360 + 90) % 360).toFloat()
 
                         // Compute the angle difference to the hour and minute hand
                         val hourAngleDiff = angleDifference(touchAngle, hourAngle)
@@ -73,7 +79,12 @@ fun ClockPicker(
                         val x = touchPoint.x - center.x
                         val y = touchPoint.y - center.y
 
-                        val angle = ((Math.toDegrees(atan2(y.toDouble(), x.toDouble())) + 360 + 90) % 360).toFloat()
+                        val angle = ((Math.toDegrees(
+                            atan2(
+                                y.toDouble(),
+                                x.toDouble()
+                            )
+                        ) + 360 + 90) % 360).toFloat()
 
                         when (draggingHand) {
                             Hand.HOUR -> {
@@ -83,6 +94,7 @@ fun ClockPicker(
                                 selectedTime = updatedTime
                                 onTimeChanged(updatedTime)
                             }
+
                             Hand.MINUTE -> {
                                 minuteAngle = angle
                                 val newMinute = ((minuteAngle / 6f).roundToInt()) % 60
@@ -90,6 +102,7 @@ fun ClockPicker(
                                 selectedTime = updatedTime
                                 onTimeChanged(updatedTime)
                             }
+
                             else -> {}
                         }
                     },
@@ -99,6 +112,7 @@ fun ClockPicker(
                 )
             }
     ) {
+
         // Draw clock face
         drawCircle(color = Color.LightGray, radius = size.minDimension / 2)
 
@@ -131,6 +145,9 @@ fun ClockPicker(
         )
 
     }
+
+
+
 }
 
 fun angleDifference(angle1: Float, angle2: Float): Float {
