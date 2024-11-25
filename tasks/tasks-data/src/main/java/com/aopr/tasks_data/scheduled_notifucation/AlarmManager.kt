@@ -8,23 +8,69 @@ import android.util.Log
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
-
 fun scheduleTaskReminder(
     context: Context,
     taskId: Int,
     taskTitle: String,
     date: LocalDate,
     time: LocalTime,
-    subTaskDescription:String? = null
+    subTaskDescription: String? = null
 ) {
     val timeInMillis = getTimeInMillis(date, time)
 
-
+    // Generate a unique request code for tasks
     val requestCode = if (subTaskDescription != null) {
         (taskId.toString() + subTaskDescription.hashCode().toString()).hashCode()
     } else {
         (taskId.toString() + timeInMillis.toString()).hashCode() // Ensure unique for each task reminder
     }
+
+    val intent = Intent(context, TaskReminderReceiver::class.java).apply {
+        putExtra("TASK_ID", taskId)
+        putExtra("TASK_TITLE", taskTitle)
+        putExtra("SUBTASK_DESCRIPTION", subTaskDescription)
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        requestCode, // Unique request code for each task
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.setExactAndAllowWhileIdle(
+        AlarmManager.RTC_WAKEUP,
+        timeInMillis,
+        pendingIntent
+    )
+}
+fun cancelTaskReminder(context: Context, taskId: Int, taskTitle: String, date: LocalDate, time: LocalTime) {
+    val timeInMillis = getTimeInMillis(date, time)
+
+    // Generate the same requestCode used to schedule the reminder
+    val requestCode = (taskId.toString() + timeInMillis.toString()).hashCode()
+
+    val intent = Intent(context, TaskReminderReceiver::class.java).apply {
+        putExtra("TASK_ID", taskId)
+        putExtra("TASK_TITLE", taskTitle)
+    }
+
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        requestCode,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarmManager.cancel(pendingIntent) // Cancel the alarm
+}
+fun cancelSubtaskReminder(context: Context, taskId: Int, taskTitle: String, subTaskDescription: String, date: LocalDate, time: LocalTime) {
+    val timeInMillis = getTimeInMillis(date, time)
+
+    // Generate the same requestCode used to schedule the subtask reminder
+    val requestCode = (taskId.toString() + subTaskDescription.hashCode().toString()).hashCode()
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
@@ -40,12 +86,9 @@ fun scheduleTaskReminder(
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    alarmManager.setExactAndAllowWhileIdle(
-        AlarmManager.RTC_WAKEUP,
-        timeInMillis,
-        pendingIntent
-    )
+    alarmManager.cancel(pendingIntent) // Cancel the alarm
 }
+
 
 fun getTimeInMillis(localDate: LocalDate, localTime: LocalTime): Long {
     val localDateTime = localDate.atTime(localTime)

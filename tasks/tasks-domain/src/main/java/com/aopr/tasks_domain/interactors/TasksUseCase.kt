@@ -87,5 +87,18 @@ class TasksUseCase(private val repository: TasksRepository) {
 
         }
     }
+    fun deleteSubTask(task: Task?,indexOfSubTask:Int):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.deleteSubTask(task,indexOfSubTask)
+            emit(Responses.Success(data))
+        }catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+
+        } catch (e: Exception) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+
+        }
+    }
 
 }
