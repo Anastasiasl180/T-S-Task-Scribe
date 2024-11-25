@@ -504,7 +504,6 @@ fun CreatingTaskScreen() {
                 }
 
                 item {
-                    Log.wtf("Meerkalist1", viewModel.listOfSubTasks.toString())
                     SubTasksList(
                         subtasks = viewModel.listOfSubTasks,
                         onUpdateDescription = { index, description ->
@@ -526,7 +525,7 @@ fun CreatingTaskScreen() {
                         onDeleteSubTask = { index ->
                             viewModel.onEvent(
                                 CreatingTaskEvents.RemoveTextFieldForSubTask(
-                                    index
+                                   task =viewModel.existingTask.value , index
                                 )
                             )
                         },

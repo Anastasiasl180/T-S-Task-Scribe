@@ -32,7 +32,7 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         onEvent(AllTasksEvents.GetAllTasks)
     }
 
-   private fun getAllTasks() {
+    private fun getAllTasks() {
         tasksUseCase.getAllTasks().onEach { result ->
             when (result) {
                 is Responses.Error -> {
@@ -52,6 +52,25 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
+    private fun deleteTask(task: Task) {
+        tasksUseCase.deleteTask(task).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
 
     fun onEvent(event: AllTasksEvents) {
         when (event) {
@@ -67,6 +86,6 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
                 }
             }
         }
-    }
 
+    }
 }

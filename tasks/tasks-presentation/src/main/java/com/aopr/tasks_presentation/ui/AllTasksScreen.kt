@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +47,12 @@ fun AllTasksScreen() {
                         .clickable {
                             viewModel.onEvent(AllTasksEvents.NavigateToCreatingTaskScreen(task.id))
                         }) {
-                        Text(text = task.toString())
+                        Column(modifier = Modifier.fillMaxSize()) {
+
+}
+
+                            Text(text = task.toString())
+                        }
                     }
                 }
             }
@@ -54,4 +60,3 @@ fun AllTasksScreen() {
         }
     }
 
-}

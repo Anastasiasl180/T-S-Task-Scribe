@@ -11,6 +11,7 @@ import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
+import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
 import kotlinx.coroutines.delay
@@ -27,6 +28,10 @@ import java.time.LocalTime
 @KoinViewModel
 class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     ViewModelKit<CreatingTaskEvents, CreatingTaskUiEvents>() {
+
+        private val _existingTask = mutableStateOf<Task?>(null)
+    val existingTask:State<Task?> = _existingTask
+
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
@@ -195,7 +200,24 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         _descriptionOfTask.value = task.description
                         _tittleOfTask.value = task.tittle
                         _dateOfTaskToBeDone.value = task.dateOfTaskToBeDone
+                        _existingTask.value = task
                     }
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+    private fun deleteSubTask(task: Task?,indexOfSubTask:Int){
+        tasksUseCase.deleteSubTask(task,indexOfSubTask).onEach {result->
+            when(result){
+                is Responses.Error -> {
+
+                }
+                is Responses.Loading -> {
+
+                }
+                is Responses.Success -> {
+
                 }
             }
 
@@ -229,7 +251,6 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         isCompleted = false,
                         importance = _priority.value
                     )
-                    Log.wtf("Meerka", task.listOfSubtasks.toString())
                     createTask(task)
                     delay(500)
                     onEvent(CreatingTaskEvents.NavigateToBack)
@@ -300,7 +321,13 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
             
             is CreatingTaskEvents.RemoveTextFieldForSubTask -> {
-                removeSubTask(event.index)
+                if (event.task!=null){
+                    deleteSubTask(event.task,event.index)
+                    removeSubTask(event.index)
+                }else{
+                    removeSubTask(event.index)
+                }
+
             }
 
             is CreatingTaskEvents.UpdateDateForSubtask -> {
