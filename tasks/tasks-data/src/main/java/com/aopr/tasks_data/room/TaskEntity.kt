@@ -14,7 +14,7 @@ data class TaskEntity(
     val id:Int=0,
     val tittle:String,
     val description:String,
-    val dateToBeDone:LocalDate,
+    val dateToBeDone:LocalDate?,
     val dateForReminder:LocalDate? = null,
     val time:LocalTime? = null,
     val isCompleted:Boolean,
@@ -36,18 +36,24 @@ class Converts {
 
     @TypeConverter
     fun fromListOfSubtasks(value: List<Subtasks>?): String? {
-        return value?.joinToString(separator = ",") { "${it.description}|${it.isCompleted}" }
+        return value?.joinToString(separator = ";") {
+            "${it.description}|${it.isCompleted}|${it.date}|${it.time}"
+        }
     }
 
     @TypeConverter
     fun toListOfSubtasks(value: String?): List<Subtasks>? {
-        return value?.split(",")?.mapNotNull {
-            val parts = it.split("|")
-            if (parts.size == 2) {
-                Subtasks(parts[0], parts[1].toBoolean())
+        return value?.split(";")?.mapNotNull { subtaskString ->
+            val parts = subtaskString.split("|")
+            if (parts.size == 4) {
+                Subtasks(
+                    description = parts[0],
+                    isCompleted = parts[1].toBoolean(),
+                    date = parts[2].takeIf { it != "null" }?.let { LocalDate.parse(it) },
+                    time = parts[3].takeIf { it != "null" }?.let { LocalTime.parse(it) }
+                )
             } else {
-                 null
+                null
             }
         }
-    }
-}
+    }}

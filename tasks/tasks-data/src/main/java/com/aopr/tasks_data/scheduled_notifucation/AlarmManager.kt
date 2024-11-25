@@ -18,15 +18,23 @@ fun scheduleTaskReminder(
     subTaskDescription:String? = null
 ) {
     val timeInMillis = getTimeInMillis(date, time)
+
+
+    val requestCode = if (subTaskDescription != null) {
+        (taskId.toString() + subTaskDescription.hashCode().toString()).hashCode()
+    } else {
+        (taskId.toString() + timeInMillis.toString()).hashCode() // Ensure unique for each task reminder
+    }
+
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
         putExtra("TASK_ID", taskId)
         putExtra("TASK_TITLE", taskTitle)
-        putExtra("SUBTASK_DESCRIPTION",subTaskDescription)
+        putExtra("SUBTASK_DESCRIPTION", subTaskDescription)
     }
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        taskId,
+        requestCode,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )

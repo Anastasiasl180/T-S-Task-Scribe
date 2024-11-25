@@ -60,6 +60,7 @@ import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
 import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -203,6 +204,8 @@ fun CreatingTaskScreen() {
                                 )
 
                                 Button(onClick = {
+                                    val now = LocalTime.now()
+                                    val today = LocalDate.now()
                                     when (viewModel.clockMode.value) {
                                         CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
                                             viewModel.onEvent(
@@ -450,7 +453,7 @@ fun CreatingTaskScreen() {
                                     )
                                 }
                                 Text(
-                                    text = dateOfTaskToBeDone.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
+                                    text = dateOfTaskToBeDone?.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
                                         ?: "Select Date to be done",
                                 )
                             }
@@ -501,6 +504,7 @@ fun CreatingTaskScreen() {
                 }
 
                 item {
+                    Log.wtf("Meerkalist1", viewModel.listOfSubTasks.toString())
                     SubTasksList(
                         subtasks = viewModel.listOfSubTasks,
                         onUpdateDescription = { index, description ->

@@ -8,7 +8,7 @@ data class Task(
     val tittle:String,
     val description:String,
     val dateForReminder: LocalDate?=null,
-    val dateOfTaskToBeDone: LocalDate,
+    val dateOfTaskToBeDone: LocalDate?,
     val timeForReminder: LocalTime? = null,
     val isCompleted:Boolean,
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
