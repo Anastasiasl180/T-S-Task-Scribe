@@ -18,11 +18,10 @@ fun scheduleTaskReminder(
 ) {
     val timeInMillis = getTimeInMillis(date, time)
 
-    // Generate a unique request code for tasks
     val requestCode = if (subTaskDescription != null) {
         (taskId.toString() + subTaskDescription.hashCode().toString()).hashCode()
     } else {
-        (taskId.toString() + timeInMillis.toString()).hashCode() // Ensure unique for each task reminder
+        (taskId.toString() + timeInMillis.toString()).hashCode()
     }
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
@@ -33,7 +32,7 @@ fun scheduleTaskReminder(
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
-        requestCode, // Unique request code for each task
+        requestCode,
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
@@ -48,7 +47,6 @@ fun scheduleTaskReminder(
 fun cancelTaskReminder(context: Context, taskId: Int, taskTitle: String, date: LocalDate, time: LocalTime) {
     val timeInMillis = getTimeInMillis(date, time)
 
-    // Generate the same requestCode used to schedule the reminder
     val requestCode = (taskId.toString() + timeInMillis.toString()).hashCode()
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
@@ -64,12 +62,11 @@ fun cancelTaskReminder(context: Context, taskId: Int, taskTitle: String, date: L
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    alarmManager.cancel(pendingIntent) // Cancel the alarm
+    alarmManager.cancel(pendingIntent)
 }
 fun cancelSubtaskReminder(context: Context, taskId: Int, taskTitle: String, subTaskDescription: String, date: LocalDate, time: LocalTime) {
     val timeInMillis = getTimeInMillis(date, time)
 
-    // Generate the same requestCode used to schedule the subtask reminder
     val requestCode = (taskId.toString() + subTaskDescription.hashCode().toString()).hashCode()
 
     val intent = Intent(context, TaskReminderReceiver::class.java).apply {
@@ -86,7 +83,7 @@ fun cancelSubtaskReminder(context: Context, taskId: Int, taskTitle: String, subT
     )
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    alarmManager.cancel(pendingIntent) // Cancel the alarm
+    alarmManager.cancel(pendingIntent)
 }
 
 
