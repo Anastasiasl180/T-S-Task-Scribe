@@ -64,10 +64,8 @@ fun CustomCalendar(
             }
         )
 
-        // Weekday labels
         WeekdayLabels()
 
-        // Dates grid
         DatesGrid(
             currentDate = currentDate.value,
             selectedDate = selectedDate.value,
@@ -81,8 +79,6 @@ fun CustomCalendar(
         )
 
         Spacer(modifier = Modifier.weight(1f))
-
-        // Save and Cancel buttons
         Row(
             modifier = Modifier
                 .fillMaxWidth()

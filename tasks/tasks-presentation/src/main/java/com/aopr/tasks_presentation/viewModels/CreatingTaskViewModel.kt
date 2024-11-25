@@ -43,8 +43,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
 
-    private val _dateOfTaskToBeDone = mutableStateOf<LocalDate>(LocalDate.now())
-    val dataOfTaskToBeDone: State<LocalDate> = _dateOfTaskToBeDone
+    private val _dateOfTaskToBeDone = mutableStateOf<LocalDate?>(null)
+    val dataOfTaskToBeDone: State<LocalDate?> = _dateOfTaskToBeDone
     
 
     private val _dateOfSubTask = mutableStateOf<LocalDate?>(null)
@@ -229,6 +229,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         isCompleted = false,
                         importance = _priority.value
                     )
+                    Log.wtf("Meerka", task.listOfSubtasks.toString())
                     createTask(task)
                     delay(500)
                     onEvent(CreatingTaskEvents.NavigateToBack)
@@ -303,20 +304,14 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
 
             is CreatingTaskEvents.UpdateDateForSubtask -> {
-                if (_calendarMode.value == CalendarMode.REMINDERSUB) {
-
                     _listOfSubTasks[_index.value] =
                         _listOfSubTasks[_index.value].copy(date = event.date)
                     _dateOfSubTask.value = event.date
-                }
             }
             is CreatingTaskEvents.UpdateTimeForSubTask -> {
-                if (_clockMode.value == ClockMode.SUBTASKREMINDER) {
-                    Log.wtf("Meersdsdka", _index.value.toString())
                     _listOfSubTasks[_index.value] =
                         _listOfSubTasks[_index.value].copy(time = event.time)
                     _timeOfSubTask.value = event.time
-                }
             }
 
 
