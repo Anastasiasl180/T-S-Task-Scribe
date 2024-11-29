@@ -88,7 +88,7 @@ fun CreatingTaskScreen() {
     val descriptionOfTask by viewModel.descriptionOfTask.collectAsState()
     val listOfDatesWithTasks = viewModel.datesWithTasks
 
-    Log.wtf("Meeruiuika", dateOfSubTask.toString())
+
     Scaffold(
         topBar = {
             TopAppBar(
