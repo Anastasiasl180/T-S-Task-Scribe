@@ -13,7 +13,8 @@ internal fun Task.mapToEntity():TaskEntity{
         isCompleted = this.isCompleted,
         importance = this.importance,
         listOfSubtasks = this.listOfSubtasks,
-        dateForReminder = this.dateForReminder
+        dateForReminder = this.dateForReminder,
+        uuid = this.uuid
     )
 }
 internal fun TaskEntity.mapToTask():Task{
@@ -26,6 +27,7 @@ internal fun TaskEntity.mapToTask():Task{
         isCompleted = this.isCompleted,
         importance = this.importance,
         listOfSubtasks = this.listOfSubtasks,
+        uuid = this.uuid,
         dateOfTaskToBeDone = this.dateToBeDone
     )
 }

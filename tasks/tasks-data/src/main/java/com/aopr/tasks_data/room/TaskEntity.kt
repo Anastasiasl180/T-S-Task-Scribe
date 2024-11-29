@@ -7,11 +7,13 @@ import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 
 @Entity
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     val id:Int=0,
+    val uuid:UUID,
     val tittle:String,
     val description:String,
     val dateToBeDone:LocalDate?,
@@ -21,6 +23,12 @@ data class TaskEntity(
     val importance: ImportanceOfTask =ImportanceOfTask.MEDIUM,
     val listOfSubtasks:List<Subtasks>?
 )
+
+
+
+
+
+
 class Converts {
     @TypeConverter
     fun fromLocalDate(value: LocalDate?): String? = value?.toString()

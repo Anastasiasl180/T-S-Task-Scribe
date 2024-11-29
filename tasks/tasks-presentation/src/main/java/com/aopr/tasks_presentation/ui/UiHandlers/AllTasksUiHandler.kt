@@ -19,9 +19,11 @@ fun AllTasksUiEventHandler() {
         viewModel.events.collect {event->
             when(event){
                 is AllTasksUiEvents.NavigateToCreateTaskScreen -> {
-
                     navigator.navigate(AllTasksNavRoutes.CreatingTaskScreen(event.id))
-                    Log.wtf("Meerkaifififif", event.id.toString())
+                }
+
+                is AllTasksUiEvents.DeleteTask -> {
+
                 }
             }
         }

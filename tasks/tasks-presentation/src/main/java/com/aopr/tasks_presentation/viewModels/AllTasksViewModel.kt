@@ -56,7 +56,7 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         tasksUseCase.deleteTask(task).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
+println(result.message.toString())
                 }
 
                 is Responses.Loading -> {
@@ -76,13 +76,21 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         when (event) {
             is AllTasksEvents.NavigateToCreatingTaskScreen -> {
                 viewModelScope.launch {
-                    _events.emit(AllTasksUiEvents.NavigateToCreateTaskScreen(event.id))
+                    _events.emit(
+                        AllTasksUiEvents.NavigateToCreateTaskScreen(event.id))
                 }
             }
 
             AllTasksEvents.GetAllTasks -> {
                 viewModelScope.launch {
                     getAllTasks()
+                }
+            }
+
+            is AllTasksEvents.DeleteTask -> {
+                viewModelScope.launch {
+                  //  _events.emit(AllTasksUiEvents.DeleteTask(event.task))
+                    deleteTask(event.task)
                 }
             }
         }

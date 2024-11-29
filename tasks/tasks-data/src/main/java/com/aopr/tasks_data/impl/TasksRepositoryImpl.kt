@@ -1,6 +1,7 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
+import android.util.Log
 import com.aopr.shared_domain.throws.EmptyDateForReminderException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTimeForReminderException
@@ -47,7 +48,10 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             dao.insertTask(task.mapToEntity().copy(listOfSubtasks = updatedListOfSubtasks))
         }
 
-        scheduleReminders(task, updatedListOfSubtasks)
+        if (existingTask == null) {
+            Log.wtf("figigi", "createTask: ", )
+            scheduleReminders(task, updatedListOfSubtasks)
+        }
     }
 
     private fun validateDateTime(date: LocalDate?, time: LocalTime?, context: String) {
@@ -59,7 +63,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         if (task.dateForReminder != null && task.timeForReminder != null) {
             scheduleTaskReminder(
                 context = context,
-                taskId = task.id,
+                taskId = task.uuid,
                 taskTitle = task.tittle,
                 date = task.dateForReminder!!,
                 time = task.timeForReminder!!
@@ -68,9 +72,10 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
 
         subtasks?.forEach { subtask ->
             if (subtask.date != null && subtask.time != null) {
+                Log.wtf("subsub", "scheduleReminders: ", )
                 scheduleTaskReminder(
                     context = context,
-                    taskId = task.id,
+                    taskId = task.uuid,
                     taskTitle = "${task.tittle} - Subtask",
                     date = subtask.date!!,
                     time = subtask.time!!,
@@ -83,9 +88,10 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
     override suspend fun deleteTask(task: Task) {
         dao.deleteTask(task.mapToEntity())
         if (task.dateForReminder != null && task.timeForReminder != null) {
+            Log.wtf("ww", "deleteTask: er", )
             cancelTaskReminder(
                 context,
-                taskId = task.id,
+                taskId = task.uuid,
                 taskTitle = task.tittle,
                 date = task.dateForReminder!!,
                 time = task.timeForReminder!!
@@ -98,7 +104,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         listOfSubsWithRemi?.forEach { subtask ->
             cancelSubtaskReminder(
                 context,
-                taskId = task.id,
+                subTaskId = task.uuid,
                 taskTitle = task.tittle,
                 subTaskDescription = subtask.description,
                 date = subtask.date!!,
@@ -130,7 +136,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             if (subTaskRemi.time != null && subTaskRemi.date != null) {
                 cancelSubtaskReminder(
                     context,
-                    taskId = task1.id,
+                    subTaskId = task1.uuid,
                     taskTitle = task1.tittle,
                     subTaskDescription = subTaskRemi.description,
                     date = subTaskRemi.date!!,

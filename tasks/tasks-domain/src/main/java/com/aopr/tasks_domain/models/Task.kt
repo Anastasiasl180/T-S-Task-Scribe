@@ -2,9 +2,11 @@ package com.aopr.tasks_domain.models
 
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.UUID
 
 data class Task(
     val id:Int,
+    val uuid: UUID = UUID.randomUUID(),
     val tittle:String,
     val description:String,
     val dateForReminder: LocalDate?=null,
