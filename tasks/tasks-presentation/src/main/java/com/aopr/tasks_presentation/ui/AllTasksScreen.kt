@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.ui.UiHandlers.AllTasksUiEventHandler
-import com.aopr.tasks_presentation.viewModels.AllTasksViewModel
+import com.aopr.tasks_presentation.view_models.AllTasksViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

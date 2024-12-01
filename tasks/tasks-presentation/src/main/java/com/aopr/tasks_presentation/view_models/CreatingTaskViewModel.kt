@@ -1,4 +1,4 @@
-package com.aopr.tasks_presentation.viewModels
+package com.aopr.tasks_presentation.view_models
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf

@@ -57,7 +57,7 @@ import com.aopr.tasks_presentation.ui.ui_elements.ClockPicker
 import com.aopr.tasks_presentation.ui.ui_elements.CustomCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
-import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
+import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime

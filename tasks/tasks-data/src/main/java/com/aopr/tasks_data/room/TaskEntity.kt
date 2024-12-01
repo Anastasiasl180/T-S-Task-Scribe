@@ -24,11 +24,6 @@ data class TaskEntity(
     val listOfSubtasks:List<Subtasks>?
 )
 
-
-
-
-
-
 class Converts {
     @TypeConverter
     fun fromLocalDate(value: LocalDate?): String? = value?.toString()

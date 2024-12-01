@@ -19,6 +19,9 @@ sealed interface HomeNavRoutes {
     @Serializable
     data object AllTasksScreen:HomeNavRoutes
 
+    @Serializable
+    data object AllCategoriesOfBookmarks:HomeNavRoutes
+
 }
 
 @Serializable

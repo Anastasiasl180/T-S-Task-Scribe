@@ -24,6 +24,10 @@ fun HomeUiEventHandler() {
                 NotesUiEvents.NavigateToAllTasks -> {
                     navigator.navigate(HomeNavRoutes.AllTasksScreen)
                 }
+
+                NotesUiEvents.NavigateToAllCategoriesOfBookmarks -> {
+                    navigator.navigate(HomeNavRoutes.AllCategoriesOfBookmarks)
+                }
             }
 
         }

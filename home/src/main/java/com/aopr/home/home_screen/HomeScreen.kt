@@ -69,6 +69,7 @@ fun HomeScreen() {
     }
     var showBottomSheetForNotes by remember { mutableStateOf(false) }
     var showBottomSheetForTasks by remember { mutableStateOf(false) }
+    var showBottomSheetForBookmarks by remember { mutableStateOf(false) }
     var blurredCardIndex by remember { mutableIntStateOf(-1) }
     val listOfButtons = listOf(
         getNotesButtons(onShowBottomSheetChange = {
@@ -79,7 +80,11 @@ fun HomeScreen() {
             viewModel.onEvent(NotesEvent.NavigateToAllTasks)
         }, onShowBottomSheetChange = {
             showBottomSheetForTasks = it
-        }), getBookMarksButtons(),
+        }), getBookMarksButtons(navigateToAllCategoriesOfBookmarks = {
+            viewModel.onEvent(NotesEvent.NavigateToAllCategoriesOfBookmarks)
+        }, onShowBottomSheetChange = {
+            showBottomSheetForBookmarks = it
+        }),
         getCalendarButton()
     )
 
@@ -234,14 +239,17 @@ internal fun getTasksButtons(
 }
 
 @Composable
-fun getBookMarksButtons(modifier: Modifier = Modifier): Array<@Composable () -> Unit> {
+fun getBookMarksButtons(navigateToAllCategoriesOfBookmarks: () -> Unit,
+                        onShowBottomSheetChange: (Boolean) -> Unit): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
+            navigateToAllCategoriesOfBookmarks()
         }) {
             Text(text = stringResource(id = R.string.AllBookmarks))
         }
     }, {
         Button(onClick = {
+            onShowBottomSheetChange(true)
         }) {
             Text(text = stringResource(id = R.string.NewBookmark))
         }
