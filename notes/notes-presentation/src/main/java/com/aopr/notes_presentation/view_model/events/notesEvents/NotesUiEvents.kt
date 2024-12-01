@@ -6,4 +6,5 @@ import com.aopr.shared_ui.util.events_type.UiEventsType
 sealed class NotesUiEvents:UiEventsType {
     data object NavigateToAllNotesScreen: NotesUiEvents()
     data object NavigateToAllTasks:NotesUiEvents()
+    data object NavigateToAllCategoriesOfBookmarks:NotesUiEvents()
 }

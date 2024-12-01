@@ -9,7 +9,7 @@ import com.aopr.shared_ui.util.currentOrThrow
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
-import com.aopr.tasks_presentation.viewModels.CreatingTaskViewModel
+import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

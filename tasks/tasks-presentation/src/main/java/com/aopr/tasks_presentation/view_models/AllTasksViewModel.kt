@@ -1,12 +1,9 @@
-package com.aopr.tasks_presentation.viewModels
+package com.aopr.tasks_presentation.view_models
 
-import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aopr.shared_domain.Responses
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.Task

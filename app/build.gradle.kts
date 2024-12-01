@@ -61,6 +61,9 @@ dependencies {
     implementation(project(":tasks:tasks-presentation"))
     implementation(project(":tasks:tasks-data"))
     implementation(project(":tasks:tasks-domain"))
+    implementation(project(":bookmarks:bookmarks-domain"))
+    implementation(project(":bookmarks:bookmarks-data"))
+    implementation(project(":bookmarks:bookmarks-presentation"))
 
 
 

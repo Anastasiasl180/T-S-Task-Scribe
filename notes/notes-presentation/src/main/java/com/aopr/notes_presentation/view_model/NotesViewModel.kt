@@ -154,6 +154,10 @@ class NotesViewModel(
             is NotesEvent.UpdateTittleOFTask -> {
                 _tittleOfTask.value = event.tittle
             }
+
+            NotesEvent.NavigateToAllCategoriesOfBookmarks -> {
+
+            }
         }
     }
 
