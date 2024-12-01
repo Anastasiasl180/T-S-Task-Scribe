@@ -1,6 +1,5 @@
 package com.aopr.tasks_presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -168,18 +167,20 @@ fun CreatingTaskScreen() {
                                 }
 
                                 ClockPicker(
-                                    initialTime = when(viewModel.clockMode.value){
-                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                    initialTime = when (viewModel.clockMode.value) {
+                                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
                                             selectedTime
                                         }
-                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> selectedTimeSub
+
+                                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> selectedTimeSub
                                     },
                                     onTimeChanged = { newTime ->
-                                        when(viewModel.clockMode.value){
-                                            CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                        when (viewModel.clockMode.value) {
+                                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
                                                 selectedTime = newTime
                                             }
-                                            CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
+
+                                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
                                                 selectedTimeSub = newTime
                                             }
                                         }
@@ -190,16 +191,17 @@ fun CreatingTaskScreen() {
 
                                 Text(
                                     text =
-                                    when(viewModel.clockMode.value){
-                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
-                                            selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                                        when (viewModel.clockMode.value) {
+                                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                                                selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
 
-                                        }
-                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
-                                            selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
+                                            }
 
-                                        }
-                                    },
+                                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                                                selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+                                            }
+                                        },
                                     modifier = Modifier.padding(top = 16.dp)
                                 )
 
@@ -207,15 +209,18 @@ fun CreatingTaskScreen() {
                                     val now = LocalTime.now()
                                     val today = LocalDate.now()
                                     when (viewModel.clockMode.value) {
-                                        CreatingTaskViewModel.ClockMode.REMINDERTASK -> {
+                                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
                                             viewModel.onEvent(
                                                 CreatingTaskEvents.UpdateTimeOfTask(selectedTime)
                                             )
                                             viewModel.onEvent(CreatingTaskEvents.HideClock)
                                         }
-                                        CreatingTaskViewModel.ClockMode.SUBTASKREMINDER -> {
+
+                                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
                                             viewModel.onEvent(
-                                                CreatingTaskEvents.UpdateTimeForSubTask(selectedTimeSub)
+                                                CreatingTaskEvents.UpdateTimeForSubTask(
+                                                    selectedTimeSub
+                                                )
                                             )
                                             viewModel.onEvent(CreatingTaskEvents.HideClock)
                                         }
@@ -249,10 +254,12 @@ fun CreatingTaskScreen() {
                                     CreatingTaskViewModel.CalendarMode.TASK_DONE -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskToBeDone(selectedDate)
                                     )
+
                                     CreatingTaskViewModel.CalendarMode.REMINDER -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateOfTaskForReminder(selectedDate)
                                     )
-                                    CreatingTaskViewModel.CalendarMode.REMINDERSUB -> viewModel.onEvent(
+
+                                    CreatingTaskViewModel.CalendarMode.SUB_REMINDER -> viewModel.onEvent(
                                         CreatingTaskEvents.UpdateDateForSubtask(selectedDate)
                                     )
                                 }
@@ -523,16 +530,38 @@ fun CreatingTaskScreen() {
                             )
                         },
                         onDeleteSubTask = { index ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.RemoveTextFieldForSubTask(
-                                   task =viewModel.existingTask.value , index
+                            if (viewModel.existingTask.value != null) {
+                                viewModel.onEvent(
+                                    CreatingTaskEvents.RemoveTextFieldForSubTask(
+                                        task = viewModel.existingTask.value, index
+                                    )
                                 )
-                            )
+                            } else {
+                                viewModel.onEvent(
+                                    CreatingTaskEvents.RemoveTextFieldForSubTask(
+                                        task = viewModel.existingTask.value, index
+                                    )
+                                )
+                            }
+
+
                         },
                         data = dateOfSubTask,
                         time = timeOfSubTask,
-                        showCalendarForReminder = { viewModel.onEvent(CreatingTaskEvents.ShowCalendarForSubTask(it)) },
-                        showClockForReminder = { viewModel.onEvent(CreatingTaskEvents.ShowClockForSubTaskReminder(it)) }
+                        showCalendarForReminder = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.ShowCalendarForSubTask(
+                                    it
+                                )
+                            )
+                        },
+                        showClockForReminder = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.ShowClockForSubTaskReminder(
+                                    it
+                                )
+                            )
+                        }
                     )
                 }
 
