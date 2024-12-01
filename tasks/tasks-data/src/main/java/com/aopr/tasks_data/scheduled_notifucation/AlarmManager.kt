@@ -34,7 +34,7 @@ fun scheduleTaskReminder(
         intent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
-    Log.wtf("", taskId.toString(), )
+
 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarmManager.setExactAndAllowWhileIdle(
