@@ -2,6 +2,7 @@ package com.example.bookmarks_domain.interactors
 
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.models.Bookmark
+import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
@@ -40,6 +41,46 @@ class BookmarksUseCase(private val repository: BookmarksRepository) {
             emit(Responses.Loading())
             val result = repository.deleteBookmark(bookmark)
             emit(Responses.Success(result))
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
+
+    fun createCategory(category: Category): Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.createCategory(category)
+            emit(Responses.Success(result))
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
+
+    fun deleteCategory(category: Category): Flow<Responses<Unit>> = flow {
+        try {
+
+            emit(Responses.Loading())
+            val result = repository.deleteCategory(category)
+            emit(Responses.Success(result))
+
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
+
+    fun getAllCategories(): Flow<Responses<Flow<List<Category>>>> = flow {
+        try {
+
+            emit(Responses.Loading())
+            val result = repository.getAllCategories()
+            emit(Responses.Success(result))
+
         } catch (e: IOException) {
             println(e.message.toString())
         } catch (e: Exception) {
