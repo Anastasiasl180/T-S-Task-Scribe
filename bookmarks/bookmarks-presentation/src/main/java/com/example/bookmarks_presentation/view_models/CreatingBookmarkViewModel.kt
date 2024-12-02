@@ -38,6 +38,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase:BookmarksUseCase):V
         }.launchIn(viewModelScope)
     }
 
+
     fun oEvent(events: CreatingBookmarkEvents){
         when(events){
             is CreatingBookmarkEvents.GetBookmarkById -> {

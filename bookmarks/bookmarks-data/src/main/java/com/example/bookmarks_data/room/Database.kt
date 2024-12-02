@@ -9,8 +9,8 @@ import org.koin.core.annotation.Single
 
 
 @Single
-fun provideBookmarksDatabase(context: Context) {
-    Room.databaseBuilder(context,
+fun provideBookmarksDatabase(context: Context): BookmarksDatabase {
+  return  Room.databaseBuilder(context,
         BookmarksDatabase::class.java,
         "bookmarks-database").build()
 }
