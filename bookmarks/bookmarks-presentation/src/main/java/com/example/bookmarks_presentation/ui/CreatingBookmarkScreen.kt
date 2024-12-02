@@ -1,6 +1,7 @@
 package com.example.bookmarks_presentation.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +32,7 @@ fun CreatingBookMarkScreen() {
         modifier = Modifier.fillMaxSize().background(Color.Cyan),
         contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
         TextField(
             shape = MaterialTheme.shapes.medium,
             modifier = Modifier

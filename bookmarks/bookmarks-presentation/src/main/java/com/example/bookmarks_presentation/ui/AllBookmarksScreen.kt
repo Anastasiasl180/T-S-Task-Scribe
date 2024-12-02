@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
 
 @Composable
 fun AllBookmarksScreen(modifier: Modifier = Modifier) {
