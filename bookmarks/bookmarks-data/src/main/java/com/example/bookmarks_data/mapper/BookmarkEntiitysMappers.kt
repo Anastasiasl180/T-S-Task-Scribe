@@ -5,7 +5,7 @@ import com.example.bookmarks_data.room.CategoryEntity
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 
-internal fun Bookmark.mapToEntity():BookmarksEntity{
+internal fun Bookmark.mapToEntity(): BookmarksEntity {
     return BookmarksEntity(
         id = this.id,
         tittle = this.tittle,
@@ -15,7 +15,8 @@ internal fun Bookmark.mapToEntity():BookmarksEntity{
         categoryId = this.categoryId
     )
 }
-internal fun BookmarksEntity.mapToBookmark():Bookmark{
+
+internal fun BookmarksEntity.mapToBookmark(): Bookmark {
     return Bookmark(
         id = this.id,
         tittle = this.tittle,
@@ -25,18 +26,22 @@ internal fun BookmarksEntity.mapToBookmark():Bookmark{
         categoryId = this.categoryId
     )
 }
-internal fun CategoryEntity.mapToCategory():Category{
+
+internal fun CategoryEntity.mapToCategory(): Category {
     return Category(
         id = this.id,
         tittle = this.tittle,
-        listOfBookmarks = this.listOfBookmarks
+        listOfBookmarks = this.listOfBookmarks?.map {
+            it.mapToBookmark()
+        }
     )
 }
-internal fun Category.mapToEntity():CategoryEntity{
+
+internal fun Category.mapToEntity(): CategoryEntity {
     return CategoryEntity(
         id = this.id,
         tittle = this.tittle,
-        listOfBookmarks = this.listOfBookmarks
+        listOfBookmarks = this.listOfBookmarks?.map { it.mapToEntity() }
 
     )
 }
