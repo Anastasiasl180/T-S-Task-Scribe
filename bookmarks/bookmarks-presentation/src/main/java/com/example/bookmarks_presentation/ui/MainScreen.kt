@@ -113,7 +113,9 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     .width(180.dp)
                             ) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier.fillMaxSize().clickable {
+viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
+                                    },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(text = "All", modifier = Modifier)

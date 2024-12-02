@@ -56,15 +56,18 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
 
         }.launchIn(viewModelScope)
     }
-    private fun getAllCategories(){
-        bookmarksUseCase.getAllCategories().onEach { result->
-            when(result){
+
+    private fun getAllCategories() {
+        bookmarksUseCase.getAllCategories().onEach { result ->
+            when (result) {
                 is Responses.Error<*> -> {
 
                 }
+
                 is Responses.Loading<*> -> {
 
                 }
+
                 is Responses.Success<*> -> {
                     result.data?.collect { category ->
                         _listOfCategories.value = category
@@ -83,7 +86,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
                 }
             }
 
-          MainEvents.AddCategory -> {
+            MainEvents.AddCategory -> {
                 viewModelScope.launch {
                     val category = Category(
                         tittle = _tittleOfCategory.value
@@ -101,7 +104,9 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
             }
 
             MainEvents.NavigateToAllBookmarks -> {
-
+                viewModelScope.launch {
+                    _event.emit(UiMainEvents.NavigateToAllBookMarks)
+                }
             }
 
             MainEvents.HideDialogForAddingCategory -> {

@@ -22,6 +22,10 @@ fun MainUiEventHandler() {
                 is UiMainEvents.NavigateToCreateBookmark -> {
                     navigator.navigate(AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen(uiEvent.id))
                 }
+
+                UiMainEvents.NavigateToAllBookMarks -> {
+                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen)
+                }
             }
 
         }
