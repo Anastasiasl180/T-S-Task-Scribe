@@ -8,10 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
+import com.example.bookmarks_presentation.ui_events_handlers.main_handler.MainUiEventHandler
 
 @Composable
 fun AllBookmarksInCategory() {
+    MainUiEventHandler()
     Box(modifier = Modifier.fillMaxSize().background(Color.Blue), contentAlignment = Alignment.Center){
         Text("nananan")
     }

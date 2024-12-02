@@ -20,7 +20,7 @@ fun MainUiEventHandler() {
         viewModel.event.collect {uiEvent->
             when(uiEvent){
                 is UiMainEvents.NavigateToCreateBookmark -> {
-                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen(null))
+                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen(uiEvent.id))
                 }
             }
 

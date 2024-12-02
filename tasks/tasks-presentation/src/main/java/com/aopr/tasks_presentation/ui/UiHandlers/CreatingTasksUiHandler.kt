@@ -31,11 +31,7 @@ fun CreatingTaskUiEventHandler() {
     }
     LaunchedEffect(Unit) {
         if (idd != null) {
-            Log.wtf("Meerka", "Merno1")
-            Log.wtf("Meerka", idd.toString())
             viewModel.onEvent(CreatingTaskEvents.GetTakById(idd))
-        }else{
-            Log.wtf("Meerka"," Merno ")
         }
     }
 

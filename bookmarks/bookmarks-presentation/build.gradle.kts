@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -32,12 +33,17 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
 
 
     implementation(project(":shared:shared-ui"))
+    implementation(project(":shared:shared-domain"))
+    implementation(project(":bookmarks:bookmarks-domain"))
     implementation(libs.info.bar.compose)
 
     //navigation

@@ -20,7 +20,7 @@ class MainViewModel:ViewModel() {
         when(event){
             is MainEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
-                    _event.emit(UiMainEvents.NavigateToCreateBookmark())
+                    _event.emit(UiMainEvents.NavigateToCreateBookmark(event.id))
                 }
             }
         }
