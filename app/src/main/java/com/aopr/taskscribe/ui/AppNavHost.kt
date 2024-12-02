@@ -18,6 +18,7 @@ import com.aopr.tasks_presentation.ui.AllTasksScreen
 import com.aopr.tasks_presentation.ui.CreatingTaskScreen
 import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
 import com.example.bookmarks_presentation.ui.AllBookmarksInCategory
+import com.example.bookmarks_presentation.ui.AllBookmarksScreen
 import com.example.bookmarks_presentation.ui.CreatingBookMarkScreen
 import com.example.bookmarks_presentation.ui.MainBookmarksScreen
 
@@ -56,7 +57,7 @@ fun AppNavHost() {
                         AllBookmarksInCategory()
                     }
                     composable<AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen> {
-                        AllTasksScreen()
+                        AllBookmarksScreen()
                     }
                     composable<AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen> {
                         CreatingBookMarkScreen()

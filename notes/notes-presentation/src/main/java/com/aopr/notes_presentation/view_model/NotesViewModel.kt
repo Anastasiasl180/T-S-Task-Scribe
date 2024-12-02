@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
@@ -51,7 +52,7 @@ class NotesViewModel(
     val timeOfTask: State<LocalTime?> = _timeOfTask
 
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
-    val listOfSubTasks:List<Subtasks> = _listOfSubTasks
+    val listOfSubTasks: List<Subtasks> = _listOfSubTasks
 
     private val _event = MutableSharedFlow<NotesUiEvents>()
     val uiEvents = _event
@@ -142,7 +143,7 @@ class NotesViewModel(
                         importance = ImportanceOfTask.MEDIUM,
                         dateOfTaskToBeDone = _dataOfTaskToBeDone.value,
 
-                    )
+                        )
                     createTask(task)
                 }
             }
@@ -156,7 +157,9 @@ class NotesViewModel(
             }
 
             NotesEvent.NavigateToAllCategoriesOfBookmarks -> {
-
+                viewModelScope.launch {
+                    _event.emit(NotesUiEvents.NavigateToAllCategoriesOfBookmarks)
+                }
             }
         }
     }

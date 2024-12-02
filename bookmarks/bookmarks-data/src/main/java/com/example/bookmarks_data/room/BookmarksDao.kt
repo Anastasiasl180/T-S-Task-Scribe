@@ -13,7 +13,7 @@ interface BookmarksDao {
     suspend fun saveBookmark(bookmarksEntity: BookmarksEntity)
 
     @Query("SELECT * FROM bookmarks WHERE id = :id LIMIT 1 ")
-    suspend fun getBookmarkById(id:Int):Flow<BookmarksEntity>
+   fun getBookmarkById(id:Int):Flow<BookmarksEntity>
 
     @Query("SELECT * FROM bookmarks")
     fun getAllBookmarks():Flow<List<BookmarksEntity>>
