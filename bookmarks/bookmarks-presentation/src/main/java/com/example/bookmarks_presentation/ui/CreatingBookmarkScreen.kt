@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +32,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandler
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreatingBookMarkScreen() {
+    CreatingBookmarkUiEventHandler()
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
-    val tittleOfBookmark by viewModel.tittle
-    val fileUri by viewModel.fileUri
-    val contentUrl by viewModel.contentUrl
+    val tittleOfBookmark by viewModel.tittle.collectAsState()
+    val fileUri by viewModel.fileUri.collectAsState()
+    val contentUrl by viewModel.contentUrl.collectAsState()
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),

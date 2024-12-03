@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.compose.runtime.State
@@ -15,6 +16,8 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
 import com.example.bookmarks_presentation.events.main_events.MainEvents
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,14 +26,14 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel() {
 
-    private val _tittleOfBookmark = mutableStateOf("")
-    val tittle: State<String> = _tittleOfBookmark
+    private val _tittleOfBookmark = MutableStateFlow("")
+    val tittle: StateFlow<String> = _tittleOfBookmark
 
-    private val _contentUrl = mutableStateOf<String?>(null)
-    val contentUrl: State<String?> = _contentUrl
+    private val _contentUrl = MutableStateFlow<String?>(null)
+    val contentUrl: StateFlow<String?> = _contentUrl
 
-    private val _fileUri = mutableStateOf<String?>(null)
-    val fileUri: State<String?> = _fileUri
+    private val _fileUri = MutableStateFlow<String?>(null)
+    val fileUri: StateFlow<String?> = _fileUri
 
 
     private fun createBookmark(bookmark: Bookmark) {
@@ -52,11 +55,37 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         }.launchIn(viewModelScope)
     }
 
+    private fun getBookMarkById(id: Int) {
+        bookmarksUseCase.getBookmarkById(id).onEach { result ->
+            when (result) {
+                is Responses.Error<*> -> {
+
+                }
+
+                is Responses.Loading<*> -> {
+                }
+
+                is Responses.Success<*> -> {
+                    result.data?.collect() { bookmark ->
+                        _tittleOfBookmark.value = bookmark.tittle
+                        _fileUri.value = bookmark.fileUri
+                        _contentUrl.value = bookmark.url
+                    }
+
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
 
     fun oEvent(events: CreatingBookmarkEvents) {
         when (events) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
-
+                viewModelScope.launch {
+                   events.id?.let{it
+                       getBookMarkById(it)
+                   }
+                }
             }
 
             CreatingBookmarkEvents.SaveBookmark -> {
@@ -77,15 +106,19 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
             is CreatingBookmarkEvents.AddFile -> {
                 _fileUri.value = events.uri
             }
+
             is CreatingBookmarkEvents.AddLink -> {
                 _contentUrl.value = events.url
             }
+
             CreatingBookmarkEvents.CancelFile -> {
                 _fileUri.value = null
             }
+
             CreatingBookmarkEvents.CancelLink -> {
                 _contentUrl.value = null
             }
+
             is CreatingBookmarkEvents.OpenFile -> TODO()
             is CreatingBookmarkEvents.OpenLink -> TODO()
         }

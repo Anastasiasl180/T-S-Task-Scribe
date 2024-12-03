@@ -73,6 +73,17 @@ class BookmarksUseCase(private val repository: BookmarksRepository) {
             println(e.message.toString())
         }
     }
+    fun getBookmarkById(id:Int):Flow<Responses<Flow<Bookmark>>> = flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.getBookmarkById(id)
+            emit(Responses.Success(result))
+        }catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
 
     fun getAllCategories(): Flow<Responses<Flow<List<Category>>>> = flow {
         try {
