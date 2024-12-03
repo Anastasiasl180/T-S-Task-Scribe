@@ -29,6 +29,9 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
     private val _tittleOfBookmark = MutableStateFlow("")
     val tittle: StateFlow<String> = _tittleOfBookmark
 
+    private val _idOfTask = mutableStateOf<Int?>(null)
+    val idOfTask: State<Int?> = _idOfTask
+
     private val _contentUrl = MutableStateFlow<String?>(null)
     val contentUrl: StateFlow<String?> = _contentUrl
 
@@ -67,6 +70,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
 
                 is Responses.Success<*> -> {
                     result.data?.collect() { bookmark ->
+                        _idOfTask.value = bookmark.id
                         _tittleOfBookmark.value = bookmark.tittle
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
@@ -91,6 +95,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
             CreatingBookmarkEvents.SaveBookmark -> {
                 viewModelScope.launch {
                     val bookmark = Bookmark(
+                        id = _idOfTask.value ?:0,
                         tittle = _tittleOfBookmark.value,
                         fileUri = _fileUri.value,
                         url = _contentUrl.value

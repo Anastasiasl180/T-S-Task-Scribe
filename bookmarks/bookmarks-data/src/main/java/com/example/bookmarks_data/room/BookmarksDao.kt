@@ -5,6 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
+import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 
@@ -16,6 +18,9 @@ interface BookmarksDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCategory(category:CategoryEntity)
+
+    @Update
+    suspend fun updateBookmark(bookmark: BookmarksEntity)
 
     @Delete
     suspend fun deleteCategory(category:CategoryEntity)

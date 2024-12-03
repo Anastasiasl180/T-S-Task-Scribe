@@ -8,14 +8,28 @@ import com.example.bookmarks_domain.interactors.BookmarksRepository
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
 class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksRepository {
     override suspend fun createBookmark(bookmark: Bookmark) {
+        val existingBookmark = dao.getBookmarkById(bookmark.id).firstOrNull()
+        if (existingBookmark!=null){
+            updateBookmark(bookmark)
+        }else{
+            if (bookmark.tittle.isNotEmpty()) {
+                dao.saveBookmark(bookmark.mapToEntity())
+            }
+        }
+
+
+    }
+
+    override suspend fun updateBookmark(bookmark: Bookmark) {
         if (bookmark.tittle.isNotEmpty()) {
-            dao.saveBookmark(bookmark.mapToEntity())
+            dao.updateBookmark(bookmark.mapToEntity())
         }
     }
 
