@@ -24,7 +24,9 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
     }
 
     override suspend fun getBookmarkById(id: Int): Flow<Bookmark> {
-        TODO()
+        return dao.getBookmarkById(id).map { entity ->
+            entity.mapToBookmark()
+        }
     }
 
     override suspend fun getAllBookmarks(): Flow<List<Bookmark>> {
