@@ -2,18 +2,63 @@ package com.example.bookmarks_presentation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_in_category_handler.AllBookmarksByCategoryUiEventHandler
 import com.example.bookmarks_presentation.ui_events_handlers.main_handler.MainUiEventHandler
+import com.example.bookmarks_presentation.view_models.AllBookmarksInCategoryViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun AllBookmarksInCategory() {
-    MainUiEventHandler()
-    Box(modifier = Modifier.fillMaxSize().background(Color.Blue), contentAlignment = Alignment.Center){
-        Text("nananan")
+    Scaffold(floatingActionButton = {
+        FloatingActionButton(onClick = {
+
+        }) {
+            Text("+")
+        }
+    }) { _ ->
+
+
+        AllBookmarksByCategoryUiEventHandler()
+        val viewModel = koinViewModel<AllBookmarksInCategoryViewModel>()
+        val listOfBookmarks = viewModel.listOfBookmarks.collectAsState()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Blue),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (listOfBookmarks.value.isNotEmpty()) {
+                    listOfBookmarks.value.forEach { it ->
+                        Card(
+                            modifier = Modifier
+                                .height(100.dp)
+                                .width(100.dp)
+                        ) {
+
+                            Text(it.tittle)
+                        }
+
+                    }
+                } else {
+                    Text("NOOOOOOOOO")
+                }
+            }
+        }
     }
 }

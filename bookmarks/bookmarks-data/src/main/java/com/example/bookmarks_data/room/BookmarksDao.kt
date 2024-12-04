@@ -28,6 +28,11 @@ interface BookmarksDao {
     @Query("SELECT * FROM categories")
     fun getAllCategories():Flow<List<CategoryEntity>>
 
+   /* @Query("SELECT * FROM CATEGORIES WHERE id = :id")
+    fun getBookmarksByCategoryId(id:Int):Flow<List<BookmarksEntity>>
+*/
+    @Query("SELECT * FROM categories WHERE id = :categoryId")
+    fun getBookmarksByCategoryId(categoryId: Int): Flow<List<BookmarksEntity>>
     @Query("SELECT * FROM bookmarks WHERE id = :id LIMIT 1 ")
    fun getBookmarkById(id:Int):Flow<BookmarksEntity>
 

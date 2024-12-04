@@ -33,29 +33,34 @@ fun AllBookmarksScreen(modifier: Modifier = Modifier) {
     Box(
         modifier
             .fillMaxSize()
-            .background(Color.Green), contentAlignment = Alignment.Center
+            .background(Color.DarkGray), contentAlignment = Alignment.Center
     ) {
-        Box(modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.9f), contentAlignment = Alignment.Center) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.9f), contentAlignment = Alignment.Center
         ) {
-            if (viewModel.listOfBookmarks.value != null) {
-                items(viewModel.listOfBookmarks.value!!) {
-                    CustomCard(
-                        modifier = Modifier.fillMaxSize(), navigateToBookmark = {
-                            viewModel.onEvent(AllBookmarksEvents.NavigateToBookmarkById(it.id))
-                        }
-                    )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                if (viewModel.listOfBookmarks.value != null) {
+                    items(viewModel.listOfBookmarks.value!!) {
+                        CustomCard(
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(180.dp), navigateToBookmark = {
+                                viewModel.onEvent(AllBookmarksEvents.NavigateToBookmarkById(it.id))
+                            }
+                        )
+
+                    }
                 }
+
+
             }
-
-
         }
-    }
 
     }
 }

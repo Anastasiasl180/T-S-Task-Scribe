@@ -9,6 +9,7 @@ import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
@@ -60,6 +61,27 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
     override suspend fun deleteCategory(category: Category) {
         dao.deleteCategory(category.mapToEntity())
     }
+
+    override suspend fun getBookmarksByCategoryId(id: Int?): Flow<List<Bookmark>> {
+
+
+
+        return id?.let { nonNullId ->
+            dao.getBookmarksByCategoryId(nonNullId).map { entityList ->
+                entityList.map { entity ->
+                    entity.mapToBookmark()
+                }
+            }
+        } ?: flowOf(emptyList())
+    }
+   /*
+      return dao.getBookmarksByCategoryId(id).map {entityList->
+            entityList.map { entity ->
+                entity.mapToBookmark()
+            }
+
+        }*/
+
 
     override suspend fun getAllCategories(): Flow<List<Category>> {
         return dao.getAllCategories().map { list ->

@@ -85,6 +85,19 @@ class BookmarksUseCase(private val repository: BookmarksRepository) {
         }
     }
 
+    fun getBookmarksByCategoryId(id:Int?):Flow<Responses<Flow<List<Bookmark>>>> =flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.getBookmarksByCategoryId(id)
+            emit(Responses.Success(result))
+        }catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
+
+
     fun getAllCategories(): Flow<Responses<Flow<List<Category>>>> = flow {
         try {
 
