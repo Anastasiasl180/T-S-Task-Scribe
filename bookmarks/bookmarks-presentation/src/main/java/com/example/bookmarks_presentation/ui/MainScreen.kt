@@ -25,6 +25,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
     val viewModel = koinViewModel<MainViewModel>()
     val tittleOfCategory by viewModel.tittleOfCategory
     val isDialogShowed by viewModel.isDialogForAddingCategoryIsShowed
+    val list by viewModel.listOfCategories.collectAsState()
 
     MainUiEventHandler()
     Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
@@ -124,14 +126,16 @@ viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
                             }
                         }
                         Box(modifier = Modifier.fillMaxSize()) {
-                            if (viewModel.listOfCategories.value != null) {
+                            if (list.isNotEmpty()) {
                                 LazyVerticalGrid(
                                     columns = GridCells.Fixed(2),
                                     verticalArrangement = Arrangement.spacedBy(20.dp),
                                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                                 ) {
-                                    items(viewModel.listOfCategories.value!!.size) {
-                                        Card(modifier = Modifier.height(200.dp)) {
+                                    items(list) {it->
+                                        Card(modifier = Modifier.height(200.dp).clickable{
+                                            viewModel.onEvent(MainEvents.NavigateToBookmarksByCategoryId(it.id))
+                                        }) {
                                             Text("dkfkfjk")
                                         }
                                     }

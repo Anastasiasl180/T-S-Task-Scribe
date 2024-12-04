@@ -7,6 +7,7 @@ import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import com.example.bookmarks_presentation.events.main_events.UiMainEvents
 import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
+import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes.*
 import com.example.bookmarks_presentation.view_models.MainViewModel
 import kotlinx.coroutines.flow.collect
 import org.koin.androidx.compose.koinViewModel
@@ -20,11 +21,15 @@ fun MainUiEventHandler() {
         viewModel.event.collect {uiEvent->
             when(uiEvent){
                 is UiMainEvents.NavigateToCreateBookmark -> {
-                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen(uiEvent.id))
+                    navigator.navigate(CreatingBookMarkScreen(uiEvent.id))
                 }
 
                 UiMainEvents.NavigateToAllBookMarks -> {
                     navigator.navigate(AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen)
+                }
+
+                is UiMainEvents.NavigateToBookmarksByCategoryId -> {
+                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.AllBookmarksInCategory(uiEvent.id))
                 }
             }
 

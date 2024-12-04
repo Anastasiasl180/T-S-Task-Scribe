@@ -11,7 +11,10 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.events.main_events.MainEvents
 import com.example.bookmarks_presentation.events.main_events.UiMainEvents
+import com.example.bookmarks_presentation.events.main_events.UiMainEvents.*
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -27,8 +30,8 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
     private val _tittleOfCategory = mutableStateOf("")
     val tittleOfCategory: State<String> = _tittleOfCategory
 
-    private val _listOfCategories = mutableStateOf<List<Category>?>(null)
-    val listOfCategories: State<List<Category>?> = _listOfCategories
+    private val _listOfCategories = MutableStateFlow<List<Category>>(emptyList())
+    val listOfCategories: StateFlow<List<Category>> = _listOfCategories
 
     private val _event = MutableSharedFlow<UiMainEvents>()
     val event = _event.asSharedFlow()
@@ -75,14 +78,14 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
                 }
             }
 
-        }
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: MainEvents) {
         when (event) {
             is MainEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
-                    _event.emit(UiMainEvents.NavigateToCreateBookmark(event.id))
+                    _event.emit(NavigateToCreateBookmark(event.id))
                 }
             }
 
@@ -119,6 +122,12 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
 
             is MainEvents.UpdateTittleOfCategory -> {
                 _tittleOfCategory.value = event.tittle
+            }
+
+            is MainEvents.NavigateToBookmarksByCategoryId -> {
+                viewModelScope.launch{
+                    _event.emit(UiMainEvents.NavigateToBookmarksByCategoryId(event.id))
+                }
             }
         }
 

@@ -3,6 +3,7 @@ package com.example.bookmarks_presentation.events.main_events
 import com.example.bookmarks_domain.models.Category
 
 sealed interface MainEvents {
+    data class NavigateToBookmarksByCategoryId(val id:Int): MainEvents
     data class NavigateToCreateBookmark(val id:Int?):MainEvents
     data object AddCategory:MainEvents
     data class DeleteCategory(val category: Category):MainEvents
