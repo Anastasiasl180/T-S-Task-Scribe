@@ -13,5 +13,6 @@ sealed interface CreatingBookmarkEvents {
     data class OpenLink(val url: String) : CreatingBookmarkEvents
     data class UpdateTittleOfBookmark(val tittle: String) : CreatingBookmarkEvents
     data object ExpandDropDownMenu: CreatingBookmarkEvents
+    data class SelectCategory(val id:Int?): CreatingBookmarkEvents
 
 }

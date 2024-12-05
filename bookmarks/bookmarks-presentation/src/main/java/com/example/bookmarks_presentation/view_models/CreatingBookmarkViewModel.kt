@@ -105,6 +105,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                         _tittleOfBookmark.value = bookmark.tittle
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
+                        _idOfCategory.value = bookmark.categoryId
 
                     }
 
@@ -159,6 +160,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
 
             is CreatingBookmarkEvents.OpenFile -> TODO()
             is CreatingBookmarkEvents.OpenLink -> TODO()
+
             is CreatingBookmarkEvents.GetNewBookmarkWithCategoryId -> {
                 _idOfCategory.value = events.id
                 }
@@ -171,6 +173,10 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                 viewModelScope.launch{
                     getAllCategories()
                 }
+            }
+
+            is CreatingBookmarkEvents.SelectCategory -> {
+                _idOfCategory.value = events.id
             }
         }
     }
