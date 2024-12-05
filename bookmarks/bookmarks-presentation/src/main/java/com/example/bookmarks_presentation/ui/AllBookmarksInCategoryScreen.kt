@@ -16,25 +16,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
 import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_in_category_handler.AllBookmarksByCategoryUiEventHandler
-import com.example.bookmarks_presentation.ui_events_handlers.main_handler.MainUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksInCategoryViewModel
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun AllBookmarksInCategory() {
+
+    AllBookmarksByCategoryUiEventHandler()
+    val viewModel = koinViewModel<AllBookmarksInCategoryViewModel>()
     Scaffold(floatingActionButton = {
         FloatingActionButton(onClick = {
-
+            viewModel.onEvent(AllBookmarksInCategoryEvents.NavigateToCreateBookmarkWithCategoryId)
         }) {
             Text("+")
         }
     }) { _ ->
 
 
-        AllBookmarksByCategoryUiEventHandler()
-        val viewModel = koinViewModel<AllBookmarksInCategoryViewModel>()
         val listOfBookmarks = viewModel.listOfBookmarks.collectAsState()
         Box(
             modifier = Modifier

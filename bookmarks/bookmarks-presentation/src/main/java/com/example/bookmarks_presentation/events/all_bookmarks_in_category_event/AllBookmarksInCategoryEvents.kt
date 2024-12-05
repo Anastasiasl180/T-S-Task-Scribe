@@ -2,4 +2,5 @@ package com.example.bookmarks_presentation.events.all_bookmarks_in_category_even
 
 sealed interface AllBookmarksInCategoryEvents {
     data class GetAllBookmarksByCategoryId(val id:Int?): AllBookmarksInCategoryEvents
+    data object NavigateToCreateBookmarkWithCategoryId: AllBookmarksInCategoryEvents
 }

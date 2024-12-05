@@ -1,5 +1,6 @@
 package com.example.bookmarks_data.impl
 
+import android.util.Log
 import com.example.bookmarks_data.mapper.mapToBookmark
 import com.example.bookmarks_data.mapper.mapToCategory
 import com.example.bookmarks_data.mapper.mapToEntity
@@ -63,15 +64,15 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
     }
 
     override suspend fun getBookmarksByCategoryId(id: Int?): Flow<List<Bookmark>> {
-
-
-
         return id?.let { nonNullId ->
+            Log.wtf("impl", nonNullId.toString(), )
             dao.getBookmarksByCategoryId(nonNullId).map { entityList ->
                 entityList.map { entity ->
                     entity.mapToBookmark()
                 }
+
             }
+
         } ?: flowOf(emptyList())
     }
    /*
@@ -90,4 +91,5 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
             }
         }
     }
-}
+
+    }

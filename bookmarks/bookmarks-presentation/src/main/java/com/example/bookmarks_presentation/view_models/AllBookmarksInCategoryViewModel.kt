@@ -7,11 +7,15 @@ import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
+import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryUiEvents
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
@@ -20,6 +24,12 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
 
     private val _listOfBookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val listOfBookmarks: StateFlow<List<Bookmark>> = _listOfBookmarks
+
+    private val _categoryId = MutableStateFlow<Int>(0)
+    val categoryId: StateFlow<Int> = _categoryId
+
+    private val _event = MutableSharedFlow<AllBookmarksInCategoryUiEvents>()
+    val event = _event.asSharedFlow()
 
 
     private fun getBookmarksByCategoryId(id: Int?) {
@@ -32,10 +42,8 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
 
                 }
                 is Responses.Success<*> -> {
-                    result.data?.collect { it ->
-                        _listOfBookmarks.value = it
+                    _listOfBookmarks.value = result.data ?:emptyList()
 
-                    }
                 }
             }
 
@@ -46,7 +54,14 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
         when(event){
             is AllBookmarksInCategoryEvents.GetAllBookmarksByCategoryId -> {
                 viewModelScope.launch{
+                    _categoryId.value = event.id ?: 0
                         getBookmarksByCategoryId(event.id)
+                }
+            }
+
+            is AllBookmarksInCategoryEvents.NavigateToCreateBookmarkWithCategoryId -> {
+                viewModelScope.launch{
+                    _event.emit(AllBookmarksInCategoryUiEvents.NavigateToCreateBookmarkWithCategoryId(_categoryId.value))
                 }
             }
         }

@@ -1,9 +1,11 @@
 package com.example.bookmarks_domain.interactors
 
+import android.util.Log
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
 import java.io.IOException
@@ -85,11 +87,15 @@ class BookmarksUseCase(private val repository: BookmarksRepository) {
         }
     }
 
-    fun getBookmarksByCategoryId(id:Int?):Flow<Responses<Flow<List<Bookmark>>>> =flow {
+    fun getBookmarksByCategoryId(id:Int?):Flow<Responses<List<Bookmark>>> =flow {
         try {
             emit(Responses.Loading())
-            val result = repository.getBookmarksByCategoryId(id)
-            emit(Responses.Success(result))
+
+            val result = repository.getBookmarksByCategoryId(id).collect(){
+                bookmarksLst->
+                emit(Responses.Success(bookmarksLst))
+            }
+
         }catch (e: IOException) {
             println(e.message.toString())
         } catch (e: Exception) {

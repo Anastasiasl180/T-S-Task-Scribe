@@ -1,5 +1,6 @@
 package com.example.bookmarks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmark
 import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksUiEvents
 import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksUiEvents.*
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,8 +23,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class AllBookmarksViewModel(private val bookmarksUseCase: BookmarksUseCase):ViewModel() {
 
-    private val _listOfBookmarks = mutableStateOf<List<Bookmark>?>(null)
-    val listOfBookmarks:State<List<Bookmark>?> = _listOfBookmarks
+    private val _listOfBookmarks = MutableStateFlow<List<Bookmark>?>(null)
+    val listOfBookmarks: StateFlow<List<Bookmark>?> = _listOfBookmarks
 
     private val _event = MutableSharedFlow<AllBookmarksUiEvents>()
     val event = _event.asSharedFlow()

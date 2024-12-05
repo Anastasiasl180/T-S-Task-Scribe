@@ -25,7 +25,7 @@ fun MainUiEventHandler() {
                 }
 
                 UiMainEvents.NavigateToAllBookMarks -> {
-                    navigator.navigate(AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen)
+                navigator.navigate(AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen)
                 }
 
                 is UiMainEvents.NavigateToBookmarksByCategoryId -> {

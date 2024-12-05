@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
@@ -31,8 +32,13 @@ interface BookmarksDao {
    /* @Query("SELECT * FROM CATEGORIES WHERE id = :id")
     fun getBookmarksByCategoryId(id:Int):Flow<List<BookmarksEntity>>
 */
-    @Query("SELECT * FROM categories WHERE id = :categoryId")
+ /*   @Query("SELECT * FROM categories WHERE id = :categoryId")
+    fun getBookmarksByCategoryId(categoryId: Int): Flow<List<BookmarksEntity>>*/
+
+    @Query("SELECT * FROM bookmarks WHERE categoryId = :categoryId")
     fun getBookmarksByCategoryId(categoryId: Int): Flow<List<BookmarksEntity>>
+
+
     @Query("SELECT * FROM bookmarks WHERE id = :id LIMIT 1 ")
    fun getBookmarkById(id:Int):Flow<BookmarksEntity>
 

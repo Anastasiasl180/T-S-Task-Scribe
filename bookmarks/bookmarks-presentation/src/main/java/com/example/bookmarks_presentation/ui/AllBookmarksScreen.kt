@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +31,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AllBookmarksScreen(modifier: Modifier = Modifier) {
     val viewModel = koinViewModel<AllBookmarksViewModel>()
+    val list = viewModel.listOfBookmarks.collectAsState()
     AllBookmarksUiEventHandler()
     Box(
         modifier
@@ -45,15 +48,16 @@ fun AllBookmarksScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                if (viewModel.listOfBookmarks.value != null) {
-                    items(viewModel.listOfBookmarks.value!!) {
-                        CustomCard(
-                            modifier = Modifier
-                                .width(120.dp)
-                                .height(180.dp), navigateToBookmark = {
-                                viewModel.onEvent(AllBookmarksEvents.NavigateToBookmarkById(it.id))
-                            }
-                        )
+                if (list.value != null) {
+                    items(list.value!!) {
+                        Box(modifier = Modifier.height(190.dp).width(120.dp)) {
+                            CustomCard(
+                                modifier = Modifier.fillMaxSize(), navigateToBookmark = {
+                                    viewModel.onEvent(AllBookmarksEvents.NavigateToBookmarkById(it.id))
+                                }
+                            )
+                        }
+
 
                     }
                 }

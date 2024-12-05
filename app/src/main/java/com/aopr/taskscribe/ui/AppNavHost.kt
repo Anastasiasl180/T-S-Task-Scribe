@@ -1,5 +1,6 @@
 package com.aopr.taskscribe.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
@@ -16,6 +17,7 @@ import com.aopr.shared_ui.util.currentOrThrow
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
 import com.aopr.tasks_presentation.ui.AllTasksScreen
 import com.aopr.tasks_presentation.ui.CreatingTaskScreen
+import com.example.bookmarks_presentation.navigation.AllBookmarksByCategoryNavRoutes
 import com.example.bookmarks_presentation.navigation.AllBookmarksNavRoutes
 import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
 import com.example.bookmarks_presentation.ui.AllBookmarksInCategory
@@ -61,6 +63,9 @@ fun AppNavHost() {
                         AllBookmarksScreen()
                     }
                     composable<AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen> {
+                        CreatingBookMarkScreen()
+                    }
+                    composable<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>{
                         CreatingBookMarkScreen()
                     }
                     composable<AllBookmarksNavRoutes.CreatingBookmarkScreen>{
