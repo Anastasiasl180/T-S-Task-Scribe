@@ -44,6 +44,8 @@ fun CreatingBookMarkScreen() {
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
+    val isDropdownExpanded by viewModel.isDropDownMenuExpanded
+
     val listOFCategories by viewModel.listOfCategories.collectAsState()
     val contentUrl by viewModel.contentUrl.collectAsState()
     val idOfCategory by viewModel.idOfCategory.collectAsState()
@@ -93,21 +95,18 @@ fun CreatingBookMarkScreen() {
                 .fillMaxHeight(0.7f)) {
 
                 CustomDropDownMenu(
+                    chosenCategory = idOfCategory,
+                    listOfCategories = listOFCategories,
                     onExpanded = {
                         viewModel.oEvent(CreatingBookmarkEvents.ExpandDropDownMenu)
                     },
-                    isExpanded = viewModel.isDropDownMenuExpanded.value,
-                    listOfCategories = listOFCategories
+                    isExpanded = isDropdownExpanded,
+                    onOptionSelected = { categoryId ->
+                        viewModel.oEvent(CreatingBookmarkEvents.SelectCategory(categoryId))
+                    }
                 )
 
             }
-          /*  if (idOfCategory != null) {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)) {
-                    Text(idOfCategory.toString())
-                }
-            }*/
 
             if (fileUri == null) {
                 Button(modifier = Modifier.fillMaxWidth(), onClick = {
