@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
+import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
 import com.example.bookmarks_presentation.events.main_events.MainEvents
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,9 +39,19 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
     private val _contentUrl = MutableStateFlow<String?>(null)
     val contentUrl: StateFlow<String?> = _contentUrl
 
+    private val _isDropDownMenuExpanded = mutableStateOf(false)
+    val isDropDownMenuExpanded: State<Boolean> = _isDropDownMenuExpanded
+
+    private val _listOfCategories = MutableStateFlow<List<Category>>(emptyList())
+    val listOfCategories: StateFlow<List<Category>> = _listOfCategories
+
     private val _fileUri = MutableStateFlow<String?>(null)
     val fileUri: StateFlow<String?> = _fileUri
 
+
+    init {
+       oEvent(CreatingBookmarkEvents.GetAllCategories)
+    }
 
     private fun createBookmark(bookmark: Bookmark) {
         bookmarksUseCase.createBookmark(bookmark).onEach { result ->
@@ -53,6 +64,25 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                 }
 
                 is Responses.Success -> {
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getAllCategories(){
+        bookmarksUseCase.getAllCategories().onEach{result->
+            when(result){
+                is Responses.Error<*> -> {
+
+                }
+                is Responses.Loading<*> -> {
+
+                }
+                is Responses.Success<*> -> {
+                    result.data?.collect(){
+                        _listOfCategories.value = it
+                    }
                 }
             }
 
@@ -131,7 +161,16 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
             is CreatingBookmarkEvents.OpenLink -> TODO()
             is CreatingBookmarkEvents.GetNewBookmarkWithCategoryId -> {
                 _idOfCategory.value = events.id
-                Log.wtf("gettingId", events.id.toString(), )
+                }
+
+            CreatingBookmarkEvents.ExpandDropDownMenu -> {
+                _isDropDownMenuExpanded.value = !_isDropDownMenuExpanded.value
+            }
+
+            CreatingBookmarkEvents.GetAllCategories -> {
+                viewModelScope.launch{
+                    getAllCategories()
+                }
             }
         }
     }

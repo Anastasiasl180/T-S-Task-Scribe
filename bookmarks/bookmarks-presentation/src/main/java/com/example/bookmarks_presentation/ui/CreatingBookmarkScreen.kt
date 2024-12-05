@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.ui_elements.CustomDropDownMenu
 import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandler
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -42,6 +44,7 @@ fun CreatingBookMarkScreen() {
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
+    val listOFCategories by viewModel.listOfCategories.collectAsState()
     val contentUrl by viewModel.contentUrl.collectAsState()
     val idOfCategory by viewModel.idOfCategory.collectAsState()
     val context = LocalContext.current
@@ -85,11 +88,26 @@ fun CreatingBookMarkScreen() {
                 ),
 
                 )
-            if (idOfCategory!= null){
-                Row(modifier = Modifier.fillMaxWidth().height(100.dp)) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.7f)) {
+
+                CustomDropDownMenu(
+                    onExpanded = {
+                        viewModel.oEvent(CreatingBookmarkEvents.ExpandDropDownMenu)
+                    },
+                    isExpanded = viewModel.isDropDownMenuExpanded.value,
+                    listOfCategories = listOFCategories
+                )
+
+            }
+          /*  if (idOfCategory != null) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)) {
                     Text(idOfCategory.toString())
                 }
-            }
+            }*/
 
             if (fileUri == null) {
                 Button(modifier = Modifier.fillMaxWidth(), onClick = {
@@ -120,11 +138,11 @@ fun CreatingBookMarkScreen() {
 
                     )
 
-                    Button(onClick = {
-                        openLink(context = context, contentUrl!!)
-                    }) {
-                        Text("go")
-                    }
+                Button(onClick = {
+                    openLink(context = context, contentUrl!!)
+                }) {
+                    Text("go")
+                }
 
 
             }
