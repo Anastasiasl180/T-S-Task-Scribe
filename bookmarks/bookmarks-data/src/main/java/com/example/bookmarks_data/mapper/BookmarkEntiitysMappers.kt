@@ -2,6 +2,7 @@ package com.example.bookmarks_data.mapper
 
 import com.example.bookmarks_data.room.BookmarksEntity
 import com.example.bookmarks_data.room.CategoryEntity
+import com.example.bookmarks_data.room.CategoryWithBookMarks
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 

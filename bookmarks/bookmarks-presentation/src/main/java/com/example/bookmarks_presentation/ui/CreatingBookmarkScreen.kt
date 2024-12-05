@@ -43,6 +43,7 @@ fun CreatingBookMarkScreen() {
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
     val contentUrl by viewModel.contentUrl.collectAsState()
+    val idOfCategory by viewModel.idOfCategory.collectAsState()
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -84,6 +85,12 @@ fun CreatingBookMarkScreen() {
                 ),
 
                 )
+            if (idOfCategory!= null){
+                Row(modifier = Modifier.fillMaxWidth().height(100.dp)) {
+                    Text(idOfCategory.toString())
+                }
+            }
+
             if (fileUri == null) {
                 Button(modifier = Modifier.fillMaxWidth(), onClick = {
                     launcher.launch(arrayOf("*/*"))

@@ -142,7 +142,7 @@ fun CustomCard(
     val customShape = CustomShape()
     val secondShape = SecondShape()
 
-    Box(modifier = Modifier) {
+    Box(modifier = modifier) {
 
             Card(
                 modifier = Modifier

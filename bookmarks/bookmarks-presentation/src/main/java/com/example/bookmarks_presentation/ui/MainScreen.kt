@@ -1,5 +1,6 @@
 package com.example.bookmarks_presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,9 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
@@ -115,9 +118,11 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     .width(180.dp)
                             ) {
                                 Box(
-                                    modifier = Modifier.fillMaxSize().clickable {
-viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
-                                    },
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clickable {
+                                            viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
+                                        },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(text = "All", modifier = Modifier)
@@ -127,16 +132,22 @@ viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
                         }
                         Box(modifier = Modifier.fillMaxSize()) {
                             if (list.isNotEmpty()) {
-                                LazyVerticalGrid(
-                                    columns = GridCells.Fixed(2),
+                                LazyColumn(
+                                 /*   columns = GridCells.Fixed(2),*/
                                     verticalArrangement = Arrangement.spacedBy(20.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(20.dp)
                                 ) {
                                     items(list) {it->
-                                        Card(modifier = Modifier.height(200.dp).clickable{
-                                            viewModel.onEvent(MainEvents.NavigateToBookmarksByCategoryId(it.id))
-                                        }) {
-                                            Text("dkfkfjk")
+                                        Card(modifier = Modifier
+                                            .height(200.dp)
+                                            .clickable {
+                                                Log.wtf("main",it.id.toString(), )
+                                                viewModel.onEvent(
+                                                    MainEvents.NavigateToBookmarksByCategoryId(
+                                                        it.id
+                                                    )
+                                                )
+                                            }) {
+                                            Text(it.tittle)
                                         }
                                     }
                                 }

@@ -32,6 +32,9 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
     private val _idOfTask = mutableStateOf<Int?>(null)
     val idOfTask: State<Int?> = _idOfTask
 
+    private val _idOfCategory = MutableStateFlow<Int?>(null)
+    val idOfCategory: StateFlow<Int?> = _idOfCategory
+
     private val _contentUrl = MutableStateFlow<String?>(null)
     val contentUrl: StateFlow<String?> = _contentUrl
 
@@ -43,7 +46,6 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         bookmarksUseCase.createBookmark(bookmark).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
                 }
 
                 is Responses.Loading -> {
@@ -51,7 +53,6 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                 }
 
                 is Responses.Success -> {
-
                 }
             }
 
@@ -74,6 +75,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                         _tittleOfBookmark.value = bookmark.tittle
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
+
                     }
 
                 }
@@ -98,7 +100,8 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                         id = _idOfTask.value ?:0,
                         tittle = _tittleOfBookmark.value,
                         fileUri = _fileUri.value,
-                        url = _contentUrl.value
+                        url = _contentUrl.value,
+                        categoryId = _idOfCategory.value
                     )
                     createBookmark(bookmark)
                 }
@@ -126,6 +129,10 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
 
             is CreatingBookmarkEvents.OpenFile -> TODO()
             is CreatingBookmarkEvents.OpenLink -> TODO()
+            is CreatingBookmarkEvents.GetNewBookmarkWithCategoryId -> {
+                _idOfCategory.value = events.id
+                Log.wtf("gettingId", events.id.toString(), )
+            }
         }
     }
 

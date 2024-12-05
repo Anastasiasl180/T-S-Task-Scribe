@@ -1,5 +1,6 @@
 package com.example.bookmarks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -126,6 +127,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
 
             is MainEvents.NavigateToBookmarksByCategoryId -> {
                 viewModelScope.launch{
+                    Log.wtf("viewmain", event.id.toString(), )
                     _event.emit(UiMainEvents.NavigateToBookmarksByCategoryId(event.id))
                 }
             }
