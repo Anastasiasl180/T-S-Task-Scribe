@@ -8,6 +8,7 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
 import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryUiEvents
+import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryUiEvents.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,6 +32,23 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
     private val _event = MutableSharedFlow<AllBookmarksInCategoryUiEvents>()
     val event = _event.asSharedFlow()
 
+    private fun deleteBookmark(bookmark: Bookmark){
+
+        bookmarksUseCase.deleteBookmark(bookmark).onEach {result->
+            when(result){
+                is Responses.Error<*> -> {
+
+                }
+                is Responses.Loading<*> -> {
+
+                }
+                is Responses.Success<*> -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
 
     private fun getBookmarksByCategoryId(id: Int?) {
         bookmarksUseCase.getBookmarksByCategoryId(id).onEach { result ->
@@ -64,7 +82,13 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
 
             is AllBookmarksInCategoryEvents.NavigateToCreateBookmarkWithCategoryId -> {
                 viewModelScope.launch{
-                    _event.emit(AllBookmarksInCategoryUiEvents.NavigateToCreateBookmarkWithCategoryId(_categoryId.value))
+                    _event.emit(NavigateToCreateBookmarkWithCategoryId(_categoryId.value))
+                }
+            }
+
+            is AllBookmarksInCategoryEvents.DeleteBookmark -> {
+                viewModelScope.launch{
+                    deleteBookmark(event.bookmark)
                 }
             }
         }

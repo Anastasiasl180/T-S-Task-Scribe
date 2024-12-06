@@ -26,14 +26,17 @@ interface BookmarksDao {
     @Delete
     suspend fun deleteCategory(category:CategoryEntity)
 
+    @Delete
+    suspend fun deleteBookmark(bookmark: BookmarksEntity)
+
     @Query("SELECT * FROM categories")
     fun getAllCategories():Flow<List<CategoryEntity>>
 
-   /* @Query("SELECT * FROM CATEGORIES WHERE id = :id")
-    fun getBookmarksByCategoryId(id:Int):Flow<List<BookmarksEntity>>
-*/
- /*   @Query("SELECT * FROM categories WHERE id = :categoryId")
-    fun getBookmarksByCategoryId(categoryId: Int): Flow<List<BookmarksEntity>>*/
+    @Delete
+    suspend fun deleteAllBookmarks(bookmarks: List<BookmarksEntity>)
+
+    @Delete
+    suspend fun deleteAllCategories(bookmarks: List<CategoryEntity>)
 
     @Query("SELECT * FROM bookmarks WHERE categoryId = :categoryId")
     fun getBookmarksByCategoryId(categoryId: Int): Flow<List<BookmarksEntity>>

@@ -41,6 +41,25 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
         getAllCategories()
     }
 
+    private fun deleteCategory(category: Category) {
+        bookmarksUseCase.deleteCategory(category).onEach { result ->
+            when (result) {
+                is Responses.Error<*> -> {
+
+                }
+
+                is Responses.Loading<*> -> {
+
+                }
+
+                is Responses.Success<*> -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
     private fun createCategory(category: Category) {
         bookmarksUseCase.createCategory(category).onEach { result ->
             when (result) {
@@ -101,7 +120,9 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
             }
 
             is MainEvents.DeleteCategory -> {
-
+                viewModelScope.launch {
+                    deleteCategory(event.category)
+                }
             }
 
             MainEvents.NavigateBack -> {
@@ -127,7 +148,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
             }
 
             is MainEvents.NavigateToBookmarksByCategoryId -> {
-                viewModelScope.launch{
+                viewModelScope.launch {
                     _event.emit(UiMainEvents.NavigateToBookmarksByCategoryId(event.id))
                 }
             }
