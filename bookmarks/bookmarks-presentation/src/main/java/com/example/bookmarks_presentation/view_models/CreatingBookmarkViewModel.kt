@@ -1,12 +1,6 @@
 package com.example.bookmarks_presentation.view_models
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -16,7 +10,6 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
-import com.example.bookmarks_presentation.events.main_events.MainEvents
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -30,8 +23,8 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
     private val _tittleOfBookmark = MutableStateFlow("")
     val tittle: StateFlow<String> = _tittleOfBookmark
 
-    private val _idOfTask = mutableStateOf<Int?>(null)
-    val idOfTask: State<Int?> = _idOfTask
+    private val _idOfBookamrk = mutableStateOf<Int?>(null)
+    val idOfBookmark: State<Int?> = _idOfBookamrk
 
     private val _idOfCategory = MutableStateFlow<Int?>(null)
     val idOfCategory: StateFlow<Int?> = _idOfCategory
@@ -101,12 +94,12 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
 
                 is Responses.Success<*> -> {
                     result.data?.collect() { bookmark ->
-                        _idOfTask.value = bookmark.id
+                        _idOfBookamrk.value = bookmark.id
                         _tittleOfBookmark.value = bookmark.tittle
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
                         _idOfCategory.value = bookmark.categoryId
-
+                        Log.wtf("getByID",bookmark.toString(), )
                     }
 
                 }
@@ -119,6 +112,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         when (events) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
                 viewModelScope.launch {
+
                    events.id?.let{it
                        getBookMarkById(it)
                    }
@@ -128,7 +122,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
             CreatingBookmarkEvents.SaveBookmark -> {
                 viewModelScope.launch {
                     val bookmark = Bookmark(
-                        id = _idOfTask.value ?:0,
+                        id = _idOfBookamrk.value ?:0,
                         tittle = _tittleOfBookmark.value,
                         fileUri = _fileUri.value,
                         url = _contentUrl.value,

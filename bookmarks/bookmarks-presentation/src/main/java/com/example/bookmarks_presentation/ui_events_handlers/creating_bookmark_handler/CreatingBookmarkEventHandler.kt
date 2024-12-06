@@ -2,7 +2,6 @@ package com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.navigation.toRoute
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
@@ -16,16 +15,20 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatingBookmarkUiEventHandler() {
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
     val navigator = LocalNavigator.currentOrThrow()
-    val id = navigator.currentBackStackEntry?.toRoute<AllBookmarksNavRoutes.CreatingBookmarkScreen>()
-    val idd = id?.id
 
-    val id2 = navigator.currentBackStackEntry?.toRoute<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>()
-    val idd2 = id2?.id
+    val id =
+        navigator.currentBackStackEntry?.toRoute<AllBookmarksNavRoutes.CreatingBookmarkScreen>()
+    val bookmarkId = id?.id
+
+    val id2 =
+        navigator.currentBackStackEntry?.toRoute<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>()
+    val categoryId = id2?.id
+
     LaunchedEffect(Unit) {
-        viewModel.oEvent(CreatingBookmarkEvents.GetBookmarkById(idd))
+        viewModel.oEvent(CreatingBookmarkEvents.GetBookmarkById(null))
     }
     LaunchedEffect(Unit) {
-        viewModel.oEvent(CreatingBookmarkEvents.GetNewBookmarkWithCategoryId(idd2))
+        viewModel.oEvent(CreatingBookmarkEvents.GetNewBookmarkWithCategoryId(categoryId))
     }
 
 }

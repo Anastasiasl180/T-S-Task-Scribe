@@ -63,12 +63,15 @@ fun AppNavHost() {
                         AllBookmarksScreen()
                     }
                     composable<AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen> {
+
                         CreatingBookMarkScreen()
                     }
                     composable<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>{
+
                         CreatingBookMarkScreen()
                     }
                     composable<AllBookmarksNavRoutes.CreatingBookmarkScreen>{
+
                         CreatingBookMarkScreen()
                     }
                 }

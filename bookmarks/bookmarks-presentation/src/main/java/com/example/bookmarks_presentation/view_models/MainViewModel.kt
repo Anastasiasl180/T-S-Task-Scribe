@@ -86,6 +86,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
         when (event) {
             is MainEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
+
                     _event.emit(NavigateToCreateBookmark(event.id))
                 }
             }
@@ -127,7 +128,6 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
 
             is MainEvents.NavigateToBookmarksByCategoryId -> {
                 viewModelScope.launch{
-                    Log.wtf("viewmain", event.id.toString(), )
                     _event.emit(UiMainEvents.NavigateToBookmarksByCategoryId(event.id))
                 }
             }

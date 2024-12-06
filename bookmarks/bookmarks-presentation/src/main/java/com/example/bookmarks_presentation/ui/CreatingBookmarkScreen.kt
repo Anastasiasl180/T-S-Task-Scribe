@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -60,7 +61,6 @@ fun CreatingBookMarkScreen() {
 
         }
     )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
