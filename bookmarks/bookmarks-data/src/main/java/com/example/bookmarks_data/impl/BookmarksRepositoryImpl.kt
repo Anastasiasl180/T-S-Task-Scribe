@@ -36,7 +36,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
     }
 
     override suspend fun deleteBookmark(bookmark: Bookmark) {
-        TODO()
+        dao.deleteBookmark(bookmark.mapToEntity())
     }
 
     override suspend fun getBookmarkById(id: Int): Flow<Bookmark> {

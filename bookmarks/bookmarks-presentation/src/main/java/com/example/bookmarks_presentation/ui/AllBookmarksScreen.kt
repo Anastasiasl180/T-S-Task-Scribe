@@ -54,6 +54,8 @@ fun AllBookmarksScreen(modifier: Modifier = Modifier) {
                             CustomCard(
                                 modifier = Modifier.fillMaxSize(), navigateToBookmark = {
                                     viewModel.onEvent(AllBookmarksEvents.NavigateToBookmarkById(it.id))
+                                }, deleteBookmark = {
+                                    viewModel.onEvent(AllBookmarksEvents.DeleteBookmark(it))
                                 }
                             )
                         }

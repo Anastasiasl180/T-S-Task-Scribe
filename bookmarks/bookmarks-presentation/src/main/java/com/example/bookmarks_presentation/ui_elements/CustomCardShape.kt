@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -136,6 +138,7 @@ class CustomShape(
 fun CustomCard(
     modifier: Modifier = Modifier,
     navigateToBookmark: () -> Unit,
+    deleteBookmark:()-> Unit
 
     ) {
     val density = LocalDensity.current
@@ -154,6 +157,9 @@ fun CustomCard(
                 elevation = CardDefaults.cardElevation(20.dp)
             ) {
 
+                IconButton(onClick = {
+                    deleteBookmark()
+                }) { Text("delete") }
             }
 
             Box(

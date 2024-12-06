@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -140,15 +141,19 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                         Card(modifier = Modifier
                                             .height(200.dp)
                                             .clickable {
-                                                Log.wtf("main",it.id.toString(), )
                                                 viewModel.onEvent(
                                                     MainEvents.NavigateToBookmarksByCategoryId(
                                                         it.id
                                                     )
                                                 )
                                             }) {
+                                            Row {
+
+                                            Button(onClick = {
+                                                viewModel.onEvent(MainEvents.DeleteCategory(it))
+                                            }) { }
                                             Text(it.tittle)
-                                        }
+                                        }}
                                     }
                                 }
                             }

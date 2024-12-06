@@ -3,9 +3,11 @@ package com.example.bookmarks_presentation.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
@@ -16,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
 import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_in_category_handler.AllBookmarksByCategoryUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksInCategoryViewModel
@@ -51,8 +52,23 @@ fun AllBookmarksInCategory() {
                                 .height(100.dp)
                                 .width(100.dp)
                         ) {
+                            Row(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                Button(
+                                    onClick = {
+                                        viewModel.onEvent(
+                                            AllBookmarksInCategoryEvents.DeleteBookmark(
+                                                it
+                                            )
+                                        )
+                                    }) {
+                                    Text("delete")
+                                }
 
-                            Text(it.tittle)
+                                Text(it.tittle)
+                            }
                         }
 
                     }
