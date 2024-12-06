@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -292,6 +293,7 @@ fun CreatingTaskScreen() {
                                     .height(170.dp),
                                 maxLines = 20,
                             )
+
                         }
                     }
                 }
@@ -320,22 +322,31 @@ fun CreatingTaskScreen() {
                                     .fillMaxWidth(0.9f)
                                     .fillMaxHeight(0.6f)
                             ) {
-                                IconButton(onClick = {
-                                    viewModel.onEvent(CreatingTaskEvents.ShowCalendarForReminder)
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.DateRange,
-                                        contentDescription = ""
+                                Row {
+
+
+                                    IconButton(onClick = {
+                                        viewModel.onEvent(CreatingTaskEvents.ShowCalendarForReminder)
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.DateRange,
+                                            contentDescription = ""
+                                        )
+                                    }
+                                    IconButton(onClick = {
+                                        viewModel.onEvent(CreatingTaskEvents.CleanDateOfTaskReminder)
+                                    }) {
+                                        Icon(imageVector = Icons.Default.Delete,"")
+                                    }
+                                    Text(
+                                        text = dateOfTaskForReminder?.format(
+                                            DateTimeFormatter.ofPattern(
+                                                "dd MMM yyyy"
+                                            )
+                                        )
+                                            ?: "Select Date for reminder",
                                     )
                                 }
-                                Text(
-                                    text = dateOfTaskForReminder?.format(
-                                        DateTimeFormatter.ofPattern(
-                                            "dd MMM yyyy"
-                                        )
-                                    )
-                                        ?: "Select Date for reminder",
-                                )
                             }
                         }
                         Column(
@@ -359,12 +370,20 @@ fun CreatingTaskScreen() {
                                     .fillMaxWidth(0.9f)
                                     .fillMaxHeight(0.6f)
                             ) {
+                                Row {
+
                                 IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowClockForTaskReminder) }) {
                                     Icon(
                                         imageVector = Icons.Default.Notifications,
                                         contentDescription = ""
                                     )
                                 }
+                                IconButton(onClick = {
+                                    viewModel.onEvent(CreatingTaskEvents.CleanTimeOfTaskReminder)
+                                }) {
+                                    Icon(imageVector = Icons.Default.Delete, "")
+                                }
+                            }
                             }
                         }
                     }
@@ -504,6 +523,11 @@ fun CreatingTaskScreen() {
                                     it
                                 )
                             )
+                        }, clearTimeOfSubTask = {
+                            viewModel.onEvent(CreatingTaskEvents.CleanTimeOfSubtask)
+
+                        }, clearDataOfSubTask = {
+                            viewModel.onEvent(CreatingTaskEvents.CleanDataOfSubTask)
                         }
                     )
                 }

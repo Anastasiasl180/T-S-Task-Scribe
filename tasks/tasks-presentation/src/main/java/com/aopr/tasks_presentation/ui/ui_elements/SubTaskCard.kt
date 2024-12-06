@@ -1,10 +1,7 @@
 package com.aopr.tasks_presentation.ui.ui_elements
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aopr.tasks_domain.models.Subtasks
+import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -38,7 +36,9 @@ fun SubTaskCard(
     onValueDescriptionChange: (Int, String) -> Unit,
     onIsCompletedChange: (Int, Boolean) -> Unit,
     onDelete: (Int) -> Unit,
-    isCompleted: Boolean
+    isCompleted: Boolean,
+    clearDataOfSubTask:()-> Unit,
+    clearTimeOfSubTask:()-> Unit
 ) {
     Card(
         modifier = Modifier
@@ -80,6 +80,13 @@ fun SubTaskCard(
                     Button(onClick = { showCalendarForReminder(index) }) {
 
                     }
+                    IconButton(onClick = {
+                        clearDataOfSubTask()
+                    }) {
+                        Icon(imageVector = Icons.Default.Delete,"")
+                    }
+
+
                 }
                 Row() {
                     Text(
@@ -89,6 +96,13 @@ fun SubTaskCard(
                     Button(onClick = { showClockForReminder(index) }) {
 
                     }
+                    IconButton(onClick = {
+                        clearTimeOfSubTask()
+                    }) {
+                        Icon(imageVector = Icons.Default.Delete,"")
+                    }
+
+
                 }
 
             }
@@ -115,6 +129,8 @@ fun SubTasksList(
     time: LocalTime?,
     showCalendarForReminder: (Int) -> Unit,
     showClockForReminder: (Int) -> Unit,
+    clearDataOfSubTask:()-> Unit,
+    clearTimeOfSubTask:()-> Unit
 ) {
     Column {
         subtasks.forEachIndexed { index, subtask ->
@@ -142,6 +158,10 @@ fun SubTasksList(
                 ,
                 showClockForReminder = {
                     showClockForReminder(index)
+                }, clearDataOfSubTask = {
+                    clearDataOfSubTask()
+                }, clearTimeOfSubTask = {
+                    clearTimeOfSubTask()
                 }
 
 
