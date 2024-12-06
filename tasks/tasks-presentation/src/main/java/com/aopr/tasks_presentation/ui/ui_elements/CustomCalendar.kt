@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -18,9 +19,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,8 +36,64 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.aopr.tasks_domain.models.Task
+import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
+import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetForCalendar(
+    onDismiss: () -> Unit,
+    sheetState: SheetState,
+    initialSelectedDate: LocalDate?,
+    calendarMode: CreatingTaskViewModel.CalendarMode,
+    updateDateOfTaskToBeDone:(LocalDate)-> Unit,
+    updateDateOfTaskForReminder:(LocalDate)-> Unit,
+    updateDateForSubtask:(LocalDate)-> Unit,
+    hideCalendar:()-> Unit,
+    getTasksByDate:(LocalDate)-> Unit,
+    heightScreen:Int,
+    listOfDatesWithTask: List<LocalDate?>,
+    listOfTasks: List<Task?>
+
+) {
+
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((heightScreen * 0.9f).dp)
+        ) {
+            CustomCalendar(
+                initialSelectedDate = initialSelectedDate,
+                onDateSelected = { selectedDate ->
+                    when (calendarMode) {
+                        CreatingTaskViewModel.CalendarMode.TASK_DONE ->
+                          updateDateOfTaskToBeDone(selectedDate)
+
+                        CreatingTaskViewModel.CalendarMode.REMINDER ->
+                            updateDateOfTaskForReminder(selectedDate)
+
+                        CreatingTaskViewModel.CalendarMode.SUB_REMINDER ->
+                            updateDateForSubtask(selectedDate)
+                    }
+                },
+                onDismiss = {
+                   hideCalendar()
+                }, listOfDates = listOfDatesWithTask, getTasks = {
+                    getTasksByDate(it)
+                  }, listOfTasks = listOfTasks
+            )
+        }
+    }
+
+
+    }
+
+
 
 
 @Composable
@@ -158,6 +218,7 @@ fun WeekdayLabels() {
         }
     }
 }
+
 @Composable
 fun DatesGrid(
     currentDate: LocalDate,
@@ -179,6 +240,10 @@ fun DatesGrid(
         dates.add(firstDayOfMonth.withDayOfMonth(day))
     }
 
+    while (dates.size % 7 != 0) {
+        dates.add(null)
+    }
+
     Column {
         dates.chunked(7).forEach { week ->
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -193,19 +258,26 @@ fun DatesGrid(
                         else -> Color.Black
                     }
 
-                    val backgroundColor =
-                        if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                    val backgroundColor = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        Color.Transparent
+                    }
 
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
                             .padding(4.dp)
-                            .background(backgroundColor, shape = CircleShape)
+                            .background(
+                                color = backgroundColor.takeIf { date != null }
+                                    ?: Color.Transparent,
+                                shape = CircleShape
+                            )
                             .clickable(enabled = date != null && !isPastDate) {
-                                date?.let { onDateSelected(it) }
-                                if (date != null) {
-                                    getTasks(date)
+                                date?.let {
+                                    onDateSelected(it)
+                                    getTasks(it)
                                 }
                             },
                         contentAlignment = Alignment.Center
@@ -220,6 +292,7 @@ fun DatesGrid(
                 }
             }
         }
+
         if (listOfTasks.isNotEmpty()) {
             Column {
                 listOfTasks.forEach { task ->
@@ -231,9 +304,7 @@ fun DatesGrid(
                 }
             }
         } else {
-            Text(text = "NoTask")
+            Text(text = "No Task")
         }
     }
 }
-
-

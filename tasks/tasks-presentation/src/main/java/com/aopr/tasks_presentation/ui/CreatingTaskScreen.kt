@@ -22,13 +22,11 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -53,13 +51,12 @@ import androidx.compose.ui.unit.dp
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
-import com.aopr.tasks_presentation.ui.ui_elements.ClockPicker
-import com.aopr.tasks_presentation.ui.ui_elements.CustomCalendar
+import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForCalendar
+import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForClock
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -93,9 +90,14 @@ fun CreatingTaskScreen() {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
                 actions = {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(0.95f),
+                            modifier = Modifier
+                                .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             IconButton(
@@ -120,164 +122,105 @@ fun CreatingTaskScreen() {
                             ) {
                                 Text(text = stringResource(id = com.aopr.shared_ui.R.string.PlusOnButton))
                             }
-
                         }
                     }
                 },
-                title = { })
+                title = { }
+            )
         }
     ) { paddingValues ->
 
         Box(
             modifier = Modifier
+                .fillMaxSize()
+                .background(Color.DarkGray)
                 .padding(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     top = paddingValues.calculateTopPadding(),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                )
-                .background(Color.DarkGray)
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Rtl),
+                ),
+            contentAlignment = Alignment.Center
         ) {
 
-
             if (isClockVisible) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    ModalBottomSheet(
-                        onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
-                        sheetState = bottomSheetState,
-
-                        ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height((heightScreen * 0.9f).dp)
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-
-                                var selectedTime by remember {
-                                    mutableStateOf(timeOfTask ?: LocalTime.now())
-                                }
-                                var selectedTimeSub by remember {
-                                    mutableStateOf(timeOfSubTask ?: LocalTime.now())
-                                }
-
-                                ClockPicker(
-                                    initialTime = when (viewModel.clockMode.value) {
-                                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                            selectedTime
-                                        }
-
-                                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> selectedTimeSub
-                                    },
-                                    onTimeChanged = { newTime ->
-                                        when (viewModel.clockMode.value) {
-                                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                                selectedTime = newTime
-                                            }
-
-                                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                                                selectedTimeSub = newTime
-                                            }
-                                        }
-
-
-                                    }
-                                )
-
-                                Text(
-                                    text =
-                                        when (viewModel.clockMode.value) {
-                                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                                selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-                                            }
-
-                                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                                                selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-                                            }
-                                        },
-                                    modifier = Modifier.padding(top = 16.dp)
-                                )
-
-                                Button(onClick = {
-                                    val now = LocalTime.now()
-                                    val today = LocalDate.now()
-                                    when (viewModel.clockMode.value) {
-                                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                            viewModel.onEvent(
-                                                CreatingTaskEvents.UpdateTimeOfTask(selectedTime)
-                                            )
-                                            viewModel.onEvent(CreatingTaskEvents.HideClock)
-                                        }
-
-                                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                                            viewModel.onEvent(
-                                                CreatingTaskEvents.UpdateTimeForSubTask(
-                                                    selectedTimeSub
-                                                )
-                                            )
-                                            viewModel.onEvent(CreatingTaskEvents.HideClock)
-                                        }
-                                    }
-                                }) {
-                                    Text("Save")
-                                }
-
-                            }
-                        }
-                    }
+                var selectedTime by remember {
+                    mutableStateOf(timeOfTask ?: LocalTime.now())
                 }
+                var selectedTimeSub by remember {
+                    mutableStateOf(timeOfSubTask ?: LocalTime.now())
+                }
+                BottomSheetForClock(
+                    onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
+                    sheetState = bottomSheetState,
+                    clockMode = viewModel.clockMode.value,
+                    timeOfTask = timeOfTask,
+                    timeOfSubTask = timeOfSubTask,
+                    updateTimeOfTask = {
+                        viewModel.onEvent(
+                            CreatingTaskEvents.UpdateTimeOfTask(selectedTime)
+                        )
+                    },
+                    updateTimeOfSubTask = {
+                        viewModel.onEvent(
+                            CreatingTaskEvents.UpdateTimeForSubTask(
+                                selectedTimeSub
+                            )
+                        )
+                    },
+                    hideClock = {
+                        viewModel.onEvent(CreatingTaskEvents.HideClock)
+
+                    },
+                    heightOfScreen = heightScreen
+                )
+
             }
 
             if (isCalendarVisible) {
-                ModalBottomSheet(
-                    onDismissRequest = {
+
+                BottomSheetForCalendar(
+                    onDismiss = {
                         viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+
                     },
-                    sheetState = bottomSheetState
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((heightScreen * 0.9f).dp)
-                    ) {
-                        CustomCalendar(
-                            initialSelectedDate = viewModel.dataOfTaskToBeDone.value,
-                            onDateSelected = { selectedDate ->
-                                when (viewModel.calendarMode.value) {
-                                    CreatingTaskViewModel.CalendarMode.TASK_DONE -> viewModel.onEvent(
-                                        CreatingTaskEvents.UpdateDateOfTaskToBeDone(selectedDate)
-                                    )
-
-                                    CreatingTaskViewModel.CalendarMode.REMINDER -> viewModel.onEvent(
-                                        CreatingTaskEvents.UpdateDateOfTaskForReminder(selectedDate)
-                                    )
-
-                                    CreatingTaskViewModel.CalendarMode.SUB_REMINDER -> viewModel.onEvent(
-                                        CreatingTaskEvents.UpdateDateForSubtask(selectedDate)
-                                    )
-                                }
-                            },
-                            onDismiss = {
-                                viewModel.onEvent(CreatingTaskEvents.HideCalendar)
-                            }, listOfDates = listOfDatesWithTasks, getTasks = {
-                                viewModel.onEvent(CreatingTaskEvents.GetTasksByDate(it))
-                            }, listOfTasks = viewModel.tasksByDate
+                    sheetState = bottomSheetState,
+                    initialSelectedDate = viewModel.dataOfTaskToBeDone.value,
+                    calendarMode = viewModel.calendarMode.value,
+                    updateDateOfTaskToBeDone = {
+                        viewModel.onEvent(
+                            CreatingTaskEvents.UpdateDateOfTaskToBeDone(it)
                         )
-                    }
-                }
+                    },
+                    updateDateOfTaskForReminder = {
+                        viewModel.onEvent(
+                            CreatingTaskEvents.UpdateDateOfTaskForReminder(it)
+                        )
+                    },
+                    updateDateForSubtask = {
+                        viewModel.onEvent(
+                            CreatingTaskEvents.UpdateDateForSubtask(it)
+                        )
+                    },
+                    hideCalendar = {
+                        viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+
+                    },
+                    getTasksByDate = {
+                        viewModel.onEvent(CreatingTaskEvents.GetTasksByDate(it))
+
+                    },
+                    heightScreen = heightScreen,
+                    listOfTasks = viewModel.tasksByDate,
+                    listOfDatesWithTask = listOfDatesWithTasks
+                )
+
             }
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .fillMaxWidth(0.95f), contentPadding = paddingValues
+                    .background(Color.DarkGray)
+                    .fillMaxWidth(0.95f),
             ) {
 
                 item {
