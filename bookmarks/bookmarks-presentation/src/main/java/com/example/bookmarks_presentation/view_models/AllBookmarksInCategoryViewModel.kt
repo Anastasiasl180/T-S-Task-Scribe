@@ -42,7 +42,10 @@ class AllBookmarksInCategoryViewModel(private val bookmarksUseCase: BookmarksUse
 
                 }
                 is Responses.Success<*> -> {
-                    _listOfBookmarks.value = result.data ?:emptyList()
+                    result.data?.collect{
+                        _listOfBookmarks.value = it
+                    }
+                  //  _listOfBookmarks.value = result.data ?:emptyList()
 
                 }
             }
