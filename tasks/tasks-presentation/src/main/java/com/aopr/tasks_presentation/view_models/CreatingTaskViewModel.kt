@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -153,15 +154,15 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     private fun createTask(task: Task) {
         tasksUseCase.createTask(task).onEach { result ->
             when (result) {
-                is Responses.Error<*> -> {
+                is Responses.Error -> {
+                    Log.wtf("mes", result.message.toString(), )
+                }
+
+                is Responses.Loading -> {
 
                 }
 
-                is Responses.Loading<*> -> {
-
-                }
-
-                is Responses.Success<*> -> {
+                is Responses.Success -> {
 
                 }
             }

@@ -31,14 +31,14 @@ class FieldsValidator {
             if (dateForToBeDone == null) throw EmptyDescriptionException()
 
 
-            if (date != null && time != null) {
+       /*     if (date != null && time != null) {
                 val reminderDateTime = LocalDateTime.of(date, time)
                 val currentDateTime = LocalDateTime.now(ZoneId.systemDefault())
                 if (reminderDateTime.isBefore(currentDateTime)) {
                     throw EmptyTittleException()
-                }
+                }*/
 
-        }
+
         }
         fun validateSubTask(
             tittle:String,
@@ -48,13 +48,13 @@ class FieldsValidator {
             if (date != null && time == null) throw EmptyTimeForReminderException()
             if (time != null && date == null) throw EmptyDateForReminderException()
             if (tittle.isBlank()) throw EmptyTittleException()
-            if (date != null && time != null) {
+          /*  if (date != null && time != null) {
                 val reminderDateTime = LocalDateTime.of(date, time)
                 val currentDateTime = LocalDateTime.now(ZoneId.systemDefault())
                 if (reminderDateTime.isBefore(currentDateTime)) {
                     throw EmptyTittleException()
                 }
-            }
+            }*/
 
         }
 

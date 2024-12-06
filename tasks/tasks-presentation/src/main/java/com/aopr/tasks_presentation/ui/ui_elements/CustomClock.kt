@@ -2,21 +2,133 @@ package com.aopr.tasks_presentation.ui.ui_elements
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
+import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.*
 
 enum class Hand {
     HOUR,
     MINUTE
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheetForClock(
+    onDismissRequest: () -> Unit,
+    sheetState: SheetState,
+    clockMode: CreatingTaskViewModel.ClockMode,
+    timeOfTask: LocalTime?,
+    timeOfSubTask: LocalTime?,
+    updateTimeOfTask: () -> Unit,
+    updateTimeOfSubTask: () -> Unit,
+    hideClock: () -> Unit,
+    heightOfScreen:Int
+) {
+    val heightScreen = heightOfScreen
+
+
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+
+        var selectedTime by remember {
+            mutableStateOf(timeOfTask ?: LocalTime.now())
+        }
+        var selectedTimeSub by remember {
+            mutableStateOf(timeOfSubTask ?: LocalTime.now())
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height((heightScreen * 0.9f).dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                ClockPicker(
+                    initialTime = when (clockMode) {
+                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                            selectedTime
+                        }
+
+                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                            selectedTimeSub
+                        }
+                    }, onTimeChanged = { newTime ->
+                        when (clockMode) {
+                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                                selectedTime = newTime
+                            }
+
+                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                                selectedTimeSub = newTime
+
+                            }
+                        }
+
+                    }
+                )
+
+                Text(
+                    text =
+                        when (clockMode) {
+                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                                selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+                            }
+
+                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                                selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
+                            }
+                        },
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
+                Button(onClick = {
+
+                    when (clockMode) {
+                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                            updateTimeOfTask()
+                            hideClock()
+                        }
+
+                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                            updateTimeOfSubTask()
+                            hideClock()
+                        }
+                    }
+                }) {
+                    Text("Save")
+                }
+
+
+            }
+
+        }
+    }
 }
 
 @Composable
@@ -33,12 +145,12 @@ fun ClockPicker(
 
     // Angles for hour and minute hands
     var hourAngle by remember {
-        mutableStateOf(
+        mutableFloatStateOf(
             (selectedTime.hour + selectedTime.minute / 60f) * 15f
         ) // 360 / 24 = 15 degrees per hour
     }
     var minuteAngle by remember {
-        mutableStateOf(
+        mutableFloatStateOf(
             selectedTime.minute * 6f
         ) // 360 / 60 = 6 degrees per minute
     }
@@ -145,7 +257,6 @@ fun ClockPicker(
         )
 
     }
-
 
 
 }
