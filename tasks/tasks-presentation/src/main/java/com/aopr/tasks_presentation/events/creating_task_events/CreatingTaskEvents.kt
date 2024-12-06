@@ -33,4 +33,8 @@ sealed interface CreatingTaskEvents: EventsType {
     data class UpdateTempSubTaskDescription(val index: Int, val description: String) : CreatingTaskEvents
     data class UpdateTempSubTaskIsDone(val index: Int, val isDone: Boolean) : CreatingTaskEvents
     data object NavigateToBack : CreatingTaskEvents
+    data object CleanTimeOfTaskReminder: CreatingTaskEvents
+    data object CleanDateOfTaskReminder: CreatingTaskEvents
+    data object CleanDataOfSubTask: CreatingTaskEvents
+    data object CleanTimeOfSubtask: CreatingTaskEvents
 }

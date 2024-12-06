@@ -155,8 +155,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
         tasksUseCase.createTask(task).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-                    Log.wtf("mes", result.message.toString(), )
-                }
+                  }
 
                 is Responses.Loading -> {
 
@@ -373,6 +372,19 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
             CreatingTaskEvents.HideCalendar -> {
                 _isCalendarVisible.value = false
+            }
+
+            CreatingTaskEvents.CleanDataOfSubTask -> {
+                _dateOfSubTask.value = null
+            }
+            CreatingTaskEvents.CleanDateOfTaskReminder -> {
+                _dateOfTaskForReminder.value = null
+            }
+            CreatingTaskEvents.CleanTimeOfSubtask -> {
+                _timeOfSubTask.value = null
+            }
+            CreatingTaskEvents.CleanTimeOfTaskReminder -> {
+                _timeOfTask.value = null
             }
         }
     }
