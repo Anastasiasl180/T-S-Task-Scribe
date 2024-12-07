@@ -1,6 +1,7 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
+import android.util.Log
 import com.aopr.tasks_data.mapper.mapToEntity
 import com.aopr.tasks_data.mapper.mapToTask
 import com.aopr.tasks_data.room.TasksDao
@@ -22,9 +23,9 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
     override suspend fun createTask(task: Task) {
         val existingTask = dao.getTaskById(task.id).firstOrNull()
         if (existingTask != null) {
-            updateTask(existingTask.mapToTask())
+          updateTask(task)
         } else {
-            FieldsValidator.validateTask(
+           FieldsValidator.validateTask(
                 task.tittle,
                 task.description,
                 task.dateForReminder,
@@ -92,7 +93,6 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
             null
         }
         FieldsValidator.scheduleReminders(task, list, context)
-
         dao.updateTask(task.mapToEntity().copy(listOfSubtasks = list))
     }
 

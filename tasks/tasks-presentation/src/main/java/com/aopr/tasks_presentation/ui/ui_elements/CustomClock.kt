@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
+import kotlinx.coroutines.delay
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.*
@@ -34,7 +36,6 @@ enum class Hand {
     MINUTE
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetForClock(
@@ -43,22 +44,36 @@ fun BottomSheetForClock(
     clockMode: CreatingTaskViewModel.ClockMode,
     timeOfTask: LocalTime?,
     timeOfSubTask: LocalTime?,
-    updateTimeOfTask: () -> Unit,
-    updateTimeOfSubTask: () -> Unit,
+    updateTimeOfTask: (LocalTime?) -> Unit,
+    updateTimeOfSubTask: (LocalTime?) -> Unit,
     hideClock: () -> Unit,
-    heightOfScreen:Int
+    heightOfScreen: Int
 ) {
     val heightScreen = heightOfScreen
 
-
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
 
+        // Initialize selectedTime based on clockMode
         var selectedTime by remember {
-            mutableStateOf(timeOfTask ?: LocalTime.now())
+            mutableStateOf(
+                when (clockMode) {
+                    CreatingTaskViewModel.ClockMode.REMINDER_TASK -> timeOfTask
+                    CreatingTaskViewModel.ClockMode.SUB_REMINDER -> timeOfSubTask
+                }
+            )
         }
-        var selectedTimeSub by remember {
-            mutableStateOf(timeOfSubTask ?: LocalTime.now())
+
+        // State for current local time
+        var currentTime by remember { mutableStateOf(LocalTime.now()) }
+
+        // Update currentTime every second
+        LaunchedEffect(Unit) {
+            while (true) {
+                currentTime = LocalTime.now()
+                delay(1000L)
+            }
         }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -66,74 +81,79 @@ fun BottomSheetForClock(
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                ClockPicker(
-                    initialTime = when (clockMode) {
-                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                            selectedTime
-                        }
-
-                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                            selectedTimeSub
-                        }
-                    }, onTimeChanged = { newTime ->
-                        when (clockMode) {
-                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                selectedTime = newTime
-                            }
-
-                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                                selectedTimeSub = newTime
-
-                            }
-                        }
-
-                    }
-                )
-
+                // Display Current Local Time
                 Text(
-                    text =
-                        when (clockMode) {
-                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                                selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    text = "Current Time: ${currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))}",
 
-                            }
-
-                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                                selectedTimeSub.format(DateTimeFormatter.ofPattern("HH:mm"))
-                            }
-                        },
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Button(onClick = {
+                // Display Selected Time or Placeholder
+                Text(
+                    text = if (selectedTime != null) {
+                        "Selected Time: ${selectedTime!!.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                    } else {
+                        "Selected Time: Not Set"
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
 
-                    when (clockMode) {
-                        CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
-                            updateTimeOfTask()
-                            hideClock()
-                        }
-
-                        CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
-                            updateTimeOfSubTask()
-                            hideClock()
-                        }
+                // ClockPicker should handle null initialTime gracefully
+                ClockPicker(
+                    initialTime = selectedTime ?: LocalTime.now(),
+                    onTimeChanged = { newTime ->
+                        selectedTime = newTime
                     }
-                }) {
+                )
+
+                Button(
+                    onClick = {
+                        selectedTime?.let { time ->
+                            when (clockMode) {
+                                CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                                    updateTimeOfTask(time)
+                                }
+                                CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                                    updateTimeOfSubTask(time)
+                                }
+                            }
+                        }
+                        hideClock()
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
                     Text("Save")
                 }
-
-
+                Button(
+                    onClick = {
+                        when (clockMode) {
+                            CreatingTaskViewModel.ClockMode.REMINDER_TASK -> {
+                                updateTimeOfTask(null)
+                            }
+                            CreatingTaskViewModel.ClockMode.SUB_REMINDER -> {
+                                updateTimeOfSubTask(null)
+                            }
+                        }
+                        hideClock()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Clear", color = Color.White)
+                }
             }
-
+            }
         }
-    }
+
 }
+
 
 @Composable
 fun ClockPicker(
-    initialTime: LocalTime = LocalTime.now(),
+    initialTime: LocalTime,
     onTimeChanged: (LocalTime) -> Unit
 ) {
     var selectedTime by remember { mutableStateOf(initialTime) }
@@ -146,13 +166,13 @@ fun ClockPicker(
     // Angles for hour and minute hands
     var hourAngle by remember {
         mutableFloatStateOf(
-            (selectedTime.hour + selectedTime.minute / 60f) * 15f
-        ) // 360 / 24 = 15 degrees per hour
+            (selectedTime.hour % 12 + selectedTime.minute / 60f) * 30f // 360 / 12 = 30 degrees per hour
+        )
     }
     var minuteAngle by remember {
         mutableFloatStateOf(
-            selectedTime.minute * 6f
-        ) // 360 / 60 = 6 degrees per minute
+            selectedTime.minute * 6f // 360 / 60 = 6 degrees per minute
+        )
     }
 
     var draggingHand by remember { mutableStateOf<Hand?>(null) }
@@ -201,7 +221,7 @@ fun ClockPicker(
                         when (draggingHand) {
                             Hand.HOUR -> {
                                 hourAngle = angle
-                                val newHour = ((hourAngle / 15f).roundToInt()) % 24
+                                val newHour = ((hourAngle / 30f).roundToInt()) % 12
                                 val updatedTime = selectedTime.withHour(newHour)
                                 selectedTime = updatedTime
                                 onTimeChanged(updatedTime)
@@ -255,11 +275,9 @@ fun ClockPicker(
             end = minuteHandEnd,
             strokeWidth = 8f  // Adjust thickness as desired
         )
-
     }
-
-
 }
+
 
 fun angleDifference(angle1: Float, angle2: Float): Float {
     val diff = abs(angle1 - angle2) % 360f

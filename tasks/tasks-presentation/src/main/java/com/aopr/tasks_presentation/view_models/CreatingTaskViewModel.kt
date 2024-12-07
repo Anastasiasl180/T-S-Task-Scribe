@@ -158,7 +158,6 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                   }
 
                 is Responses.Loading -> {
-
                 }
 
                 is Responses.Success -> {
