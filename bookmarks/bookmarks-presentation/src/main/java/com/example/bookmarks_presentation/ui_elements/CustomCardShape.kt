@@ -68,7 +68,7 @@ class SecondShape(
 
 class CustomShape(
     private val verticalLineEndYRatio: Float = 0.6f,
-    private val lineIntoCardLengthRatio: Float = 0.3f,
+    private val lineIntoCardLengthRatio: Float = 0.19f,
     private val cornerRadiusDp: Float = 16f
 ) : Shape {
 
@@ -166,7 +166,7 @@ fun CustomCard(
                 modifier = Modifier
                     .fillMaxSize(), contentAlignment = Alignment.BottomEnd
             ) {
-                Canvas(modifier = Modifier.fillMaxHeight(0.35f).fillMaxWidth(0.25f)) {
+                Canvas(modifier = Modifier.fillMaxHeight(0.35f).fillMaxWidth(0.15f)) {
                     val path = secondShape.createPath(size, density)
                     drawPath(
                         path = path,
