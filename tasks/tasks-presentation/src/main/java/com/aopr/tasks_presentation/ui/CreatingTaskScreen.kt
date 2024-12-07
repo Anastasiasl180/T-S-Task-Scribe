@@ -144,12 +144,7 @@ fun CreatingTaskScreen() {
         ) {
 
             if (isClockVisible) {
-                var selectedTime by remember {
-                    mutableStateOf(timeOfTask ?: LocalTime.now())
-                }
-                var selectedTimeSub by remember {
-                    mutableStateOf(timeOfSubTask ?: LocalTime.now())
-                }
+
                 BottomSheetForClock(
                     onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
                     sheetState = bottomSheetState,
@@ -158,13 +153,13 @@ fun CreatingTaskScreen() {
                     timeOfSubTask = timeOfSubTask,
                     updateTimeOfTask = {
                         viewModel.onEvent(
-                            CreatingTaskEvents.UpdateTimeOfTask(selectedTime)
+                            CreatingTaskEvents.UpdateTimeOfTask(it)
                         )
                     },
                     updateTimeOfSubTask = {
                         viewModel.onEvent(
                             CreatingTaskEvents.UpdateTimeForSubTask(
-                                selectedTimeSub
+                               it
                             )
                         )
                     },
