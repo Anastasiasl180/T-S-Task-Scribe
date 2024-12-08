@@ -80,9 +80,9 @@ fun SubTaskCard(
                     Button(onClick = { showCalendarForReminder(index) }) {
 
                     }
-                    IconButton(onClick = {
-                        clearDataOfSubTask()
-                    }) {
+                    IconButton(onClick =
+                        clearDataOfSubTask
+                    ) {
                         Icon(imageVector = Icons.Default.Delete,"")
                     }
 
@@ -96,9 +96,9 @@ fun SubTaskCard(
                     Button(onClick = { showClockForReminder(index) }) {
 
                     }
-                    IconButton(onClick = {
-                        clearTimeOfSubTask()
-                    }) {
+                    IconButton(onClick =
+                        clearTimeOfSubTask
+                    ) {
                         Icon(imageVector = Icons.Default.Delete,"")
                     }
 
@@ -158,11 +158,10 @@ fun SubTasksList(
                 ,
                 showClockForReminder = {
                     showClockForReminder(index)
-                }, clearDataOfSubTask = {
-                    clearDataOfSubTask()
-                }, clearTimeOfSubTask = {
-                    clearTimeOfSubTask()
-                }
+                }, clearDataOfSubTask =
+                    clearDataOfSubTask
+                , clearTimeOfSubTask =
+                    clearTimeOfSubTask
 
 
             )

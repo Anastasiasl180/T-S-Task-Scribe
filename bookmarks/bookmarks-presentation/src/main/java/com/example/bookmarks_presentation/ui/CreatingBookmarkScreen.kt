@@ -35,13 +35,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
 import com.example.bookmarks_presentation.ui_elements.CustomDropDownMenu
-import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandler
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CreatingBookMarkScreen() {
-    CreatingBookmarkUiEventHandler()
+fun CreatingBookMarkScreen(uiEventHandler:@Composable ()-> Unit) {
+    uiEventHandler()
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
