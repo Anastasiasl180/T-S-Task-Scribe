@@ -380,9 +380,11 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 _dateOfTaskForReminder.value = null
             }
             CreatingTaskEvents.CleanTimeOfSubtask -> {
+                Log.wtf("", "onEvent:data ", )
                 _timeOfSubTask.value = null
             }
             CreatingTaskEvents.CleanTimeOfTaskReminder -> {
+                Log.wtf("", "onEvent:time ", )
                 _timeOfTask.value = null
             }
         }

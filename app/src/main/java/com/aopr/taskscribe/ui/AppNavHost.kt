@@ -24,6 +24,8 @@ import com.example.bookmarks_presentation.ui.AllBookmarksInCategory
 import com.example.bookmarks_presentation.ui.AllBookmarksScreen
 import com.example.bookmarks_presentation.ui.CreatingBookMarkScreen
 import com.example.bookmarks_presentation.ui.MainBookmarksScreen
+import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithBookmarkId
+import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
 
 @Composable
 fun AppNavHost() {
@@ -64,15 +66,21 @@ fun AppNavHost() {
                     }
                     composable<AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen> {
 
-                        CreatingBookMarkScreen()
+                        CreatingBookMarkScreen(){
+                            CreatingBookmarkUiEventHandlerWithBookmarkId()
+                        }
                     }
                     composable<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>{
 
-                        CreatingBookMarkScreen()
+                        CreatingBookMarkScreen(){
+                            CreatingBookmarkUiEventHandlerWithCategoryId()
+                        }
                     }
                     composable<AllBookmarksNavRoutes.CreatingBookmarkScreen>{
 
-                        CreatingBookMarkScreen()
+                        CreatingBookMarkScreen(){
+                            CreatingBookmarkUiEventHandlerWithBookmarkId()
+                        }
                     }
                 }
             }

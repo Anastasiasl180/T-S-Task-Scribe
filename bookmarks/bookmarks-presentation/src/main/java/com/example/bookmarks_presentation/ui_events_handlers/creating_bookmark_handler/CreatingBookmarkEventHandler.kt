@@ -12,7 +12,7 @@ import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CreatingBookmarkUiEventHandler() {
+fun CreatingBookmarkUiEventHandlerWithBookmarkId() {
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
     val navigator = LocalNavigator.currentOrThrow()
 
@@ -20,15 +20,22 @@ fun CreatingBookmarkUiEventHandler() {
         navigator.currentBackStackEntry?.toRoute<AllBookmarksNavRoutes.CreatingBookmarkScreen>()
     val bookmarkId = id?.id
 
-    val id2 =
-        navigator.currentBackStackEntry?.toRoute<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>()
-    val categoryId = id2?.id
-
     LaunchedEffect(Unit) {
-        viewModel.oEvent(CreatingBookmarkEvents.GetBookmarkById(null))
+        viewModel.oEvent(CreatingBookmarkEvents.GetBookmarkById(bookmarkId))
     }
+}
+
+@Composable
+fun CreatingBookmarkUiEventHandlerWithCategoryId() {
+    val viewModel = koinViewModel<CreatingBookmarkViewModel>()
+    val navigator = LocalNavigator.currentOrThrow()
+
+    val id =
+        navigator.currentBackStackEntry?.toRoute<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>()
+    val categoryId = id?.id
+
+
     LaunchedEffect(Unit) {
         viewModel.oEvent(CreatingBookmarkEvents.GetNewBookmarkWithCategoryId(categoryId))
     }
-
 }
