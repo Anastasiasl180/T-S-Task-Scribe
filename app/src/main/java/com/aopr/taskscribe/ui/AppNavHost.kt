@@ -7,6 +7,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aopr.home.home_screen.HomeScreen
+import com.aopr.home.home_screen.drawers_screens.theme_screen.ThemeChooserScreen
+import com.aopr.home.home_screen.navigation.DrawerItems
+import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.ui.AllNotesScreen
@@ -70,6 +73,9 @@ fun AppNavHost() {
                         CreatingBookMarkScreen() {
                             CreatingBookmarkUiEventHandlerWithCategoryId()
                         }
+                    }
+                    composable<DrawerNavRoutes.SettingsScreen>{
+                        ThemeChooserScreen()
                     }
                 }
             }

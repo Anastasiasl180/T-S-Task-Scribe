@@ -23,6 +23,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,8 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
 import com.aopr.home.home_screen.navigation.DrawerItems
-import com.aopr.notes_presentation.view_model.NotesViewModel
-import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
+import com.aopr.home.home_screen.viewModel.events.HomeUiEventHandler
+import com.aopr.home.home_screen.viewModel.events.HomeViewModel
+import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeEvent
 import com.radusalagean.infobarcompose.InfoBar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -50,7 +52,7 @@ fun HomeScreen() {
     }
     HomeUiEventHandler()
 
-    val viewModel = koinViewModel<NotesViewModel>()
+    val viewModel = koinViewModel<HomeViewModel>()
 
     val tittleOfNote = viewModel.tittleOfNote.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
@@ -75,13 +77,13 @@ fun HomeScreen() {
         getNotesButtons(onShowBottomSheetChange = {
             showBottomSheetForNotes = it
         }, navigateToAllNotes = {
-            viewModel.onEvent(NotesEvent.NavigateToAllNotes)
+            viewModel.onEvent(HomeEvent.NavigateToAllNotes)
         }), getTasksButtons(navigateToAllTasks = {
-            viewModel.onEvent(NotesEvent.NavigateToAllTasks)
+            viewModel.onEvent(HomeEvent.NavigateToAllTasks)
         }, onShowBottomSheetChange = {
             showBottomSheetForTasks = it
         }), getBookMarksButtons(navigateToAllCategoriesOfBookmarks = {
-            viewModel.onEvent(NotesEvent.NavigateToAllCategoriesOfBookmarks)
+            viewModel.onEvent(HomeEvent.NavigateToAllCategoriesOfBookmarks)
         }, onShowBottomSheetChange = {
             showBottomSheetForBookmarks = it
         }),
@@ -95,6 +97,13 @@ fun HomeScreen() {
                 Column(modifier = Modifier.fillMaxSize()) {
                     drawerItems.forEach { items ->
 
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            TextButton(onClick = {
+                                viewModel.onEvent(HomeEvent.NavigateToThemesByDrawer)
+                            }) {
+                                Text(items.name)
+                            }
+                        }
                     }
                 }
             }
@@ -173,11 +182,11 @@ fun HomeScreen() {
                 BottomSheetContent(
                     onDismiss = { showBottomSheetForNotes = false },
                     saveNote = {
-                        viewModel.onEvent(NotesEvent.SaveNote)
+                        viewModel.onEvent(HomeEvent.SaveNote)
                     }, tittle = tittleOfNote, description = descriptionOfNote, updateDescription = {
-                        viewModel.onEvent(NotesEvent.UpdateDescriptionOfNote(it))
+                        viewModel.onEvent(HomeEvent.UpdateDescriptionOfNote(it))
                     }, updateTittle = {
-                        viewModel.onEvent(NotesEvent.UpdateTittleOfNote(it))
+                        viewModel.onEvent(HomeEvent.UpdateTittleOfNote(it))
                     }, infoBarMessage = viewModel.infoBar.value
                 )
             }
@@ -186,9 +195,9 @@ fun HomeScreen() {
                     tittle = tittleOfTask,
                     description = descriptionOfTask,
                     onDismiss = { showBottomSheetForTasks = false },
-                    saveTask = { viewModel.onEvent(NotesEvent.SaveTask) },
-                    updateTittle = { viewModel.onEvent(NotesEvent.UpdateTittleOFTask(it)) },
-                    updateDescription = { viewModel.onEvent(NotesEvent.UpdateDescriptionOfTask(it)) },
+                    saveTask = { viewModel.onEvent(HomeEvent.SaveTask) },
+                    updateTittle = { viewModel.onEvent(HomeEvent.UpdateTittleOFTask(it)) },
+                    updateDescription = { viewModel.onEvent(HomeEvent.UpdateDescriptionOfTask(it)) },
                     infoBarMessage = viewModel.infoBar.value
                 )
             }
@@ -239,8 +248,10 @@ internal fun getTasksButtons(
 }
 
 @Composable
-fun getBookMarksButtons(navigateToAllCategoriesOfBookmarks: () -> Unit,
-                        onShowBottomSheetChange: (Boolean) -> Unit): Array<@Composable () -> Unit> {
+fun getBookMarksButtons(
+    navigateToAllCategoriesOfBookmarks: () -> Unit,
+    onShowBottomSheetChange: (Boolean) -> Unit
+): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
         Button(onClick = {
             navigateToAllCategoriesOfBookmarks()
