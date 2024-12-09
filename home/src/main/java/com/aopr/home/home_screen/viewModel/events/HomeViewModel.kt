@@ -1,14 +1,13 @@
-package com.aopr.notes_presentation.view_model
+package com.aopr.home.home_screen.viewModel.events
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeEvent
+import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeUiEvents
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
-import com.aopr.notes_presentation.view_model.events.notesEvents.NotesEvent
-import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
@@ -24,11 +23,11 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @KoinViewModel
-class NotesViewModel(
+class HomeViewModel(
     private val notesUseCase: NotesUseCase,
     private val tasksUseCase: TasksUseCase
 ) :
-    ViewModelKit<NotesEvent, NotesUiEvents>() {
+    ViewModelKit<HomeEvent, HomeUiEvents>() {
 
     private val _tittleOfNote = mutableStateOf("")
     val tittleOfNote: State<String> = _tittleOfNote
@@ -54,7 +53,7 @@ class NotesViewModel(
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
     val listOfSubTasks: List<Subtasks> = _listOfSubTasks
 
-    private val _event = MutableSharedFlow<NotesUiEvents>()
+    private val _event = MutableSharedFlow<HomeUiEvents>()
     val uiEvents = _event
 
 
@@ -96,16 +95,16 @@ class NotesViewModel(
         }.launchIn(viewModelScope)
     }
 
-    override fun onEvent(event: NotesEvent) {
+    override fun onEvent(event: HomeEvent) {
         when (event) {
 
-            NotesEvent.NavigateToAllNotes -> {
+            HomeEvent.NavigateToAllNotes -> {
                 viewModelScope.launch {
-                    _event.emit(NotesUiEvents.NavigateToAllNotesScreen)
+                    _event.emit(HomeUiEvents.NavigateToAllNotesScreen)
                 }
             }
 
-            is NotesEvent.SaveNote -> {
+            is HomeEvent.SaveNote -> {
                 viewModelScope.launch {
                     val note = Note(
                         tittle = _tittleOfNote.value,
@@ -116,21 +115,21 @@ class NotesViewModel(
                 }
             }
 
-            is NotesEvent.UpdateDescriptionOfNote -> {
+            is HomeEvent.UpdateDescriptionOfNote -> {
                 _descriptionOfNote.value = event.description
             }
 
-            is NotesEvent.UpdateTittleOfNote -> {
+            is HomeEvent.UpdateTittleOfNote -> {
                 _tittleOfNote.value = event.tittle
             }
 
-            NotesEvent.NavigateToAllTasks -> {
+            HomeEvent.NavigateToAllTasks -> {
                 viewModelScope.launch {
-                    _event.emit(NotesUiEvents.NavigateToAllTasks)
+                    _event.emit(HomeUiEvents.NavigateToAllTasks)
                 }
             }
 
-            NotesEvent.SaveTask -> {
+            HomeEvent.SaveTask -> {
                 viewModelScope.launch {
                     val task = Task(
                         id = 0,
@@ -148,21 +147,25 @@ class NotesViewModel(
                 }
             }
 
-            is NotesEvent.UpdateDescriptionOfTask -> {
+            is HomeEvent.UpdateDescriptionOfTask -> {
                 _descriptionOfTask.value = event.description
             }
 
-            is NotesEvent.UpdateTittleOFTask -> {
+            is HomeEvent.UpdateTittleOFTask -> {
                 _tittleOfTask.value = event.tittle
             }
-
-            NotesEvent.NavigateToAllCategoriesOfBookmarks -> {
+            HomeEvent.NavigateToAllCategoriesOfBookmarks -> {
                 viewModelScope.launch {
-                    _event.emit(NotesUiEvents.NavigateToAllCategoriesOfBookmarks)
+                    _event.emit(HomeUiEvents.NavigateToAllCategoriesOfBookmarks)
                 }
             }
+
+            HomeEvent.NavigateToThemesByDrawer -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToThemesByDrawer)
+                }
+            }
+
         }
     }
-
-
 }

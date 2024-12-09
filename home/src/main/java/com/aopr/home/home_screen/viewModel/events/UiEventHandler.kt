@@ -1,10 +1,11 @@
-package com.aopr.home.home_screen
+package com.aopr.home.home_screen.viewModel.events
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.aopr.home.home_screen.navigation.DrawerItems
+import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
-import com.aopr.notes_presentation.view_model.NotesViewModel
-import com.aopr.notes_presentation.view_model.events.notesEvents.NotesUiEvents
+import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeUiEvents
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import org.koin.androidx.compose.koinViewModel
@@ -13,20 +14,24 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeUiEventHandler() {
     val navigator = LocalNavigator.currentOrThrow()
-    val viewModel = koinViewModel<NotesViewModel>()
+    val viewModel = koinViewModel<HomeViewModel>()
     LaunchedEffect(Unit) {
         viewModel.uiEvents.collect { uiEvents ->
             when (uiEvents) {
-                NotesUiEvents.NavigateToAllNotesScreen -> {
+                HomeUiEvents.NavigateToAllNotesScreen -> {
                     navigator.navigate(HomeNavRoutes.AllNotesScreen)
 
                 }
-                NotesUiEvents.NavigateToAllTasks -> {
+                HomeUiEvents.NavigateToAllTasks -> {
                     navigator.navigate(HomeNavRoutes.AllTasksScreen)
                 }
 
-                NotesUiEvents.NavigateToAllCategoriesOfBookmarks -> {
+                HomeUiEvents.NavigateToAllCategoriesOfBookmarks -> {
                     navigator.navigate(HomeNavRoutes.AllCategoriesOfBookmarks)
+                }
+
+                HomeUiEvents.NavigateToThemesByDrawer -> {
+                    navigator.navigate(DrawerNavRoutes.SettingsScreen)
                 }
             }
 

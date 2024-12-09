@@ -39,7 +39,7 @@ sealed interface DrawerNavRoutes {
 }
 
 enum class DrawerItems(val route: DrawerNavRoutes,text:String,icons:ImageVector) {
-    SETTINGS(route = DrawerNavRoutes.SettingsScreen, text = "Settings", icons =Icons.Default.Settings),
+    SETTINGS(route = DrawerNavRoutes.SettingsScreen, text = "Theme", icons =Icons.Default.Settings),
     PROFILE(route = DrawerNavRoutes.ProfileScreen, text = "Profile", icons = Icons.Default.Face),
     ABOUT_APP(route = DrawerNavRoutes.AboutAppScreen, text = "About app", icons = Icons.Default.Info)
 }

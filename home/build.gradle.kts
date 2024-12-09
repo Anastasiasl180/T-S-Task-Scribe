@@ -40,12 +40,14 @@ android {
 
 dependencies {
 
-
+    implementation(project(":tasks:tasks-domain"))
     implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))
     implementation((project(":notes:notes-presentation")))
 
+
+    implementation (libs.androidx.datastore.preferences)
     implementation(libs.info.bar.compose)
 
     //koin
