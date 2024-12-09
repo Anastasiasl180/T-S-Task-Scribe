@@ -1,9 +1,10 @@
 package com.example.bookmarks_presentation.events.creating_bookmark_events
 
+import com.example.bookmarks_presentation.navigation.BookmarksRoutesInfo
+
 sealed interface CreatingBookmarkEvents {
-    data class GetBookmarkById(val id: Int?) : CreatingBookmarkEvents
+    data class GetBookmarkById(val bookmarkInfo: BookmarksRoutesInfo) : CreatingBookmarkEvents
     data object GetAllCategories: CreatingBookmarkEvents
-    data class GetNewBookmarkWithCategoryId(val id: Int?): CreatingBookmarkEvents
     data object SaveBookmark : CreatingBookmarkEvents
     data class OpenFile(val uri: String) : CreatingBookmarkEvents
     data object CancelFile : CreatingBookmarkEvents

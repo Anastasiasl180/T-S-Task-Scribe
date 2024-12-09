@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
@@ -56,7 +57,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     ksp(libs.koin.ksp)
 
-    implementation (libs.material3) // Update to the latest version
+    implementation(libs.material3) // Update to the latest version
 
 
     implementation(libs.kotlinx.serialization.json)

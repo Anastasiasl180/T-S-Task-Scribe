@@ -17,15 +17,15 @@ import com.aopr.shared_ui.util.currentOrThrow
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
 import com.aopr.tasks_presentation.ui.AllTasksScreen
 import com.aopr.tasks_presentation.ui.CreatingTaskScreen
-import com.example.bookmarks_presentation.navigation.AllBookmarksByCategoryNavRoutes
-import com.example.bookmarks_presentation.navigation.AllBookmarksNavRoutes
-import com.example.bookmarks_presentation.navigation.AllCategoriesOfBookmarksNavRoutes
+import com.example.bookmarks_presentation.navigation.BookmarksNavRoutes
+import com.example.bookmarks_presentation.navigation.BookmarksRoutesInfo
+import com.example.bookmarks_presentation.navigation.getBookmarksTypeMap
 import com.example.bookmarks_presentation.ui.AllBookmarksInCategory
 import com.example.bookmarks_presentation.ui.AllBookmarksScreen
 import com.example.bookmarks_presentation.ui.CreatingBookMarkScreen
 import com.example.bookmarks_presentation.ui.MainBookmarksScreen
-import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithBookmarkId
 import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
+import kotlin.reflect.typeOf
 
 @Composable
 fun AppNavHost() {
@@ -58,28 +58,17 @@ fun AppNavHost() {
                     composable<HomeNavRoutes.AllCategoriesOfBookmarks> {
                         MainBookmarksScreen()
                     }
-                    composable<AllCategoriesOfBookmarksNavRoutes.AllBookmarksInCategory> {
+                    composable<BookmarksNavRoutes.AllBookmarksInCategory> {
                         AllBookmarksInCategory()
                     }
-                    composable<AllCategoriesOfBookmarksNavRoutes.AllBookmarksScreen> {
+                    composable<BookmarksNavRoutes.AllBookmarksScreen> {
                         AllBookmarksScreen()
                     }
-                    composable<AllCategoriesOfBookmarksNavRoutes.CreatingBookMarkScreen> {
-
-                        CreatingBookMarkScreen(){
-                            CreatingBookmarkUiEventHandlerWithBookmarkId()
-                        }
-                    }
-                    composable<AllBookmarksByCategoryNavRoutes.CreatingBookmarkWithCategoryId>{
-
-                        CreatingBookMarkScreen(){
+                    composable<BookmarksNavRoutes.CreatingBookMarkScreen>(
+                        typeMap = mapOf(typeOf<BookmarksRoutesInfo>() to getBookmarksTypeMap())
+                    ) {
+                        CreatingBookMarkScreen() {
                             CreatingBookmarkUiEventHandlerWithCategoryId()
-                        }
-                    }
-                    composable<AllBookmarksNavRoutes.CreatingBookmarkScreen>{
-
-                        CreatingBookMarkScreen(){
-                            CreatingBookmarkUiEventHandlerWithBookmarkId()
                         }
                     }
                 }
