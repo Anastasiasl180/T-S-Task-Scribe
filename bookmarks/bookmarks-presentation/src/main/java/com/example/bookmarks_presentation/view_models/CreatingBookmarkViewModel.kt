@@ -43,7 +43,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
 
 
     init {
-       oEvent(CreatingBookmarkEvents.GetAllCategories)
+        oEvent(CreatingBookmarkEvents.GetAllCategories)
     }
 
     private fun createBookmark(bookmark: Bookmark) {
@@ -63,17 +63,19 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         }.launchIn(viewModelScope)
     }
 
-    private fun getAllCategories(){
-        bookmarksUseCase.getAllCategories().onEach{result->
-            when(result){
+    private fun getAllCategories() {
+        bookmarksUseCase.getAllCategories().onEach { result ->
+            when (result) {
                 is Responses.Error<*> -> {
 
                 }
+
                 is Responses.Loading<*> -> {
 
                 }
+
                 is Responses.Success<*> -> {
-                    result.data?.collect(){
+                    result.data?.collect() {
                         _listOfCategories.value = it
                     }
                 }
@@ -99,7 +101,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
                         _idOfCategory.value = bookmark.categoryId
-                        Log.wtf("getByID",bookmark.toString(), )
+                        Log.wtf("getByID", bookmark.toString())
                     }
 
                 }
@@ -112,17 +114,17 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         when (events) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
                 viewModelScope.launch {
-
-                   events.id?.let{it
-                       getBookMarkById(it)
-                   }
+                    events.bookmarkInfo?.bookmarkId?.let {
+                        getBookMarkById(it)
+                    }
+                    _idOfCategory.value = events.bookmarkInfo?.categoryId
                 }
             }
 
             CreatingBookmarkEvents.SaveBookmark -> {
                 viewModelScope.launch {
                     val bookmark = Bookmark(
-                        id = _idOfBookamrk.value ?:0,
+                        id = _idOfBookamrk.value ?: 0,
                         tittle = _tittleOfBookmark.value,
                         fileUri = _fileUri.value,
                         url = _contentUrl.value,
@@ -155,16 +157,12 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
             is CreatingBookmarkEvents.OpenFile -> TODO()
             is CreatingBookmarkEvents.OpenLink -> TODO()
 
-            is CreatingBookmarkEvents.GetNewBookmarkWithCategoryId -> {
-                _idOfCategory.value = events.id
-                }
-
             CreatingBookmarkEvents.ExpandDropDownMenu -> {
                 _isDropDownMenuExpanded.value = !_isDropDownMenuExpanded.value
             }
 
             CreatingBookmarkEvents.GetAllCategories -> {
-                viewModelScope.launch{
+                viewModelScope.launch {
                     getAllCategories()
                 }
             }
