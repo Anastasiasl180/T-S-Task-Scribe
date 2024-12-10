@@ -1,14 +1,16 @@
-package com.aopr.home.home_screen.proto_data_store
+package com.example.home_data.impl.proto_data_store
 
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
+import androidx.datastore.dataStoreFile
 import com.aopr.shared_ui.colors_for_theme.Themes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Single
@@ -18,7 +20,9 @@ import java.io.OutputStream
 
 @Single
 fun provideSettingsDataStore(context:Context): DataStore<SettingsDto> {
-    return DataStoreFactory.create(serializer = SettingsDtoSerializer, produceFile = {})
+    return DataStoreFactory.create(serializer = SettingsDtoSerializer, produceFile = {
+        context.dataStoreFile("settings")
+    })
 }
 
 @Factory

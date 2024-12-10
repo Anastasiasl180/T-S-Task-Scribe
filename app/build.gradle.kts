@@ -45,13 +45,13 @@ android {
         }
     }
 }
-
 dependencies {
 
     //haze for mainBottomBar
     implementation(libs.haze.jetpack.compose)
 
-    implementation(project(":home"))
+    //modules
+    implementation(project(":home:home-presentation"))
     implementation(project(":shared:shared-data"))
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))
@@ -65,9 +65,7 @@ dependencies {
     implementation(project(":bookmarks:bookmarks-data"))
     implementation(project(":bookmarks:bookmarks-presentation"))
 
-
-
-    //koi
+    //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp)
