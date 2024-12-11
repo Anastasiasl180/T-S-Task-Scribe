@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared:shared-domain"))
     implementation (libs.info.bar.compose)
 
 //koin

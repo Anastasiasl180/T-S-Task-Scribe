@@ -1,0 +1,4 @@
+package org.koin.ksp.generated
+
+public class KoinDefComAoprHomeHome_screenDiHomeModule
+public class KoinDefComAoprHomeHome_screenViewModelHomeViewModel

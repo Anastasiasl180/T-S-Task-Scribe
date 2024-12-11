@@ -47,8 +47,7 @@ dependencies {
     implementation((project(":notes:notes-presentation")))
 
 
-    implementation (libs.androidx.datastore.preferences)
-    implementation(libs.info.bar.compose)
+   implementation(libs.info.bar.compose)
 
     //koin
     implementation(libs.koin.android)

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AboutApp">About app</string>
+    <string name="Account">Account</string>
+    <string name="AllBookmarks">All bookmarks</string>
+    <string name="AllEvents">All events</string>
+    <string name="AllNotes">All notes</string>
+    <string name="AllTasks">All tasks</string>
+    <string name="Bookmarks">Bookmarks</string>
+    <string name="Calendar">Calendar</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Description">Description</string>
+    <string name="Done">Done</string>
+    <string name="NewBookmark">New bookmark</string>
+    <string name="NewNote">New Note</string>
+    <string name="NewTask">New task</string>
+    <string name="Notes">Notes</string>
+    <string name="Settings">Settings</string>
+    <string name="Tasks">Tasks</string>
+    <string name="Tittle">Tittle</string>
+</resources>

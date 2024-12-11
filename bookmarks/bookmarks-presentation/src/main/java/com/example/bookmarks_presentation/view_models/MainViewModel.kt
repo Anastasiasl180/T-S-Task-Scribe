@@ -1,13 +1,10 @@
 package com.example.bookmarks_presentation.view_models
 
-import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
-import com.aopr.shared_ui.MainViewModel
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.events.main_events.MainEvents

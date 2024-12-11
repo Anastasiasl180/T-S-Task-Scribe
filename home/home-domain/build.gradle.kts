@@ -35,8 +35,10 @@ android {
 }
 
 dependencies {
-implementation(project(":home:home-presentation"))
     implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-ui"))
+    implementation(libs.kotlinx.serialization.json)
+
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -50,8 +51,11 @@ dependencies {
     //haze for mainBottomBar
     implementation(libs.haze.jetpack.compose)
 
+    implementation(libs.kotlinx.serialization.json)
     //modules
     implementation(project(":home:home-presentation"))
+    implementation(project(":home:home-data"))
+    implementation(project(":home:home-domain"))
     implementation(project(":shared:shared-data"))
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))

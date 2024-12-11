@@ -1,0 +1,20 @@
+R_DEF: Internal format may change without notice
+local
+string AboutApp
+string Account
+string AllBookmarks
+string AllEvents
+string AllNotes
+string AllTasks
+string Bookmarks
+string Calendar
+string Cancel
+string Description
+string Done
+string NewBookmark
+string NewNote
+string NewTask
+string Notes
+string Settings
+string Tasks
+string Tittle
