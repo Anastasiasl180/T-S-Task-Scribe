@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
+
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -35,16 +37,14 @@ android {
 
 dependencies {
 
-
-    implementation(project(":home:home-domain"))
-    implementation(project(":home:home-presentation"))
-
+    implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-ui"))
 
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp)
-    implementation (libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.info.bar.compose)
 
     implementation(libs.androidx.core.ktx)

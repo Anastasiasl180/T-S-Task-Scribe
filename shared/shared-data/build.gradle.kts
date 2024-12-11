@@ -35,7 +35,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":shared:shared-domain"))
 
+    implementation(libs.kotlinx.serialization.json)
+    implementation (libs.androidx.datastore.preferences)
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)

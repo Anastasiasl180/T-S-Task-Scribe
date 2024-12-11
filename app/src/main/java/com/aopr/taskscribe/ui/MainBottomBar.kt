@@ -32,7 +32,6 @@ import com.aopr.shared_ui.navigation.NavigationBarItems
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import org.koin.androidx.compose.koinViewModel
 
 

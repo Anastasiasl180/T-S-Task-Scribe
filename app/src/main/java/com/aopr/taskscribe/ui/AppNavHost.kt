@@ -1,14 +1,12 @@
 package com.aopr.taskscribe.ui
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.aopr.home.home_screen.HomeScreen
+import com.aopr.home.home_screen.ui.HomeScreen
 import com.aopr.home.home_screen.drawers_screens.theme_screen.ThemeChooserScreen
-import com.aopr.home.home_screen.navigation.DrawerItems
 import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
