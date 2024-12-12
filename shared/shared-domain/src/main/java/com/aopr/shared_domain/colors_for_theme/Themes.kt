@@ -4,13 +4,13 @@ import androidx.compose.ui.graphics.Color
 import com.aopr.shared_domain.theme.Colors
 
 
-enum class Themes(val themeColors: List<Color>){
-    BLUE(Colors.blueTheme),
-    VIOLET(Colors.violetTheme),
-    HAKI(Colors.hakiTheme),
-    PINK(Colors.pinkTheme),
-    NATURE(Colors.natureTheme),
-    SUNSET(Colors.sunsetTheme),
-    ORANGE(Colors.orangeTheme),
-    BROWN(Colors.brownTheme)
+enum class Themes() {
+    BLUE,
+    VIOLET,
+    HAKI,
+    PINK,
+    NATURE,
+    SUNSET,
+    ORANGE,
+    BROWN
 }

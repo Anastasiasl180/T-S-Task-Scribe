@@ -1,6 +1,7 @@
 package com.aopr.shared_domain.inter
 
 
+import android.util.Log
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.colors_for_theme.Themes
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +29,6 @@ class HomeUseCase(private val homeRepository: HomeRepository) {
             emit(Responses.Success(data))
 
         }catch (e: IOException){
-
         }
     }
 
