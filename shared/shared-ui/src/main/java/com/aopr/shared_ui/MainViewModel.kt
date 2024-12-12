@@ -1,5 +1,6 @@
 package com.aopr.shared_ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
@@ -60,12 +61,12 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                 }
 
                 is Responses.Loading -> {
-
                 }
 
                 is Responses.Success -> {
                     result.data?.theme.let {
                         if (it != null) {
+                            Log.wtf("Meerkaiuikjk", it.name.toString())
                             _chosenTheme.value = it
                         }
                     }
@@ -97,6 +98,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
             is MainEvent.ChosenTheme -> {
               viewModelScope.launch {
+                  Log.wtf("Meerkapopo", ": ")
                   _chosenTheme.value = event.theme
                   updateTheme(event.theme)
               }
