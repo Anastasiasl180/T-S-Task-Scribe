@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aopr.shared_domain.colors_for_theme.Themes
 import kotlinx.coroutines.flow.StateFlow
 
@@ -111,14 +112,13 @@ fun TaskScribeTheme(
 ) {
     val context = LocalContext.current
 
-    // Колекція теми зі StateFlow
-    val taskScribeThemes by taskScribeThemesFlow.collectAsState()
-    val colorScheme = remember(taskScribeThemes) {
+    val taskScribeThemes = taskScribeThemesFlow.collectAsState()
+    val colorScheme =
         when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
-            darkTheme -> when (taskScribeThemes) {
+            darkTheme -> when (taskScribeThemes.value) {
                 Themes.BLUE -> blueTheme
                 Themes.VIOLET -> violetTheme
                 Themes.HAKI -> hakiTheme
@@ -130,7 +130,7 @@ fun TaskScribeTheme(
             }
             else -> LightColorScheme
         }
-    }
+
 
     MaterialTheme(
         colorScheme = colorScheme,

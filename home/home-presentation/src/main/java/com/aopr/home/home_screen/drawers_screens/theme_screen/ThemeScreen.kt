@@ -20,21 +20,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aopr.shared_ui.MainViewModel
 import com.aopr.shared_domain.colors_for_theme.Themes
 import com.aopr.shared_ui.theme.sunsetTheme
+import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ThemeChooserScreen() {
-    val mainViewModel = koinViewModel<MainViewModel>()
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
 
     Scaffold { _ ->
 
         val themesEntries = Themes.entries
         val chosenTheme by mainViewModel.chosenTheme.collectAsState()
 
-        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primary), contentAlignment = Alignment.Center) {
 
             wtf("io2",MaterialTheme.colorScheme.primary.value.toString())
             Column(modifier = Modifier.fillMaxSize(0.5f)) {

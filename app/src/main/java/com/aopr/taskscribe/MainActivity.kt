@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         checkAndRequestNotificationPermission()
         enableEdgeToEdge()
         setContent {
-            val mainViewModel = koinViewModel<MainViewModel>()
+            val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
         //    val theme by mainViewModel.chosenTheme.collectAsState()
             val navHost = rememberNavController()
             GlobalUiEventHandler(navHost = navHost)
