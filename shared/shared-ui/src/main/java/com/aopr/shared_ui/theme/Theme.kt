@@ -24,7 +24,8 @@ val blueTheme = darkColorScheme(
     secondary =  Color(0xFF0D1A39),
     tertiary =  Color(0xFF122454),
     onPrimary =Color(0xFF152F6A),
-    primaryContainer = Color(0xFF384662)
+    primaryContainer = Color(0xFF384662),
+    onPrimaryContainer = Color(0xFFF5F5F5)
 )
 val violetTheme = darkColorScheme(
     primary =  Color(0xFF000000),
