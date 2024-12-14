@@ -19,6 +19,9 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
+    private val _isFirstLaunch = MutableStateFlow(true)
+    val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch
+
     private val _chosenTheme = MutableStateFlow<Themes>(Themes.VIOLET)
     val chosenTheme: StateFlow<Themes> = _chosenTheme
 
@@ -35,7 +38,61 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
     }
 
     init {
-        getTheme()
+        viewModelScope.launch {
+            launch {
+                getFirstLaunch()
+            }
+            launch {
+                getTheme()
+            }
+        }
+
+
+    }
+
+    private fun getFirstLaunch() {
+        homeUseCase.getIsFirstLaunch().onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    result.data?.isFirstLaunch.let { it ->
+                        if (it != null) {
+                            _isFirstLaunch.value = it
+                        }
+
+                    }
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun updateIsFirstLaunch(isFirstLaunch: Boolean) {
+        homeUseCase.updateIsFirstLaunch(isFirstLaunch).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
+                }
+            }
+
+
+        }.launchIn(viewModelScope)
     }
 
     private fun updateTheme(theme: Themes) {
@@ -50,7 +107,6 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                 }
 
                 is Responses.Success -> {
-
                 }
             }
 
@@ -70,7 +126,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                 is Responses.Success -> {
                     result.data?.theme.let {
                         if (it != null) {
-                              _chosenTheme.value = it
+                            _chosenTheme.value = it
                         }
                     }
                 }
@@ -102,13 +158,19 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
             is MainEvent.ChosenTheme -> {
                 viewModelScope.launch {
-                   _chosenTheme.value = event.theme
+                    _chosenTheme.value = event.theme
                     updateTheme(event.theme)
                 }
             }
 
             MainEvent.ShowBottomBar -> {
                 _isBottomBarShowed.value = true
+            }
+
+            MainEvent.SetFirstLaunchTrue -> {
+                viewModelScope.launch {
+                    updateIsFirstLaunch(false)
+                }
             }
         }
 
@@ -119,6 +181,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         data object NavigateToAiScreen : MainEvent
         data object NavigateToDashBoardScreen : MainEvent
         data object ShowBottomBar : MainEvent
+        data object SetFirstLaunchTrue : MainEvent
         data class ChosenTheme(val theme: Themes) : MainEvent
     }
 

@@ -33,6 +33,11 @@ class SettingsDataStoreManager(private val dataStore: DataStore<SettingsDto>) {
             it.copy(theme = themes)
         }
     }
+    suspend fun updateIsFirstLaunch(isFirstLaunch:Boolean){
+        dataStore.updateData { it->
+            it.copy(isFirstLaunch = isFirstLaunch)
+        }
+    }
 }
 
 

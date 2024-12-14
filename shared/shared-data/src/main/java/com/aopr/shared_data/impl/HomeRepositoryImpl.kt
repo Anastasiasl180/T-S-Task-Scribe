@@ -17,4 +17,12 @@ class HomeRepositoryImpl(private val dataStoreManager: SettingsDataStoreManager)
         return dataStoreManager.data.first()
     }
 
+    override suspend fun updateIsFirstLaunch(isFirstLaunch: Boolean) {
+     dataStoreManager.updateIsFirstLaunch(isFirstLaunch)
+    }
+
+    override suspend fun getIsFirstLaunch(): SettingsDto {
+       return dataStoreManager.data.first()
+    }
+
 }
