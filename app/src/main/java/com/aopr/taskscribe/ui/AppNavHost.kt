@@ -5,6 +5,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.aopr.authentication_presentation.navigation.AuthenticationRoutes
+import com.aopr.authentication_presentation.ui.RegistrationScreen
 import com.aopr.home.home_screen.ui.HomeScreen
 import com.aopr.home.home_screen.drawers_screens.theme_screen.ThemeChooserScreen
 import com.aopr.home.home_screen.navigation.DrawerNavRoutes
@@ -43,8 +45,11 @@ fun AppNavHost() {
             CompositionLocalProvider(LocalNavigator provides innerNavigator) {
                 NavHost(
                     navController = innerNavigator,
-                    startDestination = OnBoardingNavRoutes.LoadingScreen
+                    startDestination = AuthenticationRoutes.RegistrationScreen
                 ) {
+                    composable<AuthenticationRoutes.RegistrationScreen> {
+                        RegistrationScreen()
+                    }
                     composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()
                     }
@@ -85,7 +90,7 @@ fun AppNavHost() {
                             CreatingBookmarkUiEventHandlerWithCategoryId()
                         }
                     }
-                    composable<DrawerNavRoutes.SettingsScreen>{
+                    composable<DrawerNavRoutes.SettingsScreen> {
                         ThemeChooserScreen()
                     }
                 }
