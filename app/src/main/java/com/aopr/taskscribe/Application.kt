@@ -5,6 +5,8 @@ import com.aopr.home.home_screen.di.HomePresentationModule
 import com.aopr.notes_data.di.NotesDataModule
 import com.aopr.notes_domain.di.NotesDomainModule
 import com.aopr.notes_presentation.di.NotesPresentationModule
+import com.aopr.onboarding_data.di.OnBoardingDataModule
+import com.aopr.onboarding_presentation.di.OnBoardingPresentationModule
 import com.aopr.shared_data.di.SharedDataModule
 import com.aopr.shared_domain.di.SharedDomainModule
 import com.aopr.shared_ui.di.SharedUiModule
@@ -40,7 +42,10 @@ class Application : Application() {
                 TasksDomainModule().module,
                 BookmarksDomainModule().module,
                 BookmarksDataModule().module,
-                BookmarksPresentationModule().module
+                BookmarksPresentationModule().module,
+                OnBoardingDataModule().module,
+                OnBoardingDataModule().module,
+                OnBoardingPresentationModule().module
             )
 
         }

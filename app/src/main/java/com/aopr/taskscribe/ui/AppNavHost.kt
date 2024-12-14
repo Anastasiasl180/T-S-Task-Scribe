@@ -12,6 +12,9 @@ import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.ui.AllNotesScreen
 import com.aopr.notes_presentation.ui.CreatingNoteScreen
+import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
+import com.aopr.onboarding_presentation.ui.FirstOnBoardingScreen
+import com.aopr.onboarding_presentation.ui.SecondOnBoardingScreen
 import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
@@ -39,8 +42,14 @@ fun AppNavHost() {
             CompositionLocalProvider(LocalNavigator provides innerNavigator) {
                 NavHost(
                     navController = innerNavigator,
-                    startDestination = HomeNavRoutes.HomeScreen
+                    startDestination = OnBoardingNavRoutes.FirstScreen
                 ) {
+                    composable<OnBoardingNavRoutes.FirstScreen> {
+                        FirstOnBoardingScreen()
+                    }
+                    composable<OnBoardingNavRoutes.SecondScreen> {
+                        SecondOnBoardingScreen()
+                    }
                     composable<HomeNavRoutes.AllNotesScreen> {
                         AllNotesScreen()
                     }

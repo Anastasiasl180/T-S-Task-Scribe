@@ -22,6 +22,9 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
     private val _chosenTheme = MutableStateFlow<Themes>(Themes.VIOLET)
     val chosenTheme: StateFlow<Themes> = _chosenTheme
 
+    private val _isBottomBarShowed = MutableStateFlow(false)
+    val isBottomBarShowed: StateFlow<Boolean> = _isBottomBarShowed
+
     private val _event = MutableSharedFlow<UiEvent>()
     val event = _event.asSharedFlow()
 
@@ -53,6 +56,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
         }.launchIn(viewModelScope)
     }
+
     private fun getTheme() {
         homeUseCase.getTheme().onEach { result ->
             when (result) {
@@ -66,8 +70,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                 is Responses.Success -> {
                     result.data?.theme.let {
                         if (it != null) {
-                            Log.wtf("Meerkaiuikjk", it.name.toString())
-                            _chosenTheme.value = it
+                              _chosenTheme.value = it
                         }
                     }
                 }
@@ -93,15 +96,19 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
             MainEvent.NavigateToHomeScreen -> {
                 viewModelScope.launch {
                     _event.emit(UiEvent.NavigateToHomeScreen)
+                    onEvent(MainEvent.ShowBottomBar)
                 }
             }
 
             is MainEvent.ChosenTheme -> {
-              viewModelScope.launch {
-                  Log.wtf("Meerkapopo", ": ")
-                  _chosenTheme.value = event.theme
-                  updateTheme(event.theme)
-              }
+                viewModelScope.launch {
+                   _chosenTheme.value = event.theme
+                    updateTheme(event.theme)
+                }
+            }
+
+            MainEvent.ShowBottomBar -> {
+                _isBottomBarShowed.value = true
             }
         }
 
@@ -111,6 +118,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         data object NavigateToHomeScreen : MainEvent
         data object NavigateToAiScreen : MainEvent
         data object NavigateToDashBoardScreen : MainEvent
+        data object ShowBottomBar : MainEvent
         data class ChosenTheme(val theme: Themes) : MainEvent
     }
 

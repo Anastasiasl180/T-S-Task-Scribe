@@ -37,21 +37,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+            val isBottomBarShowed = mainViewModel.isBottomBarShowed.collectAsState()
         //    val theme by mainViewModel.chosenTheme.collectAsState()
             val navHost = rememberNavController()
             GlobalUiEventHandler(navHost = navHost)
 
             TaskScribeTheme(taskScribeThemesFlow = mainViewModel.chosenTheme) {
 
-                Scaffold(bottomBar = {
-                    BottomBar(navController = navHost)
-                }) { _ ->
-                    CompositionLocalProvider(
-                        LocalNavigator provides navHost
-                    ) {
-                        AppNavHost()
+                    Scaffold(bottomBar = {
+
+                        if (isBottomBarShowed.value) {
+                            BottomBar(navController = navHost)
+                        }
+                    }) { _ ->
+                        CompositionLocalProvider(
+                            LocalNavigator provides navHost
+                        ) {
+                            AppNavHost()
+                        }
                     }
-                }
+
             }
         }
     }

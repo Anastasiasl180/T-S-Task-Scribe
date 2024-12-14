@@ -14,7 +14,7 @@ sealed interface MainNavRoutes {
     @Serializable
     data object HomeNavHost : MainNavRoutes
 
-    @kotlinx.serialization.Serializable
+    @Serializable
     data object DashBoard : MainNavRoutes
 
     @Serializable
