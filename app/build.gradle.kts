@@ -53,6 +53,9 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     //modules
+    implementation(project(":authentication:authentication-domain"))
+    implementation(project(":authentication:authentication-data"))
+    implementation(project(":authentication:authentication-presentation"))
     implementation(project(":onboarding:onboarding-presentation"))
     implementation(project(":onboarding:onboarding-domain"))
     implementation(project(":onboarding:onboarding-data"))

@@ -1,6 +1,9 @@
 package com.aopr.taskscribe
 
 import android.app.Application
+import com.aopr.authentication_data.di.AuthenticationDataModule
+import com.aopr.authentication_domain.di.AuthenticationDomainModule
+import com.aopr.authentication_presentation.di.AuthenticationPresentationModule
 import com.aopr.home.home_screen.di.HomePresentationModule
 import com.aopr.notes_data.di.NotesDataModule
 import com.aopr.notes_domain.di.NotesDomainModule
@@ -45,7 +48,10 @@ class Application : Application() {
                 BookmarksPresentationModule().module,
                 OnBoardingDataModule().module,
                 OnBoardingDataModule().module,
-                OnBoardingPresentationModule().module
+                OnBoardingPresentationModule().module,
+                AuthenticationPresentationModule().module,
+                AuthenticationDataModule().module,
+                AuthenticationDomainModule().module
             )
 
         }
