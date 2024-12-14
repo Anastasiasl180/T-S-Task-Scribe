@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SettingsDto(
-    val theme: Themes = Themes.VIOLET
+    val theme: Themes = Themes.VIOLET,
+    val isFirstLaunch: Boolean = true
 )
