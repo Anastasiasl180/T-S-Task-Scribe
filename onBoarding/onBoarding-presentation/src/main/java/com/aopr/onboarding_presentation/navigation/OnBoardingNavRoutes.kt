@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 sealed interface OnBoardingNavRoutes {
 
     @Serializable
+    data object LoadingScreen:OnBoardingNavRoutes
+
+    @Serializable
     data object FirstScreen:OnBoardingNavRoutes
 
     @Serializable
