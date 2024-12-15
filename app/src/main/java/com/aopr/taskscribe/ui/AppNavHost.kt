@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.aopr.authentication_presentation.navigation.AuthenticationRoutes
+import com.aopr.authentication_presentation.ui.LogInScreen
 import com.aopr.authentication_presentation.ui.RegistrationScreen
 import com.aopr.home.home_screen.ui.HomeScreen
 import com.aopr.home.home_screen.drawers_screens.theme_screen.ThemeChooserScreen
@@ -49,6 +50,9 @@ fun AppNavHost() {
                 ) {
                     composable<AuthenticationRoutes.RegistrationScreen> {
                         RegistrationScreen()
+                    }
+                    composable<AuthenticationRoutes.LogInScreen> {
+                       LogInScreen()
                     }
                     composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()

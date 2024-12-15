@@ -8,6 +8,7 @@ import com.aopr.shared_domain.inter.SettingsDto
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -20,7 +21,7 @@ import org.koin.core.annotation.Single
 class HomeRepositoryImpl(
     private val dataStoreManager: SettingsDataStoreManager
 ) : HomeRepository {
-    private lateinit var auth: FirebaseAuth
+
     override suspend fun updateTheme(theme: Themes) {
         dataStoreManager.updateTheme(theme)
     }
@@ -37,32 +38,5 @@ class HomeRepositoryImpl(
         return dataStoreManager.data.first()
     }
 
-    override suspend fun registerUser(gmail: String, password: String) {
-        val auth = FirebaseAuth.getInstance()
-        if (gmail.isNotEmpty() && password.isNotEmpty()) {
 
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-
-                    auth.createUserWithEmailAndPassword(gmail, password).await()
-
-                    checkLoggedInState()
-
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        println(e.message.toString())
-                    }
-                }
-            }
-
-        }
-    }
-
-    private fun checkLoggedInState() {
-        if (auth.currentUser == null) {
-            println("nulik")
-        } else {
-            println("no null")
-        }
-    }
 }

@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     ksp(libs.koin.ksp)
     //room
 

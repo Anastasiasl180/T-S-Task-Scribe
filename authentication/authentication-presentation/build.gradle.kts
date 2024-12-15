@@ -47,10 +47,11 @@ dependencies {
         //modules
         implementation(project(":home:home-presentation"))
         implementation(project(":shared:shared-ui"))
+        implementation(project(":authentication:authentication-domain"))
         implementation(project(":shared:shared-domain"))
 
-        implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-        implementation("com.google.firebase:firebase-analytics")
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.com.google.firebase.firebase.analytics)
 
         //koin
         implementation(libs.koin.android)

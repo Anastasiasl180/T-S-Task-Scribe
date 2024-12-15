@@ -14,16 +14,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.aopr.authentication_presentation.events.registration_events.RegistrationEvents
-import com.aopr.authentication_presentation.handler.RegistrationUiEventHandler
-import com.aopr.authentication_presentation.model.RegistrationViewModel
+import com.aopr.authentication_presentation.events.log_in_events.LogInEvents
+import com.aopr.authentication_presentation.handler.LogInUiEventHandler
+import com.aopr.authentication_presentation.model.LogInViewModel
 import org.koin.androidx.compose.koinViewModel
 
+
 @Composable
-fun RegistrationScreen() {
-    RegistrationUiEventHandler()
-    val viewModel = koinViewModel<RegistrationViewModel>()
-    val userName by viewModel.userName.collectAsState()
+fun LogInScreen() {
+   LogInUiEventHandler()
+    val viewModel = koinViewModel<LogInViewModel>()
     val gmail by viewModel.gmail.collectAsState()
     val password by viewModel.password.collectAsState()
     Scaffold { _ ->
@@ -37,16 +37,13 @@ fun RegistrationScreen() {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 TextField(value = gmail, onValueChange = {
-                    viewModel.onEvent(RegistrationEvents.UpdateGmail(it))
+                    viewModel.onEvent(LogInEvents.UpdateGmail(it))
                 })
-                TextField(value = password, onValueChange ={
-                    viewModel.onEvent(RegistrationEvents.UpdatePassword(it))
-                } )
-                Button(onClick = { viewModel.onEvent(RegistrationEvents.RegisterUser) }) {
+                TextField(value = password, onValueChange = {
+                    viewModel.onEvent(LogInEvents.UpdatePassword(it))
+                })
+                Button(onClick = { viewModel.onEvent(LogInEvents.LogInUser) }) {
                     Text(text = "Save")
-                }
-                Button(onClick = { viewModel.onEvent(RegistrationEvents.NavigateToLogInUser) }) {
-                    Text(text = "logIn")
                 }
 
             }
