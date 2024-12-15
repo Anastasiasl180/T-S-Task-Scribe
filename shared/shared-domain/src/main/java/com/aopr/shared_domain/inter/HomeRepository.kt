@@ -8,5 +8,6 @@ interface HomeRepository {
     suspend fun getTheme(): SettingsDto
     suspend fun updateIsFirstLaunch(isFirstLaunch:Boolean)
     suspend fun getIsFirstLaunch():SettingsDto
+    suspend fun registerUser(gmail:String,password:String)
 
 }

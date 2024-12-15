@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,12 +43,18 @@ dependencies {
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
+    implementation(libs.firebase.auth)
     ksp(libs.koin.ksp)
     //room
+
+    implementation (libs.kotlinx.coroutines.play.services)
+
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
+    implementation (libs.firebase.auth.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.ktx)

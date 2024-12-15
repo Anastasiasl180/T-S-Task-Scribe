@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "838404802019",
+    "project_id": "task-scribe-98c1e",
+    "storage_bucket": "task-scribe-98c1e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838404802019:android:c05b30a60d38c752b50cd6",
+        "android_client_info": {
+          "package_name": "com.aopr.taskscribe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcDtMNo3aqFbSUryxS52g3YTw76Mr3GCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

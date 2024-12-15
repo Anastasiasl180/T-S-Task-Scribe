@@ -11,44 +11,57 @@ import java.io.IOException
 @Single
 class HomeUseCase(private val homeRepository: HomeRepository) {
 
-    fun updateIsFirstLaunch(isFirstLaunch:Boolean):Flow<Responses<Unit>> = flow {
+    fun registerUser(gmail: String, password: String): Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = homeRepository.registerUser(gmail, password)
+            emit(Responses.Success(data))
+
+        } catch (e: IOException) {
+
+        }
+    }
+
+    fun updateIsFirstLaunch(isFirstLaunch: Boolean): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
             val data = homeRepository.updateIsFirstLaunch(isFirstLaunch)
             emit(Responses.Success(data))
 
-        }catch (e: IOException){
+        } catch (e: IOException) {
 
         }
     }
-    fun getIsFirstLaunch():Flow<Responses<SettingsDto>> = flow {
+
+    fun getIsFirstLaunch(): Flow<Responses<SettingsDto>> = flow {
         try {
             emit(Responses.Loading())
             val data = homeRepository.getIsFirstLaunch()
             emit(Responses.Success(data))
-        }catch (e: IOException){
+        } catch (e: IOException) {
 
         }
     }
 
 
-    fun updateTheme(theme:Themes): Flow<Responses<Unit>> = flow{
+    fun updateTheme(theme: Themes): Flow<Responses<Unit>> = flow {
         try {
-           emit(Responses.Loading())
+            emit(Responses.Loading())
             val data = homeRepository.updateTheme(theme)
             emit(Responses.Success(data))
 
-        }catch (e: IOException){
+        } catch (e: IOException) {
 
         }
     }
-    fun getTheme(): Flow<Responses<SettingsDto>> = flow{
+
+    fun getTheme(): Flow<Responses<SettingsDto>> = flow {
         try {
             emit(Responses.Loading())
             val data = homeRepository.getTheme()
             emit(Responses.Success(data))
 
-        }catch (e: IOException){
+        } catch (e: IOException) {
         }
     }
 

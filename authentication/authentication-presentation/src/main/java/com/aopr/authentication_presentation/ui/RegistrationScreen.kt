@@ -25,6 +25,7 @@ fun RegistrationScreen() {
     AuthenticationUiEventHandler()
     val viewModel = koinViewModel<RegistrationViewModel>()
     val userName by viewModel.userName.collectAsState()
+    val gmail by viewModel.gmail.collectAsState()
     val password by viewModel.password.collectAsState()
     Scaffold { _ ->
         Box(
@@ -36,8 +37,8 @@ fun RegistrationScreen() {
                 modifier = Modifier.fillMaxSize(0.7f),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                TextField(value = userName, onValueChange = {
-                    viewModel.onEvent(RegistrationEvents.UpdateUserName(it))
+                TextField(value = gmail, onValueChange = {
+                    viewModel.onEvent(RegistrationEvents.UpdateGmail(it))
                 })
                 TextField(value = password, onValueChange ={
                     viewModel.onEvent(RegistrationEvents.UpdatePassword(it))
