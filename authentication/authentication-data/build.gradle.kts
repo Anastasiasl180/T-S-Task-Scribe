@@ -39,7 +39,7 @@ android {
 
 dependencies {
 
-
+implementation(project(":authentication:authentication-domain"))
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
 
@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     ksp(libs.koin.ksp)
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.datastore.preferences)

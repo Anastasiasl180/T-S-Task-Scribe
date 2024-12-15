@@ -8,4 +8,7 @@ sealed interface AuthenticationRoutes {
     @Serializable
     data object RegistrationScreen:AuthenticationRoutes
 
+    @Serializable
+    data object LogInScreen:AuthenticationRoutes
+
 }

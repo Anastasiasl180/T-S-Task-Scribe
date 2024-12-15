@@ -10,18 +10,6 @@ import java.io.IOException
 
 @Single
 class HomeUseCase(private val homeRepository: HomeRepository) {
-
-    fun registerUser(gmail: String, password: String): Flow<Responses<Unit>> = flow {
-        try {
-            emit(Responses.Loading())
-            val data = homeRepository.registerUser(gmail, password)
-            emit(Responses.Success(data))
-
-        } catch (e: IOException) {
-
-        }
-    }
-
     fun updateIsFirstLaunch(isFirstLaunch: Boolean): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())

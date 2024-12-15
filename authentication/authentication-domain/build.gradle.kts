@@ -42,9 +42,12 @@ android {
 }
 
 dependencies {
-
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(project(":shared:shared-domain"))
+    implementation(project(":notes:notes-domain"))
+    implementation(project(":tasks:tasks-domain"))
+    implementation(project(":bookmarks:bookmarks-domain"))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.analytics)
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
