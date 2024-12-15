@@ -6,5 +6,6 @@ plugins {
     id("com.google.devtools.ksp") version "2.0.10-1.0.24" apply false
     id ("org.jetbrains.kotlin.plugin.serialization") version "2.0.10" apply false
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.google.gms.google.services) apply false
 
 }

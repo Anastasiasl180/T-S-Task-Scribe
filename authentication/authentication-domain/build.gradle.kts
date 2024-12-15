@@ -4,6 +4,9 @@ plugins {
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.gms.google-services")
+
+
 }
 
 android {
@@ -39,6 +42,9 @@ android {
 }
 
 dependencies {
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
