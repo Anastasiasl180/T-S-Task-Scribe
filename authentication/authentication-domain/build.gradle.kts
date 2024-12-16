@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.aopr.authentication_domain"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -42,10 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":firebase:firebase-domain"))
     implementation(project(":shared:shared-domain"))
-    implementation(project(":notes:notes-domain"))
-    implementation(project(":tasks:tasks-domain"))
-    implementation(project(":bookmarks:bookmarks-domain"))
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.analytics)
     //koin

@@ -48,6 +48,7 @@ dependencies {
 //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
+    implementation(libs.firebase.firestore)
     ksp(libs.koin.ksp)
     implementation(libs.koin.androidx.compose)
 

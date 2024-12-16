@@ -22,11 +22,15 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
     private val _isFirstLaunch = MutableStateFlow(true)
     val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch
 
+    private val _userId = MutableStateFlow<String?>(null)
+     val userId:StateFlow<String?> =_userId
+
     private val _chosenTheme = MutableStateFlow<Themes>(Themes.VIOLET)
     val chosenTheme: StateFlow<Themes> = _chosenTheme
 
     private val _isBottomBarShowed = MutableStateFlow(false)
     val isBottomBarShowed: StateFlow<Boolean> = _isBottomBarShowed
+
 
     private val _event = MutableSharedFlow<UiEvent>()
     val event = _event.asSharedFlow()
@@ -49,6 +53,10 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
 
     }
+
+
+
+
 
     private fun getFirstLaunch() {
         homeUseCase.getIsFirstLaunch().onEach { result ->
@@ -172,6 +180,10 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                     updateIsFirstLaunch(false)
                 }
             }
+
+            is MainEvent.GetUSerID -> {
+                _userId.value = event.id
+            }
         }
 
     }
@@ -182,6 +194,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         data object NavigateToDashBoardScreen : MainEvent
         data object ShowBottomBar : MainEvent
         data object SetFirstLaunchTrue : MainEvent
+        data class GetUSerID(val id: String) : MainEvent
         data class ChosenTheme(val theme: Themes) : MainEvent
     }
 

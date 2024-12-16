@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
@@ -18,7 +19,10 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel() {
+class CreatingBookmarkViewModel(
+    private val bookmarksUseCase: BookmarksUseCase,
+    private val fireUser:FireUser
+) : ViewModel() {
 
     private val _tittleOfBookmark = MutableStateFlow("")
     val tittle: StateFlow<String> = _tittleOfBookmark
@@ -46,8 +50,8 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
         oEvent(CreatingBookmarkEvents.GetAllCategories)
     }
 
-    private fun createBookmark(bookmark: Bookmark) {
-        bookmarksUseCase.createBookmark(bookmark).onEach { result ->
+    private fun createBookmark(bookmark: Bookmark, userId: String?) {
+        bookmarksUseCase.createBookmark(bookmark, userId).onEach { result ->
             when (result) {
                 is Responses.Error -> {
                 }
@@ -121,7 +125,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                 }
             }
 
-            CreatingBookmarkEvents.SaveBookmark -> {
+          is  CreatingBookmarkEvents.SaveBookmark -> {
                 viewModelScope.launch {
                     val bookmark = Bookmark(
                         id = _idOfBookamrk.value ?: 0,
@@ -130,7 +134,7 @@ class CreatingBookmarkViewModel(private val bookmarksUseCase: BookmarksUseCase) 
                         url = _contentUrl.value,
                         categoryId = _idOfCategory.value
                     )
-                    createBookmark(bookmark)
+                    createBookmark(bookmark, fireUser.userId)
                 }
             }
 

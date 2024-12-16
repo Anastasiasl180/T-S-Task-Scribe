@@ -1,13 +1,13 @@
 package com.aopr.authentication_data.impl
 
-import android.widget.Toast
-import com.aopr.authentication_domain.fier_store_uxer_data.FireUser
 import com.aopr.authentication_domain.interactors.AuthenticationRepository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -67,12 +67,31 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
         }
     }
 
-    override suspend fun saveFireUser(user: FireUser) {
-        try {
-            personCollectionRef.add(user).await()
+    override suspend fun saveFireUser(user: com.aopr.firebase_domain.fier_store_uxer_data.FireUser): String? {
+        return try {
+            val document = personCollectionRef.add(user).await()
             println("Success")
+            document.id
         } catch (e: Exception) {
-            println("NoSuccess")
+            println("NoSuccess: ${e.message}")
+            null
         }
     }
+
+    override suspend fun retrieveUser(id: String): Flow<com.aopr.firebase_domain.fier_store_uxer_data.FireUser> {
+        return flow {
+            try {
+                val querySnapshot = personCollectionRef
+                    .whereEqualTo("userId", id)
+                    .get()
+                    .await()
+                val document = querySnapshot.documents.firstOrNull()
+                document?.toObject(com.aopr.firebase_domain.fier_store_uxer_data.FireUser::class.java)
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+
 }

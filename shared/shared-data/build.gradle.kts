@@ -50,6 +50,12 @@ dependencies {
 
     implementation (libs.kotlinx.coroutines.play.services)
 
+
+    implementation(project(":authentication:authentication-domain"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)

@@ -45,6 +45,9 @@ dependencies {
     dependencies {
 
         //modules
+
+        implementation(project(":firebase:firebase-domain"))
+        implementation(project(":firebase:firebase-data"))
         implementation(project(":home:home-presentation"))
         implementation(project(":shared:shared-ui"))
         implementation(project(":authentication:authentication-domain"))
