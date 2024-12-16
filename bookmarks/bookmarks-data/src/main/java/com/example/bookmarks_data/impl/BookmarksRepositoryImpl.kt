@@ -1,6 +1,9 @@
 package com.example.bookmarks_data.impl
 
+import android.content.Context
 import android.util.Log
+import com.aopr.firebase_data.impl.FirebaseHelper
+import com.aopr.shared_domain.internetConnectionFun.isInternetAvailable
 import com.example.bookmarks_data.mapper.mapToBookmark
 import com.example.bookmarks_data.mapper.mapToCategory
 import com.example.bookmarks_data.mapper.mapToEntity
@@ -8,28 +11,46 @@ import com.example.bookmarks_data.room.BookmarksDao
 import com.example.bookmarks_domain.interactors.BookmarksRepository
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
 
 @Single
-class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksRepository {
-    override suspend fun createBookmark(bookmark: Bookmark) {
+class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context: Context) :
+    BookmarksRepository {
+
+    override suspend fun createBookmark(bookmark: Bookmark, userId: String?) {
         val existingBookmark = dao.getBookmarkById(bookmark.id).firstOrNull()
-        if (existingBookmark!=null){
-            updateBookmark(bookmark)
-        }else{
+        if (existingBookmark != null) {
+            updateBookmark(bookmark, userId)
+            if (isInternetAvailable(context)) {
+                val listUpdated = getAllBookmarks().first()
+                val firestoreData = listUpdated.map { it.toFirestore() }
+                FirebaseHelper.updateUserDataBookmark(userId, mapOf("listOfBookmarks" to firestoreData))
+
+            }
+        } else {
             if (bookmark.tittle.isNotEmpty()) {
                 dao.saveBookmark(bookmark.mapToEntity())
+                if (isInternetAvailable(context)) {
+                    val listUpdated = getAllBookmarks().first()
+                    val firestoreData = listUpdated.map { it.toFirestore() }
+                    FirebaseHelper.updateUserDataBookmark(userId, mapOf("listOfBookmarks" to firestoreData))
+
+                }
             }
         }
 
 
     }
 
-    override suspend fun updateBookmark(bookmark: Bookmark) {
+    override suspend fun updateBookmark(bookmark: Bookmark, userId: String?) {
         if (bookmark.tittle.isNotEmpty()) {
             dao.updateBookmark(bookmark.mapToEntity())
         }
@@ -53,8 +74,6 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
         }
     }
 
-    //some coment
-
     override suspend fun createCategory(category: Category) {
         if (category.tittle.isNotEmpty()) {
             dao.saveCategory(category.mapToEntity())
@@ -67,7 +86,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
 
     override suspend fun getBookmarksByCategoryId(id: Int?): Flow<List<Bookmark>> {
         return id?.let { nonNullId ->
-            Log.wtf("impl", nonNullId.toString(), )
+            Log.wtf("impl", nonNullId.toString())
             dao.getBookmarksByCategoryId(nonNullId).map { entityList ->
                 entityList.map { entity ->
                     entity.mapToBookmark()
@@ -77,13 +96,13 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
 
         } ?: flowOf(emptyList())
     }
-   /*
-      return dao.getBookmarksByCategoryId(id).map {entityList->
-            entityList.map { entity ->
-                entity.mapToBookmark()
-            }
+    /*
+       return dao.getBookmarksByCategoryId(id).map {entityList->
+             entityList.map { entity ->
+                 entity.mapToBookmark()
+             }
 
-        }*/
+         }*/
 
 
     override suspend fun getAllCategories(): Flow<List<Category>> {
@@ -94,4 +113,4 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao) : BookmarksReposito
         }
     }
 
-    }
+}

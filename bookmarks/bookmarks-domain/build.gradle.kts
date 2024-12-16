@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+
     implementation(project(":shared:shared-domain"))
     //koin
     implementation(libs.koin.android)

@@ -1,12 +1,14 @@
 package com.aopr.authentication_presentation.model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aopr.authentication_domain.fier_store_uxer_data.FireUser
+import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
 import com.aopr.authentication_domain.interactors.AuthenticationUseCase
 import com.aopr.authentication_presentation.events.registration_events.RegistrationEvents
 import com.aopr.authentication_presentation.events.registration_events.RegistrationUiEvents
 import com.aopr.shared_domain.Responses
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,8 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class RegistrationViewModel(private val authenticationUseCase: AuthenticationUseCase) : ViewModel() {
+class RegistrationViewModel(private val authenticationUseCase: AuthenticationUseCase) :
+    ViewModel() {
 
     private val _userName = MutableStateFlow<String>("")
     val userName: StateFlow<String> = _userName
@@ -25,8 +28,12 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
     private val _gmail = MutableStateFlow<String>("")
     val gmail: StateFlow<String> = _gmail
 
-    private val _user = MutableStateFlow(FireUser())
-     val user:StateFlow<FireUser> = _user
+    private val _user = MutableStateFlow(com.aopr.firebase_domain.fier_store_uxer_data.FireUser())
+    val user: StateFlow<com.aopr.firebase_domain.fier_store_uxer_data.FireUser> = _user
+
+    private val _userID = MutableStateFlow<String?>(null)
+    val userID: StateFlow<String?> = _userID
+
 
     private val _password = MutableStateFlow<String>("")
     val password: StateFlow<String> = _password
@@ -34,7 +41,7 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
     private val _event = MutableSharedFlow<RegistrationUiEvents>()
     val event = _event.asSharedFlow()
 
-    private fun saveUser(user:FireUser) {
+    private fun saveUser(user: FireUser) {
         authenticationUseCase.saveUser(user).onEach { result ->
             when (result) {
                 is Responses.Error -> {
@@ -45,6 +52,12 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
                 }
 
                 is Responses.Success -> {
+                    val id = result.data
+                    Log.wtf("Meerkawot", result.data.toString())
+                    _userID.value = id
+                    _user.value = FireUser(
+                        userId = id.toString()
+                    )
 
                 }
             }
@@ -77,6 +90,7 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
             RegistrationEvents.RegisterUser -> {
                 viewModelScope.launch {
                     registerUser(_gmail.value, _password.value)
+                    saveUser(_user.value)
                     _event.emit(RegistrationUiEvents.NavigateToHomeScreen)
                 }
             }

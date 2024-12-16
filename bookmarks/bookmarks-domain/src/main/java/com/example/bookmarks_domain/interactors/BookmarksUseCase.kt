@@ -13,10 +13,11 @@ import java.io.IOException
 @Single
 class BookmarksUseCase(private val repository: BookmarksRepository) {
 
-    fun createBookmark(bookmark: Bookmark): Flow<Responses<Unit>> = flow {
+
+    fun createBookmark(bookmark: Bookmark,userId:String?): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
-            val result = repository.createBookmark(bookmark)
+            val result = repository.createBookmark(bookmark,userId)
             emit(Responses.Success(result))
         } catch (e: IOException) {
             println(e.message.toString())

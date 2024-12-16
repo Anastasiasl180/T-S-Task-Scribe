@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.aopr.authentication_data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -39,6 +39,7 @@ android {
 
 dependencies {
 
+    implementation(project(":firebase:firebase-domain"))
 implementation(project(":authentication:authentication-domain"))
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")

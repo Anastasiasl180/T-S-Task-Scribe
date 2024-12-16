@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.aopr.authentication_domain.interactors.AuthenticationUseCase
 import com.aopr.authentication_presentation.events.log_in_events.LogInEvents
 import com.aopr.authentication_presentation.events.log_in_events.LogInUiEvents
+import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
 import com.aopr.shared_domain.Responses
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,9 @@ class LogInViewModel(private val authenticationUseCase: AuthenticationUseCase) :
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
+    private val _user = MutableStateFlow(FireUser())
+    val user: StateFlow<FireUser> = _user
+
     private val _event = MutableSharedFlow<LogInUiEvents>()
     val event = _event.asSharedFlow()
 
@@ -38,6 +42,27 @@ class LogInViewModel(private val authenticationUseCase: AuthenticationUseCase) :
                 }
                 is Responses.Success -> {
 
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+    private fun retrieveUserById(id: String) {
+        authenticationUseCase.retrieveUserById(id).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    result.data?.collect() { it ->
+                        if (it != null) {
+                            _user.value = it
+                        }
+                    }
                 }
             }
 

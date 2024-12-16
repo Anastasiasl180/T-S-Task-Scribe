@@ -33,6 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
 import com.example.bookmarks_presentation.ui_elements.CustomDropDownMenu
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
@@ -42,6 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatingBookMarkScreen(uiEventHandler:@Composable ()-> Unit) {
     uiEventHandler()
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
     val isDropdownExpanded by viewModel.isDropDownMenuExpanded
@@ -157,7 +160,7 @@ fun CreatingBookMarkScreen(uiEventHandler:@Composable ()-> Unit) {
                 )
             }
             Button(onClick = {
-                viewModel.oEvent(CreatingBookmarkEvents.SaveBookmark)
+                viewModel.oEvent(CreatingBookmarkEvents.SaveBookmark(mainViewModel.userId.value.toString()))
             }) {
                 Text("save")
             }
