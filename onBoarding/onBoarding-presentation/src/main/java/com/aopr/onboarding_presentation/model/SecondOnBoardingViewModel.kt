@@ -24,6 +24,12 @@ class SecondOnBoardingViewModel : ViewModel() {
                     _event.emit(SecondScreenUiEvents.NavigateToHome)
                 }
             }
+
+            SecondScreenEvents.NavigateToBack -> {
+                viewModelScope.launch {
+                    _event.emit(SecondScreenUiEvents.NavigateBack)
+                }
+            }
         }
     }
 
