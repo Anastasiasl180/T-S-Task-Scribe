@@ -46,15 +46,15 @@ fun AppNavHost() {
             CompositionLocalProvider(LocalNavigator provides innerNavigator) {
                 NavHost(
                     navController = innerNavigator,
-                    startDestination = AuthenticationRoutes.RegistrationScreen
+                    startDestination = OnBoardingNavRoutes.FirstScreen
                 ) {
-                    composable<AuthenticationRoutes.RegistrationScreen> {
+                 /*   composable<AuthenticationRoutes.RegistrationScreen> {
                         RegistrationScreen()
                     }
                     composable<AuthenticationRoutes.LogInScreen> {
                        LogInScreen()
-                    }
-                    composable<OnBoardingNavRoutes.LoadingScreen> {
+                    }*/
+                   composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()
                     }
                     composable<OnBoardingNavRoutes.FirstScreen> {
