@@ -74,6 +74,10 @@ fun SecondScreenOnBoardingUiEventsHandler() {
                     delay(500)
                     mainViewModel.onEvent(MainViewModel.MainEvent.ShowBottomBar)
                 }
+
+                SecondScreenUiEvents.NavigateBack -> {
+                    navigator.popBackStack()
+                }
             }
         }
     }

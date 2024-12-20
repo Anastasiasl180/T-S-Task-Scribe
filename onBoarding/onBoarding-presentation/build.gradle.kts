@@ -50,6 +50,9 @@ dependencies {
     //navigation
     implementation(libs.androidx.navigation.compose)
 
+
+    implementation(libs.androidx.core.splashscreen)
+
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
