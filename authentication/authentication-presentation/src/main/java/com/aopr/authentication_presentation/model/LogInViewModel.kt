@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.aopr.authentication_domain.interactors.AuthenticationUseCase
 import com.aopr.authentication_presentation.events.log_in_events.LogInEvents
 import com.aopr.authentication_presentation.events.log_in_events.LogInUiEvents
-import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
+import com.aopr.firebase_data.helpers.FirebaseHelper
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,10 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class LogInViewModel(private val authenticationUseCase: AuthenticationUseCase) : ViewModel() {
+class LogInViewModel(
+    private val authenticationUseCase: AuthenticationUseCase,
+    private val helper: FirebaseHelper
+) : ViewModel() {
 
     private val _gmail = MutableStateFlow("")
     val gmail: StateFlow<String> = _gmail
@@ -31,22 +35,25 @@ class LogInViewModel(private val authenticationUseCase: AuthenticationUseCase) :
     private val _event = MutableSharedFlow<LogInUiEvents>()
     val event = _event.asSharedFlow()
 
-    private fun logInUser(gmail: String, password: String){
-        authenticationUseCase.logInUser(gmail,password).onEach { result->
-            when(result){
+    private fun logInUser(gmail: String, password: String) {
+        authenticationUseCase.logInUser(gmail, password).onEach { result ->
+            when (result) {
                 is Responses.Error -> {
 
                 }
+
                 is Responses.Loading -> {
 
                 }
-                is Responses.Success -> {
 
+                is Responses.Success -> {
+                    result.data?.let { helper.getAllUserData(it) }
                 }
             }
 
         }.launchIn(viewModelScope)
     }
+
     private fun retrieveUserById(id: String) {
         authenticationUseCase.retrieveUserById(id).onEach { result ->
             when (result) {
@@ -70,25 +77,29 @@ class LogInViewModel(private val authenticationUseCase: AuthenticationUseCase) :
     }
 
 
-    fun onEvent(events: LogInEvents){
-        when(events){
+    fun onEvent(events: LogInEvents) {
+        when (events) {
             LogInEvents.LogInUser -> {
                 viewModelScope.launch {
-                    logInUser(_gmail.value,_password.value)
+                    logInUser(_gmail.value, _password.value)
                     onEvent(LogInEvents.NavigateToHome)
                 }
             }
+
             LogInEvents.NavigateToHome -> {
                 viewModelScope.launch {
                     _event.emit(LogInUiEvents.NavigateToHomeScreen)
                 }
             }
+
             is LogInEvents.UpdateGmail -> {
                 _gmail.value = events.gmail
             }
+
             is LogInEvents.UpdatePassword -> {
                 _password.value = events.password
             }
+
             is LogInEvents.UpdateUserName -> {
 
             }

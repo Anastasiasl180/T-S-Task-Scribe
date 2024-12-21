@@ -1,6 +1,6 @@
 package com.aopr.authentication_domain.interactors
 
-import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,7 +20,7 @@ class AuthenticationUseCase(private val repository: AuthenticationRepository){
 
         }
     }
-    fun saveUser(user: com.aopr.firebase_domain.fier_store_uxer_data.FireUser): Flow<Responses<String?>> = flow {
+    fun saveUser(user: FireUser): Flow<Responses<String?>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.saveFireUser(user)
@@ -30,7 +30,7 @@ class AuthenticationUseCase(private val repository: AuthenticationRepository){
 
         }
     }
-    fun logInUser(gmail: String, password: String): Flow<Responses<Unit>> = flow {
+    fun logInUser(gmail: String, password: String): Flow<Responses<String?>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.logInUser(gmail, password)
@@ -41,7 +41,7 @@ class AuthenticationUseCase(private val repository: AuthenticationRepository){
         }
     }
 
-    fun retrieveUserById(id:String): Flow<Responses<Flow<com.aopr.firebase_domain.fier_store_uxer_data.FireUser?>>> = flow {
+    fun retrieveUserById(id:String): Flow<Responses<Flow<com.aopr.firebase_domain.firestore_user_data.FireUser?>>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.retrieveUser(id)

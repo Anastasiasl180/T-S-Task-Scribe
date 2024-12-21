@@ -2,10 +2,10 @@ package com.aopr.home.home_screen.viewModel.events
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.aopr.home.home_screen.navigation.DrawerItems
 import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeUiEvents
+import com.aopr.shared_ui.navigation.AuthenticationRoutes
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import org.koin.androidx.compose.koinViewModel
@@ -32,6 +32,10 @@ fun HomeUiEventHandler() {
 
                 HomeUiEvents.NavigateToThemesByDrawer -> {
                     navigator.navigate(DrawerNavRoutes.SettingsScreen)
+                }
+
+                HomeUiEvents.NavigateToRegistrationScreen -> {
+                    navigator.navigate(AuthenticationRoutes.RegistrationScreen)
                 }
             }
 

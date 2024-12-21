@@ -27,6 +27,9 @@ interface BookmarksDao {
     suspend fun deleteCategory(category:CategoryEntity)
 
     @Delete
+    suspend fun deleteAllBookmark(bookmark:List< BookmarksEntity>)
+
+    @Delete
     suspend fun deleteBookmark(bookmark: BookmarksEntity)
 
     @Query("SELECT * FROM categories")

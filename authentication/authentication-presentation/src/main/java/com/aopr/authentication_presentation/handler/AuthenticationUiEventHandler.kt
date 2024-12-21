@@ -1,13 +1,12 @@
 package com.aopr.authentication_presentation.handler
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.aopr.authentication_presentation.events.log_in_events.LogInUiEvents
 import com.aopr.authentication_presentation.events.registration_events.RegistrationUiEvents
 import com.aopr.authentication_presentation.model.LogInViewModel
 import com.aopr.authentication_presentation.model.RegistrationViewModel
-import com.aopr.authentication_presentation.navigation.AuthenticationRoutes
+import com.aopr.shared_ui.navigation.AuthenticationRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.shared_ui.MainViewModel
 import com.aopr.shared_ui.util.LocalNavigator
@@ -26,9 +25,8 @@ fun RegistrationUiEventHandler() {
             when (event) {
                 RegistrationUiEvents.NavigateToHomeScreen -> {
                     mainViewModel.onEvent(MainViewModel.MainEvent.GetUSerID(viewmodel.userID.value.toString()))
-delay(4000)
+                    delay(4000)
                     navigator.navigate(HomeNavRoutes.HomeScreen)
-                   Log.wtf("Meerkapip",viewmodel.userID.value.toString() )
                 }
 
                 RegistrationUiEvents.NavigateToLogInScreen -> {
