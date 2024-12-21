@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -96,7 +97,6 @@ fun HomeScreen() {
             ModalDrawerSheet {
                 Column(modifier = Modifier.fillMaxSize()) {
                     drawerItems.forEach { items ->
-
                         Row(modifier = Modifier.fillMaxWidth()) {
                             TextButton(onClick = {
                                 viewModel.onEvent(HomeEvent.NavigateToThemesByDrawer)
@@ -105,6 +105,16 @@ fun HomeScreen() {
                             }
                         }
                     }
+                    Row(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                    ) {
+                        IconButton(onClick = { viewModel.onEvent(HomeEvent.LogOut) }) {
+                            Text(text = "log out")
+                        }
+                    }
+
                 }
             }
         }) {

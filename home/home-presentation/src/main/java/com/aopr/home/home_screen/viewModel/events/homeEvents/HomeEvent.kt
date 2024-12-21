@@ -13,5 +13,6 @@ sealed interface HomeEvent:EventsType {
     data object NavigateToAllTasks:HomeEvent
     data object NavigateToAllCategoriesOfBookmarks:HomeEvent
     data object NavigateToThemesByDrawer: HomeEvent
+    data object LogOut:HomeEvent
 
 }

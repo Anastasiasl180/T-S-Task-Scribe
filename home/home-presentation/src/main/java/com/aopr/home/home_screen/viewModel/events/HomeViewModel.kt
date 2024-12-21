@@ -14,6 +14,8 @@ import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
+import com.example.bookmarks_domain.interactors.BookmarksUseCase
+import com.example.home_domain.HomeRepository.HomeUseCase.HommeUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -25,7 +27,9 @@ import java.time.LocalTime
 @KoinViewModel
 class HomeViewModel(
     private val notesUseCase: NotesUseCase,
-    private val tasksUseCase: TasksUseCase
+    private val tasksUseCase: TasksUseCase,
+    private val bookmarksUseCase: BookmarksUseCase,
+    private val hommeUseCase: HommeUseCase
 ) :
     ViewModelKit<HomeEvent, HomeUiEvents>() {
 
@@ -55,6 +59,25 @@ class HomeViewModel(
 
     private val _event = MutableSharedFlow<HomeUiEvents>()
     val uiEvents = _event
+
+    private fun deleteAllDataFromRoom() {
+        hommeUseCase.deleteAllDataFromRoom().onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
 
 
     private fun createNote(note: Note) {
@@ -154,6 +177,7 @@ class HomeViewModel(
             is HomeEvent.UpdateTittleOFTask -> {
                 _tittleOfTask.value = event.tittle
             }
+
             HomeEvent.NavigateToAllCategoriesOfBookmarks -> {
                 viewModelScope.launch {
                     _event.emit(HomeUiEvents.NavigateToAllCategoriesOfBookmarks)
@@ -166,6 +190,12 @@ class HomeViewModel(
                 }
             }
 
+            HomeEvent.LogOut -> {
+                viewModelScope.launch {
+                    deleteAllDataFromRoom()
+                    _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
+                }
+            }
         }
     }
 }

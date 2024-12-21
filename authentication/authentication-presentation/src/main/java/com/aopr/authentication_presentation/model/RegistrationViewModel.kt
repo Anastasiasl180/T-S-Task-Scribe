@@ -1,14 +1,12 @@
 package com.aopr.authentication_presentation.model
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aopr.firebase_domain.fier_store_uxer_data.FireUser
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.authentication_domain.interactors.AuthenticationUseCase
 import com.aopr.authentication_presentation.events.registration_events.RegistrationEvents
 import com.aopr.authentication_presentation.events.registration_events.RegistrationUiEvents
 import com.aopr.shared_domain.Responses
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,8 +26,8 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
     private val _gmail = MutableStateFlow<String>("")
     val gmail: StateFlow<String> = _gmail
 
-    private val _user = MutableStateFlow(com.aopr.firebase_domain.fier_store_uxer_data.FireUser())
-    val user: StateFlow<com.aopr.firebase_domain.fier_store_uxer_data.FireUser> = _user
+    private val _user = MutableStateFlow(com.aopr.firebase_domain.firestore_user_data.FireUser())
+    val user: StateFlow<com.aopr.firebase_domain.firestore_user_data.FireUser> = _user
 
     private val _userID = MutableStateFlow<String?>(null)
     val userID: StateFlow<String?> = _userID
@@ -53,7 +51,6 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
 
                 is Responses.Success -> {
                     val id = result.data
-                    Log.wtf("Meerkawot", result.data.toString())
                     _userID.value = id
                     _user.value = FireUser(
                         userId = id.toString()

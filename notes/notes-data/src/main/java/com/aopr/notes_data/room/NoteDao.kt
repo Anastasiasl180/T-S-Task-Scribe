@@ -20,6 +20,9 @@ interface NoteDao {
     @Delete
     suspend fun deleteNote(note: NoteEntity)
 
+    @Delete
+    suspend fun deleteAllNote(note: List<NoteEntity>)
+
     @Query("SELECT * FROM NoteEntity WHERE id = :id LIMIT 1")
     fun getNoteById(id: Int): Flow<NoteEntity>
 

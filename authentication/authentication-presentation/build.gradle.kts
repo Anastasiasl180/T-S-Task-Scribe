@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.aopr.authentication_presentation"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
@@ -64,6 +64,12 @@ dependencies {
 
         //navigation
         implementation(libs.androidx.navigation.compose)
+
+        implementation(libs.kotlinx.serialization.json)
+
+
+        implementation(libs.material3) // Update to the latest version
+
 
         implementation(libs.kotlinx.serialization.json)
 

@@ -1,6 +1,7 @@
 package com.aopr.authentication_data.impl
 
 import com.aopr.authentication_domain.interactors.AuthenticationRepository
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
@@ -24,9 +25,7 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-
                     auth.createUserWithEmailAndPassword(gmail, password).await()
-
                     checkLoggedInState()
 
                 } catch (e: Exception) {
@@ -39,35 +38,33 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
         }
     }
 
-    override suspend fun logInUser(gmail: String, password: String) {
+    override suspend fun logInUser(gmail: String, password: String):String? {
         val auth = FirebaseAuth.getInstance()
-        if (gmail.isNotEmpty() && password.isNotEmpty()) {
+        return if (gmail.isNotEmpty() && password.isNotEmpty()) {
+            try {
+               auth.signInWithEmailAndPassword(gmail, password).await()
 
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    auth.signInWithEmailAndPassword(gmail, password).await()
-
-                    checkLoggedInState()
-
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        println(e.message.toString())
-                    }
-                }
+               val user = auth.currentUser
+                user?.uid
+            } catch (e: Exception) {
+                println("Login error: ${e.message}")
+                null
             }
-
+        } else {
+            null
         }
+
     }
 
     private fun checkLoggedInState() {
         if (auth.currentUser == null) {
-            println("nulik")
+
         } else {
             println("no null")
         }
     }
 
-    override suspend fun saveFireUser(user: com.aopr.firebase_domain.fier_store_uxer_data.FireUser): String? {
+    override suspend fun saveFireUser(user: FireUser): String? {
         return try {
             val document = personCollectionRef.add(user).await()
             println("Success")
@@ -78,7 +75,7 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
         }
     }
 
-    override suspend fun retrieveUser(id: String): Flow<com.aopr.firebase_domain.fier_store_uxer_data.FireUser> {
+    override suspend fun retrieveUser(id: String): Flow<FireUser> {
         return flow {
             try {
                 val querySnapshot = personCollectionRef
@@ -86,7 +83,7 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
                     .get()
                     .await()
                 val document = querySnapshot.documents.firstOrNull()
-                document?.toObject(com.aopr.firebase_domain.fier_store_uxer_data.FireUser::class.java)
+                document?.toObject(FireUser::class.java)
             } catch (e: Exception) {
 
             }

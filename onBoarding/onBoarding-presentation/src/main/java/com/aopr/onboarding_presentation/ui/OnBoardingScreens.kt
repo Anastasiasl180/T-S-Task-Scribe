@@ -106,9 +106,8 @@ fun FirstOnBoardingScreen() {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                     Column(
                         modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth()
-                            .background(Color.Blue), verticalArrangement = Arrangement.Bottom
+                            .height(120.dp)
+                            .fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Box(
                             modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomStart
@@ -153,7 +152,6 @@ fun SecondOnBoardingScreen() {
                         .fillMaxHeight(0.7f), contentAlignment = Alignment.BottomStart
                 ) {
                     Column {
-
                         Text(
                             text = "Your all-in-one hub for organizing tasks, notes, reminders, and ideas \neffortlessly.",
                             lineHeight = 50.sp,
@@ -167,13 +165,11 @@ fun SecondOnBoardingScreen() {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                     Column(
                         modifier = Modifier
-                            .height(140.dp)
-                            .fillMaxWidth(),
+                            .height(120.dp)
+                            .fillMaxWidth(), verticalArrangement = Arrangement.SpaceBetween
                     ) {
-
                         Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.BottomCenter
+                            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomStart
                         ) {
                             HorizontalPageIndicator(currentPage = 1, totalPages = 2)
                         }

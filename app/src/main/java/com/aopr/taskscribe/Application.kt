@@ -24,6 +24,7 @@ import com.example.bookmarks_presentation.di.BookmarksPresentationModule
 import com.example.home_data.impl.di.HomeDataModule
 import com.example.home_domain.di.HomeDomainModule
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.component.getScopeName
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.ksp.generated.module
 
