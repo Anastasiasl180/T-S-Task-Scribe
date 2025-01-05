@@ -10,7 +10,7 @@ import java.io.IOException
 @Single
 class AuthenticationUseCase(private val repository: AuthenticationRepository){
 
-    fun registerUser(gmail: String, password: String): Flow<Responses<Unit>> = flow {
+    fun registerUser(gmail: String, password: String): Flow<Responses<String>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.registerUser(gmail, password)
@@ -41,7 +41,7 @@ class AuthenticationUseCase(private val repository: AuthenticationRepository){
         }
     }
 
-    fun retrieveUserById(id:String): Flow<Responses<Flow<com.aopr.firebase_domain.firestore_user_data.FireUser?>>> = flow {
+    fun retrieveUserById(id:String): Flow<Responses<Flow<FireUser?>>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.retrieveUser(id)

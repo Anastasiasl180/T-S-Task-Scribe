@@ -1,5 +1,6 @@
 package com.aopr.authentication_presentation.model
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.firebase_domain.firestore_user_data.FireUser
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class RegistrationViewModel(private val authenticationUseCase: AuthenticationUseCase) :
+class RegistrationViewModel(private val authenticationUseCase: AuthenticationUseCase,private var userr: FireUser) :
     ViewModel() {
 
     private val _userName = MutableStateFlow<String>("")
@@ -26,8 +27,8 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
     private val _gmail = MutableStateFlow<String>("")
     val gmail: StateFlow<String> = _gmail
 
-    private val _user = MutableStateFlow(com.aopr.firebase_domain.firestore_user_data.FireUser())
-    val user: StateFlow<com.aopr.firebase_domain.firestore_user_data.FireUser> = _user
+    private val _user = MutableStateFlow(FireUser())
+    val user: StateFlow<FireUser> = _user
 
     private val _userID = MutableStateFlow<String?>(null)
     val userID: StateFlow<String?> = _userID
@@ -52,10 +53,7 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
                 is Responses.Success -> {
                     val id = result.data
                     _userID.value = id
-                    _user.value = FireUser(
-                        userId = id.toString()
-                    )
-
+                    userr.userId = _userID.value
                 }
             }
 
@@ -74,6 +72,9 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
                 }
 
                 is Responses.Success -> {
+                   userr.userId = result.data
+                    Log.wtf("userIdafterREg", result.data.toString())
+                    saveUser(userr)
 
                 }
             }
@@ -87,7 +88,7 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
             RegistrationEvents.RegisterUser -> {
                 viewModelScope.launch {
                     registerUser(_gmail.value, _password.value)
-                    saveUser(_user.value)
+                    Log.wtf("rere", _userID.value.toString())
                     _event.emit(RegistrationUiEvents.NavigateToHomeScreen)
                 }
             }

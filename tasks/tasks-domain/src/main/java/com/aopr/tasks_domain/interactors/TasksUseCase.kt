@@ -18,31 +18,30 @@ import java.time.LocalDate
 @Single
 class TasksUseCase(private val repository: TasksRepository) {
 
+    fun setTasksFromFire(tasks:List<Task>?):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.setTasksFromFire(tasks)
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
+
     fun createTask(task: Task): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.createTask(task)
             emit(Responses.Success(data))
         } catch (e: IOException) {
-            Log.wtf("ero1", "createTask: ", )
-            Log.wtf("ero1", e.stackTrace.toString() )
-            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+           emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         } catch (e: EmptyDescriptionException) {
-            Log.wtf("ero2", "createTask: ", )
-            Log.wtf("ero2", e.stackTrace.toString() )
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDescription))
         } catch (e: EmptyTittleException) {
-            Log.wtf("ero3", "createTask: ", )
-            Log.wtf("ero3", e.stackTrace.toString() )
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
+           emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
         } catch (e: EmptyDateForReminderException) {
-            Log.wtf("ero4", "createTask: ", )
-            Log.wtf("ero4", e.stackTrace.toString() )
-
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDateReminder))
+           emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDateReminder))
         } catch (e: EmptyTimeForReminderException) {
-            Log.wtf("ero5", "createTask: ", )
-            Log.wtf("ero5", e.stackTrace.toString() )
             emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTimeReminder))
         }
 

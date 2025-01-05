@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotesRepository{
     suspend fun createNote(note: Note)
+    suspend fun setNotesFromFire(notes: List<Note>?)
     suspend fun deleteNote(note:Note)
     suspend fun getNoteById(id:Int):Flow<Note>
     suspend fun getALlNotes():Flow<List<Note>>

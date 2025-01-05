@@ -118,10 +118,10 @@ class CreatingBookmarkViewModel(
         when (events) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
                 viewModelScope.launch {
-                    events.bookmarkInfo?.bookmarkId?.let {
+                    events.bookmarkInfo.bookmarkId?.let {
                         getBookMarkById(it)
                     }
-                    _idOfCategory.value = events.bookmarkInfo?.categoryId
+                    _idOfCategory.value = events.bookmarkInfo.categoryId
                 }
             }
 
@@ -134,6 +134,7 @@ class CreatingBookmarkViewModel(
                         url = _contentUrl.value,
                         categoryId = _idOfCategory.value
                     )
+Log.wtf("createFromVM",  fireUser.userId.toString())
                     createBookmark(bookmark, fireUser.userId)
                 }
             }

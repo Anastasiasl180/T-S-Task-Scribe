@@ -18,6 +18,9 @@ interface BookmarksDao {
     suspend fun saveBookmark(bookmarksEntity: BookmarksEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveBookmarks(bookmarks: List<BookmarksEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCategory(category:CategoryEntity)
 
     @Update

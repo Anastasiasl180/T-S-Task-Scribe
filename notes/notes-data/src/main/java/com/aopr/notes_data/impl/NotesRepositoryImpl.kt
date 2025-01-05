@@ -30,6 +30,12 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
 
     }
 
+    override suspend fun setNotesFromFire(notes: List<Note>?) {
+        if (notes != null) {
+            dao.saveListOfNotes(notes.map { it.mapToEntity() })
+        }
+    }
+
     override suspend fun deleteNote(note: Note) {
         dao.deleteNote(note.mapToEntity())
     }

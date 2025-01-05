@@ -180,10 +180,6 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                     updateIsFirstLaunch(false)
                 }
             }
-
-            is MainEvent.GetUSerID -> {
-                _userId.value = event.id
-            }
         }
 
     }
@@ -194,8 +190,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         data object NavigateToDashBoardScreen : MainEvent
         data object ShowBottomBar : MainEvent
         data object SetFirstLaunchTrue : MainEvent
-        data class GetUSerID(val id: String) : MainEvent
-        data class ChosenTheme(val theme: Themes) : MainEvent
+           data class ChosenTheme(val theme: Themes) : MainEvent
     }
 
 }

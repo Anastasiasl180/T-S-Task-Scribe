@@ -9,6 +9,9 @@ import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksUiEvents
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -21,6 +24,8 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
 
     private val _listOfTasks = mutableStateOf<List<Task>?>(null)
     val listOfTasks: State<List<Task>?> = _listOfTasks
+
+    val scope = CoroutineScope(Dispatchers.IO)
 
     private val _events = MutableSharedFlow<AllTasksUiEvents>()
     val events = _events.asSharedFlow()
@@ -79,6 +84,9 @@ println(result.message.toString())
             }
 
             AllTasksEvents.GetAllTasks -> {
+                scope.launch {
+
+                }
                 viewModelScope.launch {
                     getAllTasks()
                 }

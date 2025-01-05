@@ -2,7 +2,8 @@ package com.example.bookmarks_data.impl
 
 import android.content.Context
 import android.util.Log
-import com.aopr.firebase_data.helpers.FirebaseHelper
+import com.aopr.firebase_data.helpers.Helpers
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.internetConnectionFun.isInternetAvailable
 import com.example.bookmarks_data.mapper.mapToBookmark
 import com.example.bookmarks_data.mapper.mapToCategory
@@ -14,6 +15,7 @@ import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
@@ -29,22 +31,42 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
             if (isInternetAvailable(context)) {
                 val listUpdated = getAllBookmarks().first()
                 val firestoreData = listUpdated.map { it.toFirestore() }
-                FirebaseHelper.updateUserDataBookmark(userId, mapOf("listOfBookmarks" to firestoreData))
+                Log.wtf("bookmarksImpl", firestoreData.toString())
+
+                Helpers.FirebaseHelper.updateUserDataBookmark(
+                    userId,
+                    mapOf("listOfBookmarks" to firestoreData)
+                )
 
             }
         } else {
             if (bookmark.tittle.isNotEmpty()) {
                 dao.saveBookmark(bookmark.mapToEntity())
                 if (isInternetAvailable(context)) {
-                    val listUpdated = getAllBookmarks().first()
+                    val listUpdated =
+                        getAllBookmarks().first()
                     val firestoreData = listUpdated.map { it.toFirestore() }
-                    FirebaseHelper.updateUserDataBookmark(userId, mapOf("listOfBookmarks" to firestoreData))
+                    Log.wtf("bookmarksImpl2", firestoreData.toString())
+                    Log.wtf("bookmarksImpl3", userId.toString())
+                    Helpers.FirebaseHelper.updateUserDataBookmark(
+                        userId,
+                        mapOf("listOfBookmarks" to firestoreData)
+                    )
 
                 }
             }
         }
 
 
+    }
+
+    override suspend fun setBookmarksFromFire(bookmarks: List<Bookmark>?) {
+        if (bookmarks != null) {
+            dao.saveBookmarks(bookmarks.map { it.mapToEntity() })
+        }else{
+            Log.wtf("bo", bookmarks.toString())
+
+        }
     }
 
     override suspend fun updateBookmark(bookmark: Bookmark, userId: String?) {
@@ -64,12 +86,13 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
     }
 
     override suspend fun getAllBookmarks(): Flow<List<Bookmark>> {
-        return dao.getAllBookmarks().map { list ->
-            list.map { entity ->
-                entity.mapToBookmark()
+          return  dao.getAllBookmarks().map { list ->
+                list.map { entity ->
+                    entity.mapToBookmark()
+                }
             }
-        }
     }
+
 
     override suspend fun createCategory(category: Category) {
         if (category.tittle.isNotEmpty()) {
@@ -83,7 +106,6 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
 
     override suspend fun getBookmarksByCategoryId(id: Int?): Flow<List<Bookmark>> {
         return id?.let { nonNullId ->
-            Log.wtf("impl", nonNullId.toString())
             dao.getBookmarksByCategoryId(nonNullId).map { entityList ->
                 entityList.map { entity ->
                     entity.mapToBookmark()

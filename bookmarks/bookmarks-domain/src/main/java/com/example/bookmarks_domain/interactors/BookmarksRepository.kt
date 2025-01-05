@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
     suspend fun createBookmark(bookmark: Bookmark,userId:String?)
+    suspend fun setBookmarksFromFire(bookmarks:List<Bookmark>?)
     suspend fun updateBookmark(bookmark: Bookmark,userId:String?)
     suspend fun deleteBookmark(bookmark: Bookmark)
     suspend fun getBookmarkById(id:Int): Flow<Bookmark>
