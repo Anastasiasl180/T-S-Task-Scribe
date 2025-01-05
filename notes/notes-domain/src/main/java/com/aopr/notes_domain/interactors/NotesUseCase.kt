@@ -14,6 +14,15 @@ import java.io.IOException
 @Single
 class NotesUseCase(private val repository: NotesRepository) {
 
+    fun setNotesFromFire(notes:List<Note>?):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.setNotesFromFire(notes)
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
     
     fun createNote(note: Note): Flow<Responses<Unit>> = flow {
         try {

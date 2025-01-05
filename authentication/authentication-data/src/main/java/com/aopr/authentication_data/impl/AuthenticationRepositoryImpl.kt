@@ -1,5 +1,6 @@
 package com.aopr.authentication_data.impl
 
+import android.util.Log
 import com.aopr.authentication_domain.interactors.AuthenticationRepository
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.google.firebase.Firebase
@@ -7,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -19,32 +21,32 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
 
     private lateinit var auth: FirebaseAuth
     private val personCollectionRef = Firebase.firestore.collection("users")
-    override suspend fun registerUser(gmail: String, password: String) {
+    override suspend fun registerUser(gmail: String, password: String): String {
         val auth = FirebaseAuth.getInstance()
-        if (gmail.isNotEmpty() && password.isNotEmpty()) {
 
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    auth.createUserWithEmailAndPassword(gmail, password).await()
-                    checkLoggedInState()
-
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        println(e.message.toString())
-                    }
-                }
+        return if (gmail.isNotEmpty() && password.isNotEmpty()) {
+            try {
+                auth.createUserWithEmailAndPassword(gmail, password).await()
+                val uid = auth.currentUser?.uid ?: throw Exception("User ID is null")
+                Log.wtf("AUTH", uid)
+                uid
+            } catch (e: Exception) {
+                Log.e("RegisterError", e.message ?: "Unknown error")
+                ""
             }
-
+        } else {
+            ""
         }
     }
 
-    override suspend fun logInUser(gmail: String, password: String):String? {
+
+    override suspend fun logInUser(gmail: String, password: String): String? {
         val auth = FirebaseAuth.getInstance()
         return if (gmail.isNotEmpty() && password.isNotEmpty()) {
             try {
-               auth.signInWithEmailAndPassword(gmail, password).await()
-
-               val user = auth.currentUser
+                auth.signInWithEmailAndPassword(gmail, password).await()
+                val user = auth.currentUser
+                Log.wtf("loginUserImpl", user?.uid.toString())
                 user?.uid
             } catch (e: Exception) {
                 println("Login error: ${e.message}")
@@ -67,6 +69,7 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
     override suspend fun saveFireUser(user: FireUser): String? {
         return try {
             val document = personCollectionRef.add(user).await()
+            Log.wtf("saveUserImpl", user.userId.toString())
             println("Success")
             document.id
         } catch (e: Exception) {

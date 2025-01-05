@@ -13,7 +13,21 @@ import java.io.IOException
 @Single
 class BookmarksUseCase(private val repository: BookmarksRepository) {
 
-
+fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow {
+    try {
+        emit(Responses.Loading())
+        val result = repository.setBookmarksFromFire(bookmarks)
+        emit(Responses.Success(result))
+    } catch (e: IOException) {
+        Log.wtf("exeption", e.toString())
+        Log.wtf("exeption", e.message.toString())
+        println(e.message.toString())
+    } catch (e: Exception) {
+        Log.wtf("exeption", e.toString())
+        Log.wtf("exeption", e.message.toString())
+        println(e.message.toString())
+    }
+}
     fun createBookmark(bookmark: Bookmark,userId:String?): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())

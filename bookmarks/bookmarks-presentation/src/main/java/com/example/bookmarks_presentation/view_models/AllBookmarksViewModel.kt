@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
@@ -44,6 +45,7 @@ class AllBookmarksViewModel(private val bookmarksUseCase: BookmarksUseCase):View
                 }
                 is Responses.Success<*> -> {
                     result.data?.collect { it->
+                        Log.wtf("Meerka", it.toString())
                         _listOfBookmarks.value = it
                     }
                 }

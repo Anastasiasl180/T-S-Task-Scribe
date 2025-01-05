@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -47,6 +48,13 @@ implementation(project(":firebase:firebase-domain"))
 
 
     implementation(libs.kotlinx.serialization.json)
+
+    //koin
+    implementation(libs.koin.android)
+    implementation(libs.koin.annotations)
+    implementation(libs.firebase.firestore)
+    implementation(libs.google.firebase.auth.ktx)
+    ksp(libs.koin.ksp)
 
     //koin
     implementation(libs.koin.android)
