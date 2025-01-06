@@ -51,9 +51,7 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
                 }
 
                 is Responses.Success -> {
-                    val id = result.data
-                    _userID.value = id
-                    userr.userId = _userID.value
+
                 }
             }
 
@@ -73,8 +71,8 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
 
                 is Responses.Success -> {
                    userr.userId = result.data
-                    Log.wtf("userIdafterREg", result.data.toString())
-                    saveUser(userr)
+                    userr.userName = _userName.value
+                   saveUser(userr)
 
                 }
             }
@@ -88,7 +86,6 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
             RegistrationEvents.RegisterUser -> {
                 viewModelScope.launch {
                     registerUser(_gmail.value, _password.value)
-                    Log.wtf("rere", _userID.value.toString())
                     _event.emit(RegistrationUiEvents.NavigateToHomeScreen)
                 }
             }

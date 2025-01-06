@@ -42,6 +42,9 @@ fun RegistrationScreen() {
                 TextField(value = password, onValueChange ={
                     viewModel.onEvent(RegistrationEvents.UpdatePassword(it))
                 } )
+                TextField(value = userName, onValueChange ={
+                    viewModel.onEvent(RegistrationEvents.UpdateUserName(it))
+                } )
                 Button(onClick = { viewModel.onEvent(RegistrationEvents.RegisterUser) }) {
                     Text(text = "Save")
                 }
