@@ -49,6 +49,7 @@ fun LogInUiEventHandler() {
                     navigator.navigate(HomeNavRoutes.HomeScreen)
                     mainViewModel.onEvent(MainViewModel.MainEvent.SetFirstLaunchToFalse)
                 }
+
             }
 
         }

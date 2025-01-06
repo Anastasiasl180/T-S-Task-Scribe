@@ -10,6 +10,17 @@ import java.io.IOException
 @Single
 class AuthenticationUseCase(private val repository: AuthenticationRepository){
 
+    fun sendResetPasswordCode(gmail:String):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.sendResetPasswordCode(gmail)
+            emit(Responses.Success(data))
+
+        } catch (e: IOException) {
+
+        }
+    }
+
     fun registerUser(gmail: String, password: String): Flow<Responses<String>> = flow {
         try {
             emit(Responses.Loading())
