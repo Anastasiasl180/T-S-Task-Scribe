@@ -8,4 +8,5 @@ interface AuthenticationRepository {
     suspend fun logInUser(gmail: String, password: String):String?
     suspend fun saveFireUser(user:FireUser):String?
     suspend fun retrieveUser(id:String): Flow<FireUser?>
+    suspend fun sendResetPasswordCode(gmail: String)
 }

@@ -1,6 +1,8 @@
 package com.aopr.authentication_presentation.model
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.authentication_domain.interactors.AuthenticationUseCase
@@ -25,8 +27,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class LogInViewModel(
     private val authenticationUseCase: AuthenticationUseCase,
-    private val bookmarksUseCase:BookmarksUseCase,
-    private val notesUseCase:NotesUseCase,
+    private val bookmarksUseCase: BookmarksUseCase,
+    private val notesUseCase: NotesUseCase,
     private val tasksUseCase: TasksUseCase,
     private val user: FireUser
 ) : ViewModel() {
@@ -34,14 +36,21 @@ class LogInViewModel(
     private val _gmail = MutableStateFlow("")
     val gmail: StateFlow<String> = _gmail
 
+    private val _gmailForResettingPassword = MutableStateFlow("")
+    val gmailForResettingPassword: StateFlow<String> = _gmailForResettingPassword
+
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
     private val _user = MutableStateFlow(FireUser())
     val userFire: StateFlow<FireUser> = _user
 
+    private val _isDialogShowed = mutableStateOf(false)
+    val isDialogShowed: State<Boolean> = _isDialogShowed
+
     private val _event = MutableSharedFlow<LogInUiEvents>()
     val event = _event.asSharedFlow()
+
 
     private fun logInUser(gmail: String, password: String) {
         authenticationUseCase.logInUser(gmail, password).onEach { result ->
@@ -58,9 +67,32 @@ class LogInViewModel(
 
                     result.data?.let {
                         user.userId = result.data
-                        Log.wtf("loginSuccess",it.toString())
-                        Log.wtf("USER",userFire.value.userId.toString())
-                        Helpers.FirebaseHelper.getAllUserData(it,bookmarksUseCase,tasksUseCase,notesUseCase) }
+                        Helpers.FirebaseHelper.getAllUserData(
+                            it,
+                            bookmarksUseCase,
+                            tasksUseCase,
+                            notesUseCase
+                        )
+                    }
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun sendRestorePasswordCode(gmail: String) {
+        authenticationUseCase.sendResetPasswordCode(gmail).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
                 }
             }
 
@@ -113,8 +145,23 @@ class LogInViewModel(
                 _password.value = events.password
             }
 
-            is LogInEvents.UpdateUserName -> {
 
+            is LogInEvents.SendResetPasswordCode -> {
+                viewModelScope.launch {
+                    sendRestorePasswordCode(events.gmail)
+                }
+            }
+
+            LogInEvents.HideAlertDialog -> {
+                _isDialogShowed.value = false
+            }
+
+            LogInEvents.ShowAlertDialog -> {
+                _isDialogShowed.value = true
+            }
+
+            is LogInEvents.UpdateGmailForResettingPassword -> {
+                _gmailForResettingPassword.value = events.gmail
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.aopr.authentication_data.impl
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.aopr.authentication_domain.interactors.AuthenticationRepository
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.google.firebase.Firebase
@@ -44,7 +45,6 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
             try {
                 auth.signInWithEmailAndPassword(gmail, password).await()
                 val user = auth.currentUser
-                Log.wtf("loginUserImpl", user?.uid.toString())
                 user?.uid
             } catch (e: Exception) {
                 println("Login error: ${e.message}")
@@ -88,6 +88,20 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
 
             }
         }
+    }
+
+    override suspend fun sendResetPasswordCode(gmail:String) {
+        val auth = FirebaseAuth.getInstance()
+        auth.sendPasswordResetEmail(gmail)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    println("Reset email sent")
+
+                } else {
+                    println("error")
+                    }
+
+            }
     }
 
 

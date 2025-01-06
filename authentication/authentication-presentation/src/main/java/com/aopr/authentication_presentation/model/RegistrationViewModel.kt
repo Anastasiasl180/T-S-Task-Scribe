@@ -21,10 +21,10 @@ import org.koin.android.annotation.KoinViewModel
 class RegistrationViewModel(private val authenticationUseCase: AuthenticationUseCase,private var userr: FireUser) :
     ViewModel() {
 
-    private val _userName = MutableStateFlow<String>("")
+    private val _userName = MutableStateFlow("")
     val userName: StateFlow<String> = _userName
 
-    private val _gmail = MutableStateFlow<String>("")
+    private val _gmail = MutableStateFlow("")
     val gmail: StateFlow<String> = _gmail
 
     private val _user = MutableStateFlow(FireUser())
@@ -33,12 +33,13 @@ class RegistrationViewModel(private val authenticationUseCase: AuthenticationUse
     private val _userID = MutableStateFlow<String?>(null)
     val userID: StateFlow<String?> = _userID
 
-
-    private val _password = MutableStateFlow<String>("")
+    private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
     private val _event = MutableSharedFlow<RegistrationUiEvents>()
     val event = _event.asSharedFlow()
+
+
 
     private fun saveUser(user: FireUser) {
         authenticationUseCase.saveUser(user).onEach { result ->

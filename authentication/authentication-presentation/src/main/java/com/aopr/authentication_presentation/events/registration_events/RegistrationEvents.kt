@@ -5,5 +5,6 @@ sealed interface RegistrationEvents {
     data object RegisterUser: RegistrationEvents
     data object NavigateToLogInUser: RegistrationEvents
     data class UpdateGmail(val gmail:String): RegistrationEvents
+
     data class UpdatePassword(val password:String): RegistrationEvents
 }
