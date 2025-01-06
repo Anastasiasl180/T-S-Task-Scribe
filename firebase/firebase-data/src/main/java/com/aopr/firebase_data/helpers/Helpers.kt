@@ -133,15 +133,12 @@ class Helpers {
 
             val scope = CoroutineScope(currentCoroutineContext())
             return try {
-Log.wtf("getData", userId.toString())
                 val querySnapshot = personCollectionRef
                     .whereEqualTo("userId", userId)
                     .get()
                     .await()
                 val document = querySnapshot.documents.firstOrNull() ?: return null
 
-
-                Log.wtf("getData2", userId.toString())
                 val listOfBookmarks = (document.get("listOfBookmarks") as? List<Map<String, Any?>>)
                     ?.map { Bookmark.fromFirestore(it) }
                 scope.launch(NonCancellable) {

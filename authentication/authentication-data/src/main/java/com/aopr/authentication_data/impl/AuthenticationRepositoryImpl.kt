@@ -28,10 +28,8 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
             try {
                 auth.createUserWithEmailAndPassword(gmail, password).await()
                 val uid = auth.currentUser?.uid ?: throw Exception("User ID is null")
-                Log.wtf("AUTH", uid)
                 uid
             } catch (e: Exception) {
-                Log.e("RegisterError", e.message ?: "Unknown error")
                 ""
             }
         } else {
@@ -69,7 +67,6 @@ class AuthenticationRepositoryImpl : AuthenticationRepository {
     override suspend fun saveFireUser(user: FireUser): String? {
         return try {
             val document = personCollectionRef.add(user).await()
-            Log.wtf("saveUserImpl", user.userId.toString())
             println("Success")
             document.id
         } catch (e: Exception) {

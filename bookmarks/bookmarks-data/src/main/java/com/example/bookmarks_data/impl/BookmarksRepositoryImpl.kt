@@ -52,9 +52,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
                     val listUpdated =
                         getAllBookmarks().first()
                     val firestoreData = listUpdated.map { it.toFirestore() }
-                    Log.wtf("bookmarksImpl2", firestoreData.toString())
-                    Log.wtf("bookmarksImpl3", userId.toString())
-                    Helpers.FirebaseHelper.updateUserDataBookmark(
+                   Helpers.FirebaseHelper.updateUserDataBookmark(
                         userId,
                         mapOf("listOfBookmarks" to firestoreData)
                     )
