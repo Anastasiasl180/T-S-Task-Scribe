@@ -45,7 +45,6 @@ dependencies {
 
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))
-
     implementation(project(":firebase:firebase-domain"))
     implementation(project(":bookmarks:bookmarks-domain"))
     implementation(libs.info.bar.compose)

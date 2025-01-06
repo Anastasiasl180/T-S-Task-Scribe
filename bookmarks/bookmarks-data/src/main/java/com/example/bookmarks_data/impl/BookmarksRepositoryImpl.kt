@@ -13,16 +13,22 @@ import com.example.bookmarks_domain.interactors.BookmarksRepository
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import org.koin.core.annotation.Single
 
 @Single
 class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context: Context) :
     BookmarksRepository {
+    override suspend fun deleteAllBookmarks() {
+        val allBookmarks = dao.getAllBookmarks().first()
+        dao.deleteAllBookmarks(allBookmarks)
+    }
 
     override suspend fun createBookmark(bookmark: Bookmark, userId: String?) {
         val existingBookmark = dao.getBookmarkById(bookmark.id).firstOrNull()
@@ -63,7 +69,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
     override suspend fun setBookmarksFromFire(bookmarks: List<Bookmark>?) {
         if (bookmarks != null) {
             dao.saveBookmarks(bookmarks.map { it.mapToEntity() })
-        }else{
+        } else {
             Log.wtf("bo", bookmarks.toString())
 
         }
@@ -86,11 +92,11 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
     }
 
     override suspend fun getAllBookmarks(): Flow<List<Bookmark>> {
-          return  dao.getAllBookmarks().map { list ->
-                list.map { entity ->
-                    entity.mapToBookmark()
-                }
+        return dao.getAllBookmarks().map { list ->
+            list.map { entity ->
+                entity.mapToBookmark()
             }
+        }
     }
 
 

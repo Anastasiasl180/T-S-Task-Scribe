@@ -1,12 +1,10 @@
 package com.aopr.shared_ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.colors_for_theme.Themes
 import com.aopr.shared_domain.inter.HomeUseCase
-import com.aopr.shared_domain.inter.SettingsDto
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -175,7 +173,7 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                 _isBottomBarShowed.value = true
             }
 
-            MainEvent.SetFirstLaunchTrue -> {
+            MainEvent.SetFirstLaunchToFalse -> {
                 viewModelScope.launch {
                     updateIsFirstLaunch(false)
                 }
@@ -189,8 +187,8 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
         data object NavigateToAiScreen : MainEvent
         data object NavigateToDashBoardScreen : MainEvent
         data object ShowBottomBar : MainEvent
-        data object SetFirstLaunchTrue : MainEvent
-           data class ChosenTheme(val theme: Themes) : MainEvent
+        data object SetFirstLaunchToFalse : MainEvent
+        data class ChosenTheme(val theme: Themes) : MainEvent
     }
 
 }

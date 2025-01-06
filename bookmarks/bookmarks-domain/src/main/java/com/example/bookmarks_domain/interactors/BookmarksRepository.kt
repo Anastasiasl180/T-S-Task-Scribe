@@ -5,6 +5,7 @@ import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 
 interface BookmarksRepository {
+    suspend fun deleteAllBookmarks()
     suspend fun createBookmark(bookmark: Bookmark,userId:String?)
     suspend fun setBookmarksFromFire(bookmarks:List<Bookmark>?)
     suspend fun updateBookmark(bookmark: Bookmark,userId:String?)

@@ -43,7 +43,9 @@ dependencies {
     implementation(project(":bookmarks:bookmarks-domain"))
     implementation(project(":home:home-domain"))
     implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-data"))
     implementation(project(":shared:shared-ui"))
+    implementation(project(":firebase:firebase-domain"))
 
     //koin
     implementation(libs.koin.android)

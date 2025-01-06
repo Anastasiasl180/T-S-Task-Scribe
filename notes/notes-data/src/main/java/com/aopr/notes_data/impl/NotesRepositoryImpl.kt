@@ -8,6 +8,7 @@ import com.aopr.notes_domain.models.Note
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTittleException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
@@ -38,6 +39,11 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
 
     override suspend fun deleteNote(note: Note) {
         dao.deleteNote(note.mapToEntity())
+    }
+
+    override suspend fun deleteAllNotes() {
+        val allNotes = dao.getALlNotes().first()
+        dao.deleteAllNote(allNotes)
     }
 
     override suspend fun getNoteById(id: Int): Flow<Note> {
