@@ -12,6 +12,7 @@ import com.aopr.shared_ui.navigation.AuthenticationRoutes
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.aopr.shared_ui.util.currentOrThrow
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -24,6 +25,7 @@ fun RegistrationUiEventHandler() {
             when (event) {
                 RegistrationUiEvents.NavigateToHomeScreen -> {
                     navigator.navigate(HomeNavRoutes.HomeScreen)
+                    mainViewModel.onEvent(MainViewModel.MainEvent.SetFirstLaunchToFalse)
                 }
 
                 RegistrationUiEvents.NavigateToLogInScreen -> {
@@ -39,11 +41,13 @@ fun RegistrationUiEventHandler() {
 fun LogInUiEventHandler() {
     val viewmodel = koinViewModel<LogInViewModel>()
     val navigator = LocalNavigator.currentOrThrow()
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
     LaunchedEffect(key1 = Unit) {
         viewmodel.event.collect { event ->
             when (event) {
                 LogInUiEvents.NavigateToHomeScreen -> {
                     navigator.navigate(HomeNavRoutes.HomeScreen)
+                    mainViewModel.onEvent(MainViewModel.MainEvent.SetFirstLaunchToFalse)
                 }
             }
 

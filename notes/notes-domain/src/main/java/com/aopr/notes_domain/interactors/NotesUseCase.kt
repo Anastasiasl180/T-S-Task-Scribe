@@ -14,6 +14,16 @@ import java.io.IOException
 @Single
 class NotesUseCase(private val repository: NotesRepository) {
 
+    fun deleteAllNotes():Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.deleteAllNotes()
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
+
     fun setNotesFromFire(notes:List<Note>?):Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())

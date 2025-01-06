@@ -1,5 +1,6 @@
 package com.aopr.home.home_screen.viewModel.events
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,18 +62,15 @@ class HomeViewModel(
     val uiEvents = _event
 
     private fun deleteAllDataFromRoom() {
-        hommeUseCase.deleteAllDataFromRoom().onEach { result ->
+        hommeUseCase.deleteAllUserData().onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
-                }
+               }
 
                 is Responses.Loading -> {
-
                 }
 
                 is Responses.Success -> {
-
                 }
             }
 
@@ -193,7 +191,7 @@ class HomeViewModel(
             HomeEvent.LogOut -> {
                 viewModelScope.launch {
                     deleteAllDataFromRoom()
-                    _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
+                  //  _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
                 }
             }
         }

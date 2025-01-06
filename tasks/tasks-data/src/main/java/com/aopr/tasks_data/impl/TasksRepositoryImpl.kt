@@ -80,6 +80,11 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         }
     }
 
+    override suspend fun deleteAllTask() {
+       val allTasks = dao.getALlTasks().first()
+        dao.deleteAllTask(allTasks)
+    }
+
     override suspend fun updateTask(task: Task) {
 
         FieldsValidator.validateTask(

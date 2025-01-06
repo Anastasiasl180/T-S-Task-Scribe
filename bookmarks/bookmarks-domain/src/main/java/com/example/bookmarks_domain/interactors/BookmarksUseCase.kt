@@ -6,6 +6,7 @@ import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
 import java.io.IOException
@@ -13,18 +14,28 @@ import java.io.IOException
 @Single
 class BookmarksUseCase(private val repository: BookmarksRepository) {
 
+    fun deleteAllBookmarks():Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.deleteAllBookmarks()
+            emit(Responses.Success(result))
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }.filter { response ->
+        response is Responses.Success || response is Responses.Error
+    }
+
 fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow {
     try {
         emit(Responses.Loading())
         val result = repository.setBookmarksFromFire(bookmarks)
         emit(Responses.Success(result))
     } catch (e: IOException) {
-        Log.wtf("exeption", e.toString())
-        Log.wtf("exeption", e.message.toString())
         println(e.message.toString())
     } catch (e: Exception) {
-        Log.wtf("exeption", e.toString())
-        Log.wtf("exeption", e.message.toString())
         println(e.message.toString())
     }
 }

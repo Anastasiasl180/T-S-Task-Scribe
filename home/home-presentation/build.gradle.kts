@@ -39,12 +39,15 @@ android {
 }
 
 dependencies {
+
+
     implementation(project(":home:home-domain"))
     implementation(project(":tasks:tasks-domain"))
     implementation(project(":bookmarks:bookmarks-domain"))
     implementation(project(":notes:notes-domain"))
-    implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-data"))
+    implementation(project(":shared:shared-ui"))
     implementation((project(":notes:notes-presentation")))
 
 

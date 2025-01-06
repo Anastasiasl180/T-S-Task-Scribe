@@ -10,8 +10,8 @@ import java.util.UUID
 @Singleton
 class FireUser(
     var userId: String? = null,
-    val listOfTasks: List<Task>? = null,
-    val listOfBookmarks: List<Bookmark>? = null,
-    val listOfNotes: List<Note>? = null,
-    val settings: SettingsDto? = null
+    var listOfTasks: List<Task>? = null,
+    var listOfBookmarks: List<Bookmark>? = null,
+    var listOfNotes: List<Note>? = null,
+    var settings: SettingsDto? = null
 )

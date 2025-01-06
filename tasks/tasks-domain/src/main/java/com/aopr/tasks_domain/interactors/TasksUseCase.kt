@@ -18,6 +18,15 @@ import java.time.LocalDate
 @Single
 class TasksUseCase(private val repository: TasksRepository) {
 
+    fun deleteAllTasks():Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.deleteAllTask()
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        }
+    }
     fun setTasksFromFire(tasks:List<Task>?):Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
