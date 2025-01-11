@@ -7,6 +7,7 @@ import androidx.datastore.core.Serializer
 import androidx.datastore.dataStoreFile
 import com.aopr.shared_domain.colors_for_theme.Themes
 import com.aopr.shared_domain.inter.SettingsDto
+import com.aopr.shared_domain.inter.UserDataForFireBase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
@@ -18,7 +19,25 @@ import java.io.OutputStream
 
 
 @Single
-fun provideSettingsDataStore(context:Context): DataStore<SettingsDto> {
+fun provideUserDataDataStore(context: Context): DataStore<UserDataForFireBase> {
+    return DataStoreFactory.create(serializer = UserDtoSerializer, produceFile = {
+        context.dataStoreFile("userData")
+    })
+}
+
+@Factory
+class UserDataDataStoreManager(private val dataStore: DataStore<UserDataForFireBase>) {
+    val data = dataStore.data
+    suspend fun updateUserData(userDataForFireBase:UserDataForFireBase) {
+        dataStore.updateData { it ->
+            it.copy()
+
+        }
+    }
+}
+
+@Single
+fun provideSettingsDataStore(context: Context): DataStore<SettingsDto> {
     return DataStoreFactory.create(serializer = SettingsDtoSerializer, produceFile = {
         context.dataStoreFile("settings")
     })
@@ -33,19 +52,45 @@ class SettingsDataStoreManager(private val dataStore: DataStore<SettingsDto>) {
             it.copy(theme = themes)
         }
     }
-    suspend fun updateIsFirstLaunch(isFirstLaunch:Boolean){
-        dataStore.updateData { it->
+
+    suspend fun updateIsFirstLaunch(isFirstLaunch: Boolean) {
+        dataStore.updateData { it ->
             it.copy(isFirstLaunch = isFirstLaunch)
         }
     }
 }
 
+object UserDtoSerializer : Serializer<UserDataForFireBase> {
+    override val defaultValue: UserDataForFireBase
+        get() = UserDataForFireBase()
+
+    override suspend fun readFrom(input: InputStream): UserDataForFireBase {
+        return try {
+            Json.decodeFromString(input.readBytes().decodeToString())
+        } catch (e: SerializationException) {
+            defaultValue
+        }
+    }
+
+    override suspend fun writeTo(t: UserDataForFireBase, output: OutputStream) {
+        withContext(Dispatchers.IO) {
+            output.write(
+                Json.encodeToString(
+                    serializer = UserDataForFireBase.serializer(),
+                    value = t
+                ).encodeToByteArray()
+
+            )
+        }
+    }
+
+}
 
 object SettingsDtoSerializer : Serializer<SettingsDto> {
-    override val defaultValue:SettingsDto
+    override val defaultValue: SettingsDto
         get() = SettingsDto()
 
-    override suspend fun readFrom(input: InputStream): com.aopr.shared_domain.inter.SettingsDto {
+    override suspend fun readFrom(input: InputStream): SettingsDto {
         return try {
             Json.decodeFromString(input.readBytes().decodeToString())
 
@@ -55,13 +100,13 @@ object SettingsDtoSerializer : Serializer<SettingsDto> {
     }
 
     override suspend fun writeTo(
-        t: com.aopr.shared_domain.inter.SettingsDto,
+        t: SettingsDto,
         output: OutputStream
     ) {
         withContext(Dispatchers.IO) {
             output.write(
                 Json.encodeToString(
-                    serializer = com.aopr.shared_domain.inter.SettingsDto.serializer(),
+                    serializer = SettingsDto.serializer(),
                     value = t
                 ).encodeToByteArray()
 

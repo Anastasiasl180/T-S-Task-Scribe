@@ -40,6 +40,8 @@ android {
 dependencies {
 implementation(project(":bookmarks:bookmarks-domain"))
     implementation(project(":firebase:firebase-domain"))
+    implementation(project(":shared:shared-domain"))
+    implementation(project(":shared:shared-data"))
 implementation(project(":authentication:authentication-domain"))
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")

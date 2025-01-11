@@ -11,8 +11,8 @@ import java.util.UUID
 class FireUser(
     var userId: String? = null,
     var userName:String? = null,
+    var userPicture:String? = null,
     var listOfTasks: List<Task>? = null,
     var listOfBookmarks: List<Bookmark>? = null,
     var listOfNotes: List<Note>? = null,
-    var settings: SettingsDto? = null
 )

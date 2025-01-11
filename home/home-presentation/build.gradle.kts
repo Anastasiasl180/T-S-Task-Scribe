@@ -50,7 +50,8 @@ dependencies {
     implementation(project(":shared:shared-ui"))
     implementation((project(":notes:notes-presentation")))
 
-
+    implementation(libs.coil)
+    implementation(libs.coil3.coil.compose)
    implementation(libs.info.bar.compose)
 
     //koin

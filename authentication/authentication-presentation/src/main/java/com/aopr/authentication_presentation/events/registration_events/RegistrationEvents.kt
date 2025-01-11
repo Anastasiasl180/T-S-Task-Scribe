@@ -1,10 +1,13 @@
 package com.aopr.authentication_presentation.events.registration_events
 
-sealed interface RegistrationEvents {
-    data class UpdateUserName(val name:String): RegistrationEvents
-    data object RegisterUser: RegistrationEvents
-    data object NavigateToLogInUser: RegistrationEvents
-    data class UpdateGmail(val gmail:String): RegistrationEvents
+import android.content.Context
+import android.net.Uri
 
-    data class UpdatePassword(val password:String): RegistrationEvents
+sealed interface RegistrationEvents {
+    data class UpdateUserName(val name: String) : RegistrationEvents
+    data object RegisterUser : RegistrationEvents
+    data object NavigateToLogInUser : RegistrationEvents
+    data class UpdateGmail(val gmail: String) : RegistrationEvents
+    data class UpdateUserImage(val image: Uri?,val context: Context) : RegistrationEvents
+    data class UpdatePassword(val password: String) : RegistrationEvents
 }
