@@ -1,6 +1,8 @@
 package com.aopr.home.home_screen.viewModel.events
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +12,7 @@ import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeUiEvents
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_domain.inter.UserDataForFireBase
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask
@@ -18,6 +21,8 @@ import com.aopr.tasks_domain.models.Task
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.home_domain.HomeRepository.HomeUseCase.HommeUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -55,17 +60,52 @@ class HomeViewModel(
     private val _timeOfTask = mutableStateOf<LocalTime?>(null)
     val timeOfTask: State<LocalTime?> = _timeOfTask
 
+    private val _userDataForFireBase = MutableStateFlow<UserDataForFireBase?>(null)
+    val userDataForFireBase: StateFlow<UserDataForFireBase?> = _userDataForFireBase
+
+    private val _bitMapImage = MutableStateFlow<Bitmap?>(null)
+    val bitmapImage: StateFlow<Bitmap?> = _bitMapImage
+
+    private val _userName = MutableStateFlow<String?>(null)
+    val userName:StateFlow<String?> = _userName
+
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
     val listOfSubTasks: List<Subtasks> = _listOfSubTasks
 
     private val _event = MutableSharedFlow<HomeUiEvents>()
     val uiEvents = _event
 
+    init {
+        getUserDataFromDB()
+    }
+
+    private fun getUserDataFromDB() {
+        hommeUseCase.getUserDataFromDB().onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+                    val userData = result.data
+                    _userDataForFireBase.value = result.data
+                    _userName.value = result.data?.name
+                    _bitMapImage.value = userData?.profileImage?.let { base64ToBitmap(it) }
+                }
+            }
+
+        }
+    }
+
     private fun deleteAllDataFromRoom() {
         hommeUseCase.deleteAllUserData().onEach { result ->
             when (result) {
                 is Responses.Error -> {
-               }
+                }
 
                 is Responses.Loading -> {
                 }
@@ -191,9 +231,15 @@ class HomeViewModel(
             HomeEvent.LogOut -> {
                 viewModelScope.launch {
                     deleteAllDataFromRoom()
-                  //  _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
+                    //  _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
                 }
             }
         }
     }
+
+    private fun base64ToBitmap(base64String: String): Bitmap {
+        val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    }
+
 }

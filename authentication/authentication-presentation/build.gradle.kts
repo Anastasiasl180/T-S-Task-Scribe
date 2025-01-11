@@ -58,7 +58,8 @@ dependencies {
 
         implementation(platform(libs.firebase.bom))
         implementation(libs.com.google.firebase.firebase.analytics)
-
+        implementation(libs.coil)
+        implementation(libs.coil3.coil.compose)
         //koin
         implementation(libs.koin.android)
         implementation(libs.koin.annotations)

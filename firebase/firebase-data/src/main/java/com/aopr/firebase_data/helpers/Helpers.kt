@@ -11,9 +11,6 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.currentCoroutineContext
@@ -139,6 +136,11 @@ class Helpers {
                     .await()
                 val document = querySnapshot.documents.firstOrNull() ?: return null
 
+
+                val picture = document.getString("userPicture")
+
+                val name = document.getString("userName")
+
                 val listOfBookmarks = (document.get("listOfBookmarks") as? List<Map<String, Any?>>)
                     ?.map { Bookmark.fromFirestore(it) }
                 scope.launch(NonCancellable) {
@@ -153,14 +155,15 @@ class Helpers {
                     ?.map { Task.fromFirestore(it) }
 
                 tasksUseCase.setTasksFromFire(listOfTasks)
-
                 FireUser(
                     userId = document.getString("userId"),
                     listOfTasks = listOfTasks,
                     listOfBookmarks = listOfBookmarks,
                     listOfNotes = listOfNotes,
-                    settings = null
+                    userPicture = picture,
+                    userName =name
                 )
+
             } catch (e: Exception) {
                 println("Error fetching user data: ${e.message}")
                 null

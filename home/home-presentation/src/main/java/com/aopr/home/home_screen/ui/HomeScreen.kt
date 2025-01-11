@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.aopr.home.R
 import com.aopr.home.home_screen.navigation.DrawerItems
 import com.aopr.home.home_screen.viewModel.events.HomeUiEventHandler
@@ -44,6 +46,7 @@ import com.aopr.home.home_screen.viewModel.events.HomeViewModel
 import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeEvent
 import com.radusalagean.infobarcompose.InfoBar
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.Async
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -54,7 +57,8 @@ fun HomeScreen() {
     HomeUiEventHandler()
 
     val viewModel = koinViewModel<HomeViewModel>()
-
+    val bitMaoImage by viewModel.bitmapImage.collectAsState()
+    val userName by viewModel.userName.collectAsState()
     val tittleOfNote = viewModel.tittleOfNote.value
     val descriptionOfNote = viewModel.descriptionOfNote.value
     val tittleOfTask = viewModel.tittleOfTask.value
@@ -104,6 +108,24 @@ fun HomeScreen() {
                                 Text(items.name)
                             }
                         }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .height(300.dp)
+                            .fillMaxWidth()
+                    ) {
+                        AsyncImage(
+                            model = bitMaoImage,
+                            contentDescription = "",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                    ) {
+                        userName?.let { Text(text = it) }
                     }
                     Row(
                         modifier = Modifier

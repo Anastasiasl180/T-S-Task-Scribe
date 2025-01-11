@@ -2,6 +2,7 @@ package com.aopr.authentication_domain.interactors
 
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_domain.inter.UserDataForFireBase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
@@ -9,6 +10,17 @@ import java.io.IOException
 
 @Single
 class AuthenticationUseCase(private val repository: AuthenticationRepository){
+
+    fun setUserDataIntoBD(userDataForFireBase: UserDataForFireBase):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.saveUserDataIntoDB(userDataForFireBase)
+            emit(Responses.Success(data))
+
+        } catch (e: IOException) {
+
+        }
+    }
 
     fun sendResetPasswordCode(gmail:String):Flow<Responses<Unit>> = flow {
         try {
