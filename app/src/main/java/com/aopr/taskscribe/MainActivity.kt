@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
             val isBottomBarShowed = mainViewModel.isBottomBarShowed.collectAsState()
-        //    val theme by mainViewModel.chosenTheme.collectAsState()
             val navHost = rememberNavController()
             GlobalUiEventHandler(navHost = navHost)
 

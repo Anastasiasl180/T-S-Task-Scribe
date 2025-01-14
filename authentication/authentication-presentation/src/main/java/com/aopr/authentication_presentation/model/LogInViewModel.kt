@@ -51,7 +51,7 @@ class LogInViewModel(
     val event = _event.asSharedFlow()
 
 
-    private fun setUserDataIntoDB(userDataForFireBase: UserDataForFireBase) {
+   /* private fun setUserDataIntoDB(userDataForFireBase: UserDataForFireBase) {
         authenticationUseCase.setUserDataIntoBD(userDataForFireBase).onEach { result ->
             when (result) {
                 is Responses.Error -> {
@@ -68,7 +68,7 @@ class LogInViewModel(
             }
         }
     }
-
+*/
     private fun logInUser(gmail: String, password: String) {
         authenticationUseCase.logInUser(gmail, password).onEach { result ->
             when (result) {
@@ -95,7 +95,7 @@ class LogInViewModel(
                                 it1, user.userPicture
                             )
                         }
-                        setUserDataIntoDB(userDataForFireBase!!)
+                       // setUserDataIntoDB(userDataForFireBase!!)
                     }
                 }
             }

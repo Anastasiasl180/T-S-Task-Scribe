@@ -13,6 +13,5 @@ interface AuthenticationRepository {
     suspend fun saveFireUser(user:FireUser):String?
     suspend fun retrieveUser(id:String): Flow<FireUser?>
     suspend fun sendResetPasswordCode(gmail: String)
-    suspend fun saveUserDataIntoDB(userDataForFireBase: UserDataForFireBase)
-    suspend fun setNameAndPictureInDBAndFire(uri: Uri,context: Context):UserDataForFireBase
+    suspend fun setNameAndPictureInDBAndFire(uri: Uri,context: Context,name:String)
 }

@@ -22,7 +22,8 @@ import org.koin.core.annotation.Single
 @Single
 class AuthenticationRepositoryImpl(
     private val dataStoreManager: UserDataDataStoreManager
-) : AuthenticationRepository {
+) :
+    AuthenticationRepository {
 
     private lateinit var auth: FirebaseAuth
     private val personCollectionRef = Firebase.firestore.collection("users")
@@ -108,18 +109,15 @@ class AuthenticationRepositoryImpl(
             }
     }
 
-    override suspend fun saveUserDataIntoDB(userDataForFireBase: UserDataForFireBase) {
-        dataStoreManager.updateUserData(userDataForFireBase)
-    }
-
     @RequiresApi(Build.VERSION_CODES.P)
     override suspend fun setNameAndPictureInDBAndFire(
         uri: Uri,
-        context: Context
-    ): UserDataForFireBase {
-        val userDataFprFireBase = UserData().mapToBase64FromUri(uri, context)
-        dataStoreManager.updateUserData(userDataFprFireBase)
-        return UserData().mapToBase64FromUri(uri, context)
+        context: Context,
+        name:String
+    ){
+
+     /*  val userForDB = UserData(name,uri).mapToBase64FromUri(uri,context)
+        dataStoreManager.updateUserData(userForDB)*/
     }
 
 

@@ -1,12 +1,16 @@
 package com.aopr.home.home_screen.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,14 +28,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.toFontFamily
 import androidx.compose.ui.unit.dp
+import com.aopr.shared_ui.cardsView.cardViews
+import com.aopr.shared_ui.theme.cabinFont
 
 @Composable
 internal fun HomeCard(
     isBlurred: Boolean, cardText: String, onCardClick: () -> Unit,
-    vararg buttons:@Composable ()->Unit
+    vararg buttons: @Composable () -> Unit
 ) {
+
     val animatedAlpha by animateFloatAsState(
         targetValue = if (isBlurred) 0.5f else 1f,
         animationSpec = tween(durationMillis = 500), label = ""
@@ -41,25 +51,31 @@ internal fun HomeCard(
         animationSpec = tween(durationMillis = 500), label = ""
     )
 
-
     ElevatedCard(
         modifier = Modifier
             .height(200.dp)
             .blur(
                 radius = animatedBlur,
-               edgeTreatment = BlurredEdgeTreatment(
+                edgeTreatment = BlurredEdgeTreatment(
                     MaterialTheme.shapes.extraLarge
                 )
+            )
+            .border(
+                border = BorderStroke(0.5.dp, color = Color.White.copy(alpha = 0.1f)),
+                shape = MaterialTheme.shapes.extraLarge
             )
             .clickable {
                 onCardClick()
 
             },
-        colors = CardDefaults.cardColors(containerColor = Color.Blue),
-        shape = MaterialTheme.shapes.extraLarge
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        shape = MaterialTheme.shapes.extraSmall,
     ) {
+
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(cardViews()),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -67,8 +83,9 @@ internal fun HomeCard(
                 visible = !isBlurred, enter = scaleIn(),
                 exit = fadeOut(targetAlpha = 0.5f) + scaleOut()
             ) {
-                Text(text = cardText)
+                Text(text = cardText, color = Color.White, fontFamily = cabinFont.toFontFamily())
             }
+
 
         }
     }
@@ -85,7 +102,7 @@ internal fun HomeCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            buttons.forEach { button->
+            buttons.forEach { button ->
                 button()
 
             }
