@@ -21,7 +21,10 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
     val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch
 
     private val _userId = MutableStateFlow<String?>(null)
-     val userId:StateFlow<String?> =_userId
+    val userId: StateFlow<String?> = _userId
+
+    private val _isBottomBarMoved = MutableStateFlow<Boolean>(false)
+    val isBottomBarMoved: StateFlow<Boolean> = _isBottomBarMoved
 
     private val _chosenTheme = MutableStateFlow<Themes>(Themes.VIOLET)
     val chosenTheme: StateFlow<Themes> = _chosenTheme
@@ -51,9 +54,6 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
 
 
     }
-
-
-
 
 
     private fun getFirstLaunch() {
@@ -178,11 +178,20 @@ class MainViewModel(private val homeUseCase: HomeUseCase) : ViewModel() {
                     updateIsFirstLaunch(false)
                 }
             }
+
+            is MainEvent.ToMoveBottomBar -> {
+                if (event.move) {
+                    _isBottomBarMoved.value = true
+                } else {
+                    _isBottomBarMoved.value = false
+                }
+            }
         }
 
     }
 
     sealed interface MainEvent {
+        data class ToMoveBottomBar(val move: Boolean) : MainEvent
         data object NavigateToHomeScreen : MainEvent
         data object NavigateToAiScreen : MainEvent
         data object NavigateToDashBoardScreen : MainEvent

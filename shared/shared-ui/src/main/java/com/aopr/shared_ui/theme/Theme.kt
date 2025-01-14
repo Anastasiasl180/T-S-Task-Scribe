@@ -1,21 +1,15 @@
 package com.aopr.shared_ui.theme
 
 import android.os.Build
-import android.util.Log
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aopr.shared_domain.colors_for_theme.Themes
 import kotlinx.coroutines.flow.StateFlow
 
@@ -41,22 +35,16 @@ val hakiTheme = darkColorScheme(
     onPrimary =  Color(0xFF345F55),
     primaryContainer =  Color(0xFF49A288)
 )
-val pinkTheme = darkColorScheme(
-    primary = Color(0xFFEF3BCF),
-    secondary =  Color(0xFFF64791),
-    tertiary =  Color(0xFFF84D76),
-    onPrimary = Color(0xFFF95160),
-)
 val natureTheme = darkColorScheme(
-    primary =  Color(0xFF1E1E20),
-    secondary =   Color(0xFF0F104F),
-    tertiary = Color(0xFF17424C),
-    onPrimary =  Color(0xFF859A79),
-    onBackground = Color(0xFFF0EA8A),
-    primaryContainer = Color(0xFFFEED31),
-    onSecondary =  Color(0xFFFEA267),
-    surfaceVariant =   Color(0xFFFE7D45),
-    surface =  Color(0xFF79ABB7),
+    primary =  Color(0xFFFE3200),
+    secondary =   Color(0xFFFD6E47),
+    tertiary = Color(0xFFE4A596),
+    onPrimary =  Color(0xFFCCCCCC),
+    onBackground = Color(0xFF4D4D4D),
+    primaryContainer = Color(0xFF343434),
+    onSecondary =   Color(0xFF010101),
+
+
 )
 val brownTheme = darkColorScheme(
     primary =  Color(0xFFF58673),
@@ -75,11 +63,19 @@ val orangeTheme = darkColorScheme(
     onPrimary = Color(0xFFD25D25),
     onBackground =Color(0xFFE06E2A)
 )
-val sunsetTheme = darkColorScheme(
-    primary =  Color(0xFFFD9C3B),
-    secondary = Color(0xFFDE4044),
-    tertiary =  Color(0xFF442B6B)
-)
+
+
+
+
+val oceanTheme = darkColorScheme(
+    tertiary =  Color(0xFFE76F7F),
+    onBackground =Color(0xFF086F7A),
+    onSecondary =   Color(0xFF071F23),
+    primaryContainer = Color(0xFF070506),
+
+    )
+
+
 /*
 private val DarkColorScheme =
     darkColorScheme(
@@ -123,9 +119,8 @@ fun TaskScribeTheme(
                 Themes.BLUE -> blueTheme
                 Themes.VIOLET -> violetTheme
                 Themes.HAKI -> hakiTheme
-                Themes.PINK -> pinkTheme
                 Themes.NATURE -> natureTheme
-                Themes.SUNSET -> sunsetTheme
+                Themes.SUNSET -> oceanTheme
                 Themes.ORANGE -> orangeTheme
                 Themes.BROWN -> brownTheme
             }

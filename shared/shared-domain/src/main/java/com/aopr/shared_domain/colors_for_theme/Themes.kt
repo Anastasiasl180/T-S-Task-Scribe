@@ -8,7 +8,6 @@ enum class Themes() {
     BLUE,
     VIOLET,
     HAKI,
-    PINK,
     NATURE,
     SUNSET,
     ORANGE,

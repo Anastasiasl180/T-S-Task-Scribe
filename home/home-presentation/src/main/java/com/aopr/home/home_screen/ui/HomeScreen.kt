@@ -1,6 +1,8 @@
 package com.aopr.home.home_screen.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,16 +12,18 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -27,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,17 +41,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.aopr.home.R
 import com.aopr.home.home_screen.navigation.DrawerItems
 import com.aopr.home.home_screen.viewModel.events.HomeUiEventHandler
 import com.aopr.home.home_screen.viewModel.events.HomeViewModel
 import com.aopr.home.home_screen.viewModel.events.homeEvents.HomeEvent
+import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.cardsView.background
+import com.aopr.shared_ui.cardsView.textGradient
+import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.radusalagean.infobarcompose.InfoBar
 import kotlinx.coroutines.launch
-import org.jetbrains.annotations.Async
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,6 +68,7 @@ fun HomeScreen() {
 
     }
     HomeUiEventHandler()
+    val brush = background()
 
     val viewModel = koinViewModel<HomeViewModel>()
     val bitMaoImage by viewModel.bitmapImage.collectAsState()
@@ -94,24 +108,28 @@ fun HomeScreen() {
         }),
         getCalendarButton()
     )
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    LaunchedEffect(drawerState.currentValue) {
 
+        if (drawerState.isOpen) {
+            mainViewModel.onEvent(MainViewModel.MainEvent.ToMoveBottomBar(true))
+        } else {
+            mainViewModel.onEvent(MainViewModel.MainEvent.ToMoveBottomBar(false))
+        }
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                modifier = Modifier.fillMaxWidth(0.6f),
+                drawerContainerColor = Color.LightGray.copy(alpha = 0.5f)
+            ) {
+
                 Column(modifier = Modifier.fillMaxSize()) {
-                    drawerItems.forEach { items ->
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            TextButton(onClick = {
-                                viewModel.onEvent(HomeEvent.NavigateToThemesByDrawer)
-                            }) {
-                                Text(items.name)
-                            }
-                        }
-                    }
                     Row(
                         modifier = Modifier
-                            .height(300.dp)
+                            .fillMaxHeight(0.1f)
+                            .background(Color.Yellow)
                             .fillMaxWidth()
                     ) {
                         AsyncImage(
@@ -122,20 +140,35 @@ fun HomeScreen() {
                     }
                     Row(
                         modifier = Modifier
-                            .height(200.dp)
+                            .fillMaxHeight(0.1f)
                             .fillMaxWidth()
                     ) {
                         userName?.let { Text(text = it) }
                     }
-                    Row(
-                        modifier = Modifier
-                            .height(200.dp)
-                            .fillMaxWidth()
-                    ) {
-                        IconButton(onClick = { viewModel.onEvent(HomeEvent.LogOut) }) {
-                            Text(text = "log out")
+                    drawerItems.forEach { items ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.1f)
+                        ) {
+                            TextButton(onClick = {
+                                viewModel.onEvent(HomeEvent.NavigateToThemesByDrawer)
+                            }) {
+                                Text(items.name, color = Color.White)
+                            }
                         }
                     }
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            TextButton(onClick = { viewModel.onEvent(HomeEvent.LogOut) }) {
+                                Text(text = "log out", fontSize = 15.sp, color = Color.LightGray)
+                            }
+                        }
+                    }
+
 
                 }
             }
@@ -145,6 +178,7 @@ fun HomeScreen() {
                 modifier = Modifier
                     .consumeWindowInsets(WindowInsets.ime)
                     .fillMaxSize()
+                    .background(brush = brush)
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Box(
@@ -154,21 +188,37 @@ fun HomeScreen() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight(0.5f),
+                                .fillMaxHeight(0.7f),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerState.apply {
-                                            if (isClosed) open() else close()
-                                        }
-                                    }
-                                },
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Menu,
-                                    contentDescription = "drawer"
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            drawerState.apply {
+                                                if (isClosed) open() else close()
+                                            }
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = "drawer", tint = Color.White
+                                    )
+                                }
+                                Text(
+                                    text = "Hello user",
+                                    fontSize = 30.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    style = TextStyle(
+                                        brush = Brush.linearGradient(
+                                            colors = textGradient()
+                                        )
+                                    ),
+                                    modifier = Modifier.padding(start = 20.dp)
                                 )
                             }
                         }
@@ -245,16 +295,25 @@ fun getNotesButtons(
     navigateToAllNotes: () -> Unit
 ): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
-        Button(onClick = {
-            navigateToAllNotes()
-        }) {
-            Text(text = stringResource(id = R.string.AllNotes))
+        Button(
+            onClick = {
+                navigateToAllNotes()
+            },
+            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.AllNotes), color = Color.White)
         }
     }, {
-        Button(onClick = {
-            onShowBottomSheetChange(true)
-        }) {
-            Text(text = stringResource(id = R.string.NewNote))
+        Button(
+            onClick = {
+                onShowBottomSheetChange(true)
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.NewNote), color = Color.White)
         }
     })
 }
@@ -265,16 +324,24 @@ internal fun getTasksButtons(
     onShowBottomSheetChange: (Boolean) -> Unit
 ): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
-        Button(onClick = {
-            navigateToAllTasks()
-        }) {
-            Text(text = stringResource(id = R.string.AllTasks))
+        Button(
+            onClick = {
+                navigateToAllTasks()
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.AllTasks), color = Color.White)
         }
     }, {
-        Button(onClick = {
-            onShowBottomSheetChange(true)
-        }) {
-            Text(text = stringResource(id = R.string.NewTask))
+        Button(
+            onClick = {
+                onShowBottomSheetChange(true)
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.NewTask), color = Color.White)
         }
     })
 }
@@ -285,16 +352,24 @@ fun getBookMarksButtons(
     onShowBottomSheetChange: (Boolean) -> Unit
 ): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
-        Button(onClick = {
-            navigateToAllCategoriesOfBookmarks()
-        }) {
-            Text(text = stringResource(id = R.string.AllBookmarks))
+        Button(
+            onClick = {
+                navigateToAllCategoriesOfBookmarks()
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.AllBookmarks), color = Color.White)
         }
     }, {
-        Button(onClick = {
-            onShowBottomSheetChange(true)
-        }) {
-            Text(text = stringResource(id = R.string.NewBookmark))
+        Button(
+            onClick = {
+                onShowBottomSheetChange(true)
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.NewBookmark), color = Color.White)
         }
     })
 }
@@ -302,9 +377,13 @@ fun getBookMarksButtons(
 @Composable
 fun getCalendarButton(modifier: Modifier = Modifier): Array<@Composable () -> Unit> {
     return arrayOf<@Composable () -> Unit>({
-        Button(onClick = {
-        }) {
-            Text(text = stringResource(id = R.string.AllEvents))
+        Button(
+            onClick = {
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.AllEvents), color = Color.White)
         }
     })
 }

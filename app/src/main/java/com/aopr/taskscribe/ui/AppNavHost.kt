@@ -1,5 +1,7 @@
 package com.aopr.taskscribe.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
@@ -35,6 +37,7 @@ import com.example.bookmarks_presentation.ui.MainBookmarksScreen
 import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
 import kotlin.reflect.typeOf
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AppNavHost() {
 

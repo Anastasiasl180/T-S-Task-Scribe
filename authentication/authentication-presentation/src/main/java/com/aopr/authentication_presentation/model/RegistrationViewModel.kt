@@ -74,23 +74,6 @@ class RegistrationViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun setUserDataIntoDB(userDataForFireBase: UserDataForFireBase) {
-        authenticationUseCase.setUserDataIntoBD(userDataForFireBase).onEach { result ->
-            when (result) {
-                is Responses.Error -> {
-
-                }
-
-                is Responses.Loading -> {
-
-                }
-
-                is Responses.Success -> {
-
-                }
-            }
-        }
-    }
 
     private fun registerUser(gmail: String, password: String) {
         authenticationUseCase.registerUser(gmail, password).onEach { result ->
@@ -110,7 +93,7 @@ class RegistrationViewModel(
                         _userName.value, profileImage = _bitmapImage.value
                     )
                     saveUser(userr)
-                    setUserDataIntoDB(user)
+                  // setUserDataIntoDB(user)
                 }
             }
 

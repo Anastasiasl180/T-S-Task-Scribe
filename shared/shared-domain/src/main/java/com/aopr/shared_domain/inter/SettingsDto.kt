@@ -32,6 +32,7 @@ data class UserData(
 
 fun UserDataForFireBase.mapToBitmapFromString(base64String: String): UserData {
     return UserData(
+        name = this.name,
         profileImage = base64ToBitmap(base64String)
     )
 }
@@ -45,6 +46,17 @@ fun UserData.mapToBase64FromUri(uri: Uri, context: Context): UserDataForFireBase
         profileImage = base64String
     )
 }
+
+@RequiresApi(Build.VERSION_CODES.P)
+fun UserData.uriMapToBitmap(uri: Uri, context: Context): UserDataForFireBase {
+    val bitmap = uriToBitmap(uri, context)
+    val base64String = bitmapToBase64(bitmap)
+    return UserDataForFireBase(
+        name = this.name,
+        profileImage = base64String
+    )
+}
+
 
 
 @RequiresApi(Build.VERSION_CODES.P)

@@ -11,17 +11,6 @@ import java.io.IOException
 @Single
 class AuthenticationUseCase(private val repository: AuthenticationRepository){
 
-    fun setUserDataIntoBD(userDataForFireBase: UserDataForFireBase):Flow<Responses<Unit>> = flow {
-        try {
-            emit(Responses.Loading())
-            val data = repository.saveUserDataIntoDB(userDataForFireBase)
-            emit(Responses.Success(data))
-
-        } catch (e: IOException) {
-
-        }
-    }
-
     fun sendResetPasswordCode(gmail:String):Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
