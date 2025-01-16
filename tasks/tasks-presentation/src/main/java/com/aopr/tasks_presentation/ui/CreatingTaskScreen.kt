@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.aopr.notes_presentation.R
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
@@ -121,7 +122,11 @@ fun CreatingTaskScreen() {
                                     .background(Color.White)
                                     .size(50.dp)
                             ) {
-                                Text(text = stringResource(id = com.aopr.shared_ui.R.string.PlusOnButton))
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "AddFloatingActionButton",
+                                    modifier = Modifier.size(20.dp)
+                                )
                             }
                         }
                     }
@@ -226,14 +231,15 @@ fun CreatingTaskScreen() {
                             .fillMaxWidth(),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
+                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.tittle
+                        ))
                         TextField(
                             shape = MaterialTheme.shapes.medium,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(60.dp),
                             placeholder = {
-                                Text(text = stringResource(id = com.aopr.shared_domain.R.string.tittle))
+                                Text(text = stringResource(id =com.aopr.shared_ui.R.string.tittle))
                             },
                             value = tittleOfTask,
                             onValueChange = {
@@ -258,7 +264,7 @@ fun CreatingTaskScreen() {
                             .height((heightScreen * 0.28f).dp)
                             .fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(text = stringResource(id = com.aopr.shared_domain.R.string.description))
+                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.description))
 
                         Row(
                             modifier = Modifier
@@ -270,7 +276,7 @@ fun CreatingTaskScreen() {
                                 value = descriptionOfTask,
                                 shape = MaterialTheme.shapes.medium,
                                 placeholder = {
-                                    Text(text = stringResource(id = com.aopr.shared_domain.R.string.description))
+                                    Text(text = stringResource(id = com.aopr.shared_ui.R.string.tittle))
                                 },
                                 onValueChange = {
                                     viewModel.onEvent(

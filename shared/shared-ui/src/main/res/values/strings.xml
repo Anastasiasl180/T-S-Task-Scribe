@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="PlusOnButton">+</string>
+    <string name="cancel">Cancel</string>
+    <string name="chooseToDelete">Choose to delete</string>
+    <string name="delete">Delete</string>
+    <string name="tittle">Tittle</string>
+    <string name="description">Description</string>
+    <string name="pinned">Pinned</string>
+    <string name="unPinned">Unpinned</string>
+    <string name="pinnedNotes">Pinned notes</string>
 </resources>

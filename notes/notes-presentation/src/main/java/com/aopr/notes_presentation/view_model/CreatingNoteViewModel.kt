@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteUiEvents
+import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteEvents
+import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteUiEvents
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
 import kotlinx.coroutines.delay
@@ -21,7 +21,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 class CreatingNoteViewModel(private val useCase: NotesUseCase) :
-    ViewModelKit<CreatingNoteEvent, CreatingNoteUiEvents>() {
+    ViewModelKit<CreatingNoteEvents, CreatingNoteUiEvents>() {
 
     private val _existingNote = MutableStateFlow<Note?>(null)
     val existingNote: StateFlow<Note?> = _existingNote
@@ -35,8 +35,8 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) :
     private val _isNotePinned = mutableStateOf(false)
     val isNotePinned: State<Boolean> = _isNotePinned
 
-    private val _isAlreadyCreateNote = mutableStateOf(false)
-    val isAlreadyCreateNote: State<Boolean> = _isAlreadyCreateNote
+    private val _isAlreadyNoteCreated = mutableStateOf(false)
+    val isAlreadyNoteCreated: State<Boolean> = _isAlreadyNoteCreated
 
     private val _event = MutableSharedFlow<CreatingNoteUiEvents>()
     val event = _event.asSharedFlow()
@@ -55,8 +55,8 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) :
                 }
 
                 is Responses.Success -> {
-                    _isAlreadyCreateNote.value = true
-
+                    _isAlreadyNoteCreated.value = true
+                    onEvent(CreatingNoteEvents.NavigateToAllNotes)
                 }
             }
 
@@ -75,7 +75,7 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) :
                 }
 
                 is Responses.Success -> {
-                    result.data?.collect() { note ->
+                    result.data?.collect { note ->
                         _existingNote.value = note
                         _tittleOfNote.value = note.tittle
                         _descriptionOfNote.value = note.description
@@ -86,13 +86,13 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) :
         }.launchIn(viewModelScope)
     }
 
-    override fun onEvent(event: CreatingNoteEvent) {
+    override fun onEvent(event: CreatingNoteEvents) {
         when (event) {
-            is CreatingNoteEvent.GetNoteById -> {
-                event.id?.let { getNoteById(it) }
+            is CreatingNoteEvents.GetNoteById -> {
+                getNoteById(event.id)
             }
 
-            CreatingNoteEvent.SaveNote -> {
+            CreatingNoteEvents.SaveNote -> {
                 viewModelScope.launch {
                     val noteId = _existingNote.value?.id ?: 0
                     val note = Note(
@@ -102,24 +102,25 @@ class CreatingNoteViewModel(private val useCase: NotesUseCase) :
                     )
                     createNote(note)
                     delay(500)
+
                 }
             }
 
-            is CreatingNoteEvent.UpdateDescription -> {
+            is CreatingNoteEvents.UpdateDescription -> {
                 _descriptionOfNote.value = event.description
             }
 
-            is CreatingNoteEvent.UpdateTittle -> {
+            is CreatingNoteEvents.UpdateTittle -> {
                 _tittleOfNote.value = event.tittle
             }
 
-            CreatingNoteEvent.NavigateToBack -> {
+            CreatingNoteEvents.NavigateToAllNotes -> {
                 viewModelScope.launch {
-                    _event.emit(CreatingNoteUiEvents.NavigateBack)
+                    _event.emit(CreatingNoteUiEvents.NavigateToAllNotes)
                 }
             }
 
-            CreatingNoteEvent.PinNote -> {
+            CreatingNoteEvents.PinNote -> {
                 _isNotePinned.value = !_isNotePinned.value
             }
         }

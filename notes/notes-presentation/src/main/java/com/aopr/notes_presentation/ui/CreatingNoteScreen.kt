@@ -1,22 +1,20 @@
 package com.aopr.notes_presentation.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,67 +31,74 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aopr.notes_presentation.R
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
-import com.aopr.notes_presentation.view_model.uiEventHandler.UiHandlerForCreatingNote
-import com.radusalagean.infobarcompose.InfoBar
+import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteEvents
+import com.aopr.notes_presentation.view_model.ui_event_handler.UiEventHandlerForCreatingNoteScreen
+import com.aopr.shared_ui.cardsView.background
 import org.koin.androidx.compose.koinViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatingNoteScreen() {
     val viewModel = koinViewModel<CreatingNoteViewModel>()
     val tittle by viewModel.tittleOfNote.collectAsState()
+    val brush = background()
     val description by viewModel.descriptionOfNote.collectAsState()
-    UiHandlerForCreatingNote()
+    UiEventHandlerForCreatingNoteScreen()
     Scaffold(
         topBar = {
-            TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
+            TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(
-                        onClick = {  viewModel.onEvent(CreatingNoteEvent.NavigateToBack) },
+                        onClick = { viewModel.onEvent(CreatingNoteEvents.NavigateToAllNotes) },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(Color.White)
+                            .background(Color.DarkGray.copy(alpha = 0.6f))
                             .size(50.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                             contentDescription = "",
-                            tint = Color.Black
+                            tint = Color.White, modifier = Modifier.size(20.dp)
                         )
                     }
                 }, actions = {
 
                     IconButton(
-                        onClick = { viewModel.onEvent(CreatingNoteEvent.PinNote) },
+                        onClick = { viewModel.onEvent(CreatingNoteEvents.PinNote) },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(if (viewModel.isNotePinned.value) Color.Blue else Color.White)
+                            .background(
+                                Color.DarkGray.copy(
+                                    alpha = 0.6f
+                                )
+                            )
                             .size(50.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.pin),
-                            contentDescription = "", modifier = Modifier.size(25.dp)
+                        Text(
+                            text = if (viewModel.isNotePinned.value) stringResource(id = com.aopr.shared_ui.R.string.pinned)
+                            else stringResource(id = com.aopr.shared_ui.R.string.unPinned),
+                            fontSize = 10.sp
                         )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                     IconButton(
-                        onClick = { viewModel.onEvent(CreatingNoteEvent.SaveNote) },
+                        onClick = { viewModel.onEvent(CreatingNoteEvents.SaveNote) },
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(Color.White)
+                            .background(Color.DarkGray.copy(alpha = 0.6f))
                             .size(50.dp)
                     ) {
-                        Text(text = stringResource(id = com.aopr.notes_domain.R.string.Plus))
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "AddIconButton",
+                            modifier = Modifier.size(20.dp)
+                        )
+
                     }
 
                 },
@@ -103,17 +108,13 @@ fun CreatingNoteScreen() {
 
         Box(
             modifier = Modifier
-                .padding(
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    top = paddingValues.calculateTopPadding(),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                )
-                .background(Color.DarkGray), contentAlignment = Alignment.Center
+                .background(brush), contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+                Spacer(modifier = Modifier.height(100.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -125,7 +126,7 @@ fun CreatingNoteScreen() {
                             .fillMaxSize(),
                         placeholder = {
                             Text(
-                                text = stringResource(id = com.aopr.shared_domain.R.string.tittle),
+                                text = stringResource(id = com.aopr.shared_ui.R.string.tittle),
                                 fontSize = 35.sp,
                                 color = Color.White
                             )
@@ -139,7 +140,7 @@ fun CreatingNoteScreen() {
                         ),
                         value = tittle,
                         onValueChange = { tittle ->
-                            viewModel.onEvent(CreatingNoteEvent.UpdateTittle(tittle))
+                            viewModel.onEvent(CreatingNoteEvents.UpdateTittle(tittle))
                         },
                         textStyle = TextStyle(
                             fontSize = 35.sp
@@ -158,12 +159,14 @@ fun CreatingNoteScreen() {
                     ),
                     placeholder = {
                         Text(
-                            text = stringResource(id = com.aopr.shared_domain.R.string.description),
+                            text = stringResource(
+                                id = com.aopr.shared_ui.R.string.description
+                            ),
                             color = Color.White, fontSize = 20.sp
                         )
                     },
                     onValueChange = { description ->
-                        viewModel.onEvent(CreatingNoteEvent.UpdateDescription(description))
+                        viewModel.onEvent(CreatingNoteEvents.UpdateDescription(description))
                     },
                     textStyle = TextStyle(
                         fontSize = 20.sp
@@ -171,9 +174,8 @@ fun CreatingNoteScreen() {
                 )
 
             }
-            InfoBar(offeredMessage = viewModel.infoBar.value) {
+            viewModel.infoBar.value?.let { com.aopr.shared_ui.infoBar.CustomInfoBar(message = it) }
 
-            }
         }
 
 

@@ -1,21 +1,20 @@
-package com.aopr.notes_presentation.view_model.uiEventHandler
+package com.aopr.notes_presentation.view_model.ui_event_handler
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.navigation.toRoute
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteEvent
-import com.aopr.notes_presentation.view_model.events.CreatingNoteEvents.CreatingNoteUiEvents
-import com.aopr.notes_presentation.view_model.events.allNotesEvents.AllNotesUiEvent
+import com.aopr.notes_presentation.view_model.events.all_notes_events.AllNotesUiEvent
+import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteEvents
+import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteUiEvents
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun UiEvenHandler() {
+fun UiEventHandlerForAllNotesScreen() {
     val navigator = LocalNavigator.currentOrThrow()
     val viewModel = koinViewModel<AllNotesViewModel>()
     LaunchedEffect(Unit) {
@@ -25,6 +24,9 @@ fun UiEvenHandler() {
                     navigator.navigate(AllNotesRoutes.CreatingNoteScreen(uiEvents.id))
 
                 }
+                AllNotesUiEvent.NavigateBack -> {
+                    navigator.popBackStack()
+                }
             }
         }
 
@@ -32,23 +34,23 @@ fun UiEvenHandler() {
 }
 
 @Composable
-fun UiHandlerForCreatingNote() {
+fun UiEventHandlerForCreatingNoteScreen() {
     val navigator = LocalNavigator.currentOrThrow()
-    val id = navigator.currentBackStackEntry?.toRoute<AllNotesRoutes.CreatingNoteScreen>()
-    val idd = id?.id
+    val route = navigator.currentBackStackEntry?.toRoute<AllNotesRoutes.CreatingNoteScreen>()
+    val id = route?.id
     val viewModel = koinViewModel<CreatingNoteViewModel>()
     LaunchedEffect(Unit) {
-        viewModel.event.collect() { event ->
+        viewModel.event.collect { event ->
             when (event) {
-                CreatingNoteUiEvents.NavigateBack -> {
+                CreatingNoteUiEvents.NavigateToAllNotes -> {
                     navigator.popBackStack()
                 }
             }
         }
     }
     LaunchedEffect(Unit) {
-        if (idd != null) {
-            viewModel.onEvent(CreatingNoteEvent.GetNoteById(idd))
+        if (id != null) {
+            viewModel.onEvent(CreatingNoteEvents.GetNoteById(id))
         }
     }
 }

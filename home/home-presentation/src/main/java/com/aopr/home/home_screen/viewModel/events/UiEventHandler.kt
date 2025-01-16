@@ -31,7 +31,7 @@ fun HomeUiEventHandler() {
                 }
 
                 HomeUiEvents.NavigateToThemesByDrawer -> {
-                    navigator.navigate(DrawerNavRoutes.SettingsScreen)
+                    navigator.navigate(DrawerNavRoutes.ThemesScreen)
                 }
 
                 HomeUiEvents.NavigateToRegistrationScreen -> {

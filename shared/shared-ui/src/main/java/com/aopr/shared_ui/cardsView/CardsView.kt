@@ -5,7 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -60,7 +59,7 @@ fun cardViews(): Brush {
             )
         }
 
-        Themes.NATURE -> {
+        Themes.METALIC -> {
 
             Brush.radialGradient(
 
@@ -75,7 +74,7 @@ fun cardViews(): Brush {
             )
         }
 
-        Themes.SUNSET -> {
+        Themes.`DUSKY-EVENING` -> {
             Brush.radialGradient(
                 colorStops = arrayOf(
                     0.2f to MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f),
@@ -100,7 +99,7 @@ fun cardViews(): Brush {
 
         }
 
-        Themes.BROWN -> {
+        Themes.PASTEL -> {
 
             Brush.radialGradient(
                 colorStops = arrayOf(
@@ -131,7 +130,7 @@ fun background(): Brush {
 
 
     val backgroundLooks: Brush = when (themes) {
-        Themes.NATURE -> {
+        Themes.METALIC -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.0f to MaterialTheme.colorScheme.onPrimary,
@@ -142,7 +141,7 @@ fun background(): Brush {
             )
         }
 
-        Themes.SUNSET -> {
+        Themes.`DUSKY-EVENING` -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.0f to MaterialTheme.colorScheme.primaryContainer,
@@ -165,7 +164,7 @@ fun background(): Brush {
             )
         }
 
-        Themes.BROWN -> {
+        Themes.PASTEL -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.0f to MaterialTheme.colorScheme.onSecondary,
@@ -202,7 +201,7 @@ fun textGradient(): List<Color> {
     val themes by mainViewModel.chosenTheme.collectAsState()
 
     val text: List<Color> = when (themes) {
-        Themes.NATURE -> {
+        Themes.METALIC -> {
             listOf(
                 MaterialTheme.colorScheme.primaryContainer,
                 MaterialTheme.colorScheme.onBackground,
@@ -210,7 +209,7 @@ fun textGradient(): List<Color> {
             )
         }
 
-        Themes.SUNSET -> {
+        Themes.`DUSKY-EVENING` -> {
             listOf(
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0.8f),
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),
@@ -228,7 +227,7 @@ fun textGradient(): List<Color> {
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0.6f),
                 Color.White,
 
-            )
+                )
         }
 
         else ->
@@ -243,6 +242,91 @@ fun textGradient(): List<Color> {
 }
 
 @Composable
-fun colorsForThemeCards() {
+fun colorsForThemeCards(): List<Brush> {
+    val listOfBlueTheme = Brush.radialGradient(
+        colorStops = arrayOf(
+            0.0f to Color(0xFF000000),
+            0.3f to Color(0xFF0D1A39),
+            0.45f to Color(0xFF122454),
+            0.6f to Color(0xFF384662),
+            1.0f to Color(0xFFF5F5F5)
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 800f
+    )
 
+    val listOfVioletTheme = Brush.radialGradient(
+        colors = listOf(
+            Color(0xFF461851),
+            Color(0xFF1D0E36),
+            Color(0xFF311872)
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 1000f
+    )
+
+    val lostOfHakiTheme = Brush.radialGradient(
+        colors = listOf(
+            Color(0xFF000000),
+            Color(0xFF23222A),
+            Color(0xFF325450),
+            Color(0xFF49A288)
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 900f
+    )
+    val listOfMetalicTheme = Brush.radialGradient(
+
+        colorStops = arrayOf(
+            0.0f to Color(0xFFFE3200),
+            0.3f to Color(0xFFFD6E47),
+            0.5f to Color(0xFFE4A596),
+            0.9f to Color(0xFFCCCCCC),
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 1000f
+
+
+    )
+    val listOfDuskyEveningTheme = Brush.radialGradient(
+        colorStops = arrayOf(
+            0.2f to Color(0xFFE76F7F),
+            0.9f to Color(0xFF071F23),
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 1000f
+    )
+    val listOfOrangeTheme = Brush.radialGradient(
+        colorStops = arrayOf(
+            0.0f to Color(0xFF272727),
+            0.2f to Color(0xFF613826),
+            0.5f to Color(0xFFB45225),
+            0.8f to Color(0xFFE06E2A)
+        ), center = Offset.VisibilityThreshold,
+        radius = 1000f
+    )
+    val listOfPastelTheme = Brush.radialGradient(
+        colorStops = arrayOf(
+
+            0.0f to Color(0xFFF58673),
+            0.2f to Color(0xFFF58673),
+            0.4f to Color(0xFFC87163),
+            0.45f to Color(0xFFB7685D),
+            0.6f to Color(0xFF774745),
+            0.7f to Color(0xFF4C2E34),
+            0.8f to Color(0xFF271B25),
+            0.9f to Color(0xFF000000)
+        ),
+        center = Offset.VisibilityThreshold,
+        radius = 1000f
+    )
+    return listOf(
+        listOfBlueTheme,
+        listOfVioletTheme,
+        lostOfHakiTheme,
+        listOfMetalicTheme,
+        listOfDuskyEveningTheme,
+        listOfOrangeTheme,
+        listOfPastelTheme
+    )
 }
