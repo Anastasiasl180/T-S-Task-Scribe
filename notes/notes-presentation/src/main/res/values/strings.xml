@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="PressToPinInfoMessage">Press,to pin the note"</string>
-
+    <string name="PressToPinInfoMessage">Press, to pin the note"</string>
 </resources>

@@ -288,6 +288,37 @@ fun HomeScreen() {
     }
 
 }
+/*
+
+@Composable
+fun getDrawerSettingButton(
+    onShowBottomSheetChange: (Boolean) -> Unit,
+    navigateToSettings: () -> Unit
+): Array<@Composable () -> Unit> {
+    return arrayOf<@Composable () -> Unit>({
+        Button(
+            onClick = {
+                navigateToSettings()
+            },
+            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text =, color = Color.White)
+        }
+    }, {
+        Button(
+            onClick = {
+                onShowBottomSheetChange(true)
+            }, modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
+        ) {
+            Text(text = stringResource(id = R.string.NewNote), color = Color.White)
+        }
+    })
+}*/
+
 
 @Composable
 fun getNotesButtons(

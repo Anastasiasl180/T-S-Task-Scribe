@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.aopr.notes_presentation.R
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.ui.UiHandlers.AllTasksUiEventHandler
 import com.aopr.tasks_presentation.view_models.AllTasksViewModel
@@ -37,7 +42,11 @@ fun AllTasksScreen() {
             onClick = { viewModel.onEvent(AllTasksEvents.NavigateToCreatingTaskScreen(null)) },
             modifier = Modifier.clip(shape = MaterialTheme.shapes.extraLarge)
         ) {
-            Text(text = stringResource(id = com.aopr.shared_domain.R.string.addForIcon))
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "AddFloatingActionButton",
+                modifier = Modifier.size(20.dp)
+            )
         }
     }) { _paddingValues ->
 

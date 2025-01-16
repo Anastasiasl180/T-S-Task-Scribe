@@ -5,7 +5,5 @@
     <string name="EmptyDescription">Field cannot be without description</string>
     <string name="EmptyTimeReminder">Field cannot be without time</string>
     <string name="EmptyDateReminder">Field cannot be without date</string>
-    <string name="tittle">Tittle</string>
-    <string name="description">Description</string>
-    <string name="addForIcon">+</string>
+
 </resources>

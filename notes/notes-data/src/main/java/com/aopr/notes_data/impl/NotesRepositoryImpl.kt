@@ -22,8 +22,8 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
 
         if (note.tittle.isBlank() && note.description.isBlank()) throw EmptyTittleException()
 
-        val existingId = dao.getNoteById(note.id).firstOrNull()
-        if (existingId != null) {
+        val existingNoteId = dao.getNoteById(note.id).firstOrNull()
+        if (existingNoteId != null) {
             dao.updateNote(note.mapToEntity().copy(timestamp = System.currentTimeMillis()))
         } else {
             dao.insertNote(note.mapToEntity().copy(timestamp = System.currentTimeMillis()))
@@ -37,8 +37,9 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
         }
     }
 
-    override suspend fun deleteNote(note: Note) {
-        dao.deleteNote(note.mapToEntity())
+    override suspend fun deleteNote(note: List<Note>) {
+        dao.deleteCertainNotes(note.map { it.mapToEntity()
+        })
     }
 
     override suspend fun deleteAllNotes() {

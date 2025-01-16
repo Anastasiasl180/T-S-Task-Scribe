@@ -1,5 +1,8 @@
 package com.aopr.home.home_screen.ui
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -25,10 +29,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.home.R
+import com.aopr.shared_domain.colors_for_theme.Themes
+import com.aopr.shared_ui.cardsView.background
 import com.radusalagean.infobarcompose.InfoBar
 import com.radusalagean.infobarcompose.InfoBarMessage
 import kotlinx.coroutines.launch
@@ -47,6 +55,8 @@ internal fun BottomSheetContent(
     infoBarMessage:InfoBarMessage?
 ) {
 
+
+    val brush = background()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
@@ -77,12 +87,12 @@ internal fun BottomSheetContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextButton(onClick = { onDismiss() }) {
-                        Text(text = stringResource(id = R.string.Cancel))
+                        Text(text = stringResource(id = R.string.Cancel), color = Color.White)
                     }
 
                     Text(text = stringResource(id = R.string.NewNote))
                     TextButton(onClick = { saveNote() }) {
-                    Text(text = stringResource(id = R.string.Done))}
+                    Text(text = stringResource(id = R.string.Done), color = Color.White)}
                 }
                 Row(
                     modifier = Modifier
@@ -100,6 +110,7 @@ internal fun BottomSheetContent(
                         TextField(
                             shape = MaterialTheme.shapes.medium,
                             modifier = Modifier
+                                //  .border(width = 3.dp, brush =text , shape = MaterialTheme.shapes.medium)
                                 .fillMaxWidth()
                                 .height(60.dp),
                             placeholder = {
@@ -108,7 +119,7 @@ internal fun BottomSheetContent(
                             value = tittle,
                             onValueChange = updateTittle,
                             colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor =Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent
                             ),
 

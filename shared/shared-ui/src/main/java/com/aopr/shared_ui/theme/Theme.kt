@@ -35,7 +35,7 @@ val hakiTheme = darkColorScheme(
     onPrimary =  Color(0xFF345F55),
     primaryContainer =  Color(0xFF49A288)
 )
-val natureTheme = darkColorScheme(
+val metalicTheme = darkColorScheme(
     primary =  Color(0xFFFE3200),
     secondary =   Color(0xFFFD6E47),
     tertiary = Color(0xFFE4A596),
@@ -46,7 +46,7 @@ val natureTheme = darkColorScheme(
 
 
 )
-val brownTheme = darkColorScheme(
+val pastelTheme = darkColorScheme(
     primary =  Color(0xFFF58673),
     secondary =  Color(0xFFF58673),
     tertiary =  Color(0xFFC87163),
@@ -67,7 +67,7 @@ val orangeTheme = darkColorScheme(
 
 
 
-val oceanTheme = darkColorScheme(
+val dusky_evening = darkColorScheme(
     tertiary =  Color(0xFFE76F7F),
     onBackground =Color(0xFF086F7A),
     onSecondary =   Color(0xFF071F23),
@@ -119,10 +119,10 @@ fun TaskScribeTheme(
                 Themes.BLUE -> blueTheme
                 Themes.VIOLET -> violetTheme
                 Themes.HAKI -> hakiTheme
-                Themes.NATURE -> natureTheme
-                Themes.SUNSET -> oceanTheme
+                Themes.METALIC -> metalicTheme
+                Themes.`DUSKY-EVENING` -> dusky_evening
                 Themes.ORANGE -> orangeTheme
-                Themes.BROWN -> brownTheme
+                Themes.PASTEL -> pastelTheme
             }
             else -> LightColorScheme
         }
