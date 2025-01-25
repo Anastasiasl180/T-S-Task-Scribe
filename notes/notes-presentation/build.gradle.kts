@@ -42,7 +42,6 @@ dependencies {
     implementation(libs.info.bar.compose)
 
     implementation(project(":notes:notes-domain"))
-    implementation(project(":tasks:tasks-domain"))
     implementation(project(":shared:shared-domain"))
     implementation(project(":shared:shared-ui"))
 

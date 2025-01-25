@@ -52,32 +52,32 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         }
     }
 
-    override suspend fun deleteTask(task: Task) {
-        dao.deleteTask(task.mapToEntity())
-        if (task.dateForReminder != null && task.timeForReminder != null) {
-            cancelTaskReminder(
-                context,
-                taskId = task.uuid,
-                taskTitle = task.tittle,
-                date = task.dateForReminder!!,
-                time = task.timeForReminder!!
-            )
-        }
-        val listOfSubsWithRemi = task.listOfSubtasks?.filter {
-            it.time != null
-            it.date != null
-        }
-        listOfSubsWithRemi?.forEach { subtask ->
-            cancelSubtaskReminder(
-                context,
-                subTaskId = task.uuid,
-                taskTitle = task.tittle,
-                subTaskDescription = subtask.description,
-                date = subtask.date!!,
-                time = subtask.time!!
-            )
+    override suspend fun deleteTask(task: List<Task>) {
+        task.forEach { taskToDelete ->
+            dao.deleteTask(listOf(taskToDelete.mapToEntity()))
 
-        }
+            if (taskToDelete.dateForReminder != null && taskToDelete.timeForReminder != null) {
+                cancelTaskReminder(
+                    context,
+                    taskId = taskToDelete.uuid,
+                    taskTitle = taskToDelete.tittle,
+                    date = taskToDelete.dateForReminder!!,
+                    time = taskToDelete.timeForReminder!!
+                )
+            }
+   taskToDelete.listOfSubtasks
+                ?.filter { it.date != null && it.time != null }
+                ?.forEach { subtask ->
+                    cancelSubtaskReminder(
+                        context,
+                        subTaskId = taskToDelete.uuid,
+                        taskTitle = taskToDelete.tittle,
+                        subTaskDescription = subtask.description,
+                        date = subtask.date!!,
+                        time = subtask.time!!
+                    )
+                }
+    }
     }
 
     override suspend fun deleteAllTask() {

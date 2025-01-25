@@ -35,6 +35,6 @@ sealed interface CreatingTaskEvents: EventsType {
     data object NavigateToBack : CreatingTaskEvents
     data object CleanTimeOfTaskReminder: CreatingTaskEvents
     data object CleanDateOfTaskReminder: CreatingTaskEvents
-    data object CleanDataOfSubTask: CreatingTaskEvents
-    data object CleanTimeOfSubtask: CreatingTaskEvents
+    data class CleanDataOfSubTask(val index:Int): CreatingTaskEvents
+    data class CleanTimeOfSubtask(val index:Int): CreatingTaskEvents
 }

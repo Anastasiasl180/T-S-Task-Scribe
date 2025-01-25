@@ -1,4 +1,4 @@
-package com.aopr.notes_presentation.view_model.ui_event_handler
+package com.aopr.notes_presentation.view_model.ui_event_handlers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

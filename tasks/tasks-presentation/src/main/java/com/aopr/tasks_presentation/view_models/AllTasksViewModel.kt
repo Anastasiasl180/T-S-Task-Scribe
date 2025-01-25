@@ -1,6 +1,7 @@
 package com.aopr.tasks_presentation.view_models
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +10,9 @@ import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksUiEvents
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -25,13 +25,42 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
     private val _listOfTasks = mutableStateOf<List<Task>?>(null)
     val listOfTasks: State<List<Task>?> = _listOfTasks
 
-    val scope = CoroutineScope(Dispatchers.IO)
+
+    private val _isInSelectionMode = MutableStateFlow(false)
+    val isInSelectedMode: StateFlow<Boolean> = _isInSelectionMode
+
+    private val _selectedTasksToDelete = mutableStateListOf<Task>()
+    val selectedTasksToDelete: List<Task> get() = _selectedTasksToDelete
 
     private val _events = MutableSharedFlow<AllTasksUiEvents>()
     val events = _events.asSharedFlow()
 
     init {
         onEvent(AllTasksEvents.GetAllTasks)
+    }
+
+
+
+    fun addTaskToDelete(task: Task) {
+        _selectedTasksToDelete.add(task)
+    }
+
+    fun removeTaskFromDelete(task: Task) {
+        _selectedTasksToDelete.remove(task)
+    }
+
+    fun cancelTaskFromDelete() {
+        _selectedTasksToDelete.clear()
+        _isInSelectionMode.value = false
+    }
+    fun deleteSelectedNotes() {
+        if (_selectedTasksToDelete.isNotEmpty()) {
+            val tasksToDelete = _selectedTasksToDelete.toList()
+            onEvent(AllTasksEvents.DeleteTask(tasksToDelete))
+        }
+        // Clear selection mode
+        _selectedTasksToDelete.clear()
+        _isInSelectionMode.value = false
     }
 
     private fun getAllTasks() {
@@ -54,11 +83,11 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteTask(task: Task) {
+    private fun deleteTask(task: List<Task>) {
         tasksUseCase.deleteTask(task).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-println(result.message.toString())
+                    println(result.message.toString())
                 }
 
                 is Responses.Loading -> {
@@ -79,14 +108,13 @@ println(result.message.toString())
             is AllTasksEvents.NavigateToCreatingTaskScreen -> {
                 viewModelScope.launch {
                     _events.emit(
-                        AllTasksUiEvents.NavigateToCreateTaskScreen(event.id))
+                        AllTasksUiEvents.NavigateToCreateTaskScreen(event.id)
+                    )
                 }
             }
 
             AllTasksEvents.GetAllTasks -> {
-                scope.launch {
 
-                }
                 viewModelScope.launch {
                     getAllTasks()
                 }
@@ -94,9 +122,19 @@ println(result.message.toString())
 
             is AllTasksEvents.DeleteTask -> {
                 viewModelScope.launch {
-                  //  _events.emit(AllTasksUiEvents.DeleteTask(event.task))
                     deleteTask(event.task)
                 }
+            }
+
+            AllTasksEvents.NavigateBack -> {
+                viewModelScope.launch {
+                    _events.emit(AllTasksUiEvents.NavigateBack)
+                }
+            }
+
+            AllTasksEvents.TurnOnSelectionModeForDelete -> {
+                _isInSelectionMode.value = !_isInSelectionMode.value
+
             }
         }
 

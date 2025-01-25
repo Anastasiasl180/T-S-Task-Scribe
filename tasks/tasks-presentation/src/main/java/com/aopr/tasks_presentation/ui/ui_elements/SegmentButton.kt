@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -80,7 +81,8 @@ private const val NO_SEGMENT_INDEX = -1
 /** Padding inside the track. *//*
 private val TRACK_PADDING = 20.dp*/
 
-private val TRACK_COLOR = Color.LightGray.copy(alpha = .5f)
+private val TRACK_COLOR =  Color.LightGray.copy(alpha = 0.2f)
+
 
 /** Additional padding to inset segments and the thumb when pressed. */
 private val PRESSED_TRACK_PADDING = 1.dp
@@ -171,7 +173,7 @@ private fun Thumb(state: SegmentedControlState) {
                 )
             )
             .shadow(4.dp, BACKGROUND_SHAPE)
-            .background(Color.White, BACKGROUND_SHAPE)
+            .background(Color.Gray, BACKGROUND_SHAPE)
     )
 }
 

@@ -9,7 +9,7 @@ import java.time.LocalDate
 interface TasksRepository {
     suspend fun createTask(task:Task)
     suspend fun setTasksFromFire(tasks:List<Task>?)
-    suspend fun deleteTask(task: Task)
+    suspend fun deleteTask(task: List<Task>)
     suspend fun deleteAllTask()
     suspend fun updateTask(task: Task)
     suspend fun getTaskBuId(id:Int):Flow<Task>
