@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -23,6 +22,7 @@ import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.theme.TaskScribeTheme
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.tasks_data.scheduled_notifucation.scheduleDailyCheck
 import com.aopr.taskscribe.ui.AppNavHost
 import com.aopr.taskscribe.ui.BottomBar
 import org.koin.androidx.compose.koinViewModel
@@ -33,28 +33,30 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scheduleDailyCheck(this)
         checkAndRequestNotificationPermission()
         enableEdgeToEdge()
         setContent {
-            val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+            val mainViewModel =
+                koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
             val isBottomBarShowed = mainViewModel.isBottomBarShowed.collectAsState()
             val navHost = rememberNavController()
             GlobalUiEventHandler(navHost = navHost)
 
             TaskScribeTheme(taskScribeThemesFlow = mainViewModel.chosenTheme) {
 
-                    Scaffold(bottomBar = {
+                Scaffold(bottomBar = {
 
-                        if (isBottomBarShowed.value) {
-                            BottomBar(navController = navHost)
-                        }
-                    }) { _ ->
-                        CompositionLocalProvider(
-                            LocalNavigator provides navHost
-                        ) {
-                            AppNavHost()
-                        }
+                    if (isBottomBarShowed.value) {
+                        BottomBar(navController = navHost)
                     }
+                }) { _ ->
+                    CompositionLocalProvider(
+                        LocalNavigator provides navHost
+                    ) {
+                        AppNavHost()
+                    }
+                }
 
             }
         }
@@ -101,7 +103,7 @@ class MainActivity : ComponentActivity() {
 fun GlobalUiEventHandler(navHost: NavHostController) {
     val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
     LaunchedEffect(Unit) {
-      mainViewModel.event.collect() { event ->
+        mainViewModel.event.collect() { event ->
             when (event) {
                 MainViewModel.UiEvent.NavigateToAiScreen -> {
                     navHost.navigate(MainNavRoutes.AI) {

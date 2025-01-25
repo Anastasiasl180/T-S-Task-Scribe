@@ -18,12 +18,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import java.time.LocalDate
 import java.util.UUID
 
 class TaskReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val taskId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras!!.getParcelable("TASK_ID",UUID::class.java)
+            intent.extras!!.getParcelable("TASK_ID", UUID::class.java)
         } else {
             intent.extras!!.getParcelable("TASK_ID")
 
@@ -104,29 +108,57 @@ class TaskReminderReceiver : BroadcastReceiver() {
 
 }
 
-class DailyCheckReceiver() :BroadcastReceiver(){
+class DailyCheckReceiver() : BroadcastReceiver(), KoinComponent {
+
+    private val dao by inject<TasksDao>()
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        context?.let { safeContext ->
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val today = LocalDate.now()
+
+                val tasksForToday = dao
+                    .getTasksByDate(today)
+                    .map { entities -> entities.map { it.mapToTask() } }
+                    .first()
 
 
-        CoroutineScope(Dispatchers.IO).launch {
+                val uncompleted = tasksForToday.filter { !it.isCompleted }
 
-            val repo =
+                if (uncompleted.isNotEmpty()) {
 
-            val today = LocalDate.now()
-            val tasksForToday = repo.getTasksForDate(today)
-            val uncompleted = tasksForToday.filter { !it.isCompleted }
-
-            // Only show a notification if there's at least 1 uncompleted task
-            if (uncompleted.isNotEmpty()) {
-                showUncompletedTasksNotification(context, uncompleted.size)
+                    showUncompletedTasksNotification(safeContext, uncompleted.size)
+                }
             }
         }
     }
 
-}
-fun getTasksByDateFlow(dao: TasksDao, date: LocalDate): Flow<List<Task>> {
-    return dao.getTasksByDate(date).map { entities ->
-        entities.map { it.mapToTask() }
+    private fun showUncompletedTasksNotification(context: Context, count: Int) {
+        val channelId = "daily_check_channel"
+        val channelName = "Daily Check Reminders"
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Channel for daily tasks check at 21:00"
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setContentTitle("Uncompleted Tasks Today")
+            .setContentText("You have $count uncompleted task(s) due today.")
+            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(999, notification)
     }
 }

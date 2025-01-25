@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
@@ -40,11 +41,12 @@ dependencies {
 
     implementation(project(":tasks:tasks-domain"))
     implementation(project(":shared:shared-domain"))
+
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.annotations)
+    implementation(libs.koin.androidx.compose)
     ksp(libs.koin.ksp)
-    implementation (libs.koin.koin.android)
     //room
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
