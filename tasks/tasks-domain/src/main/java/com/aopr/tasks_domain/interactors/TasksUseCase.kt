@@ -56,7 +56,7 @@ class TasksUseCase(private val repository: TasksRepository) {
 
     }
 
-    fun deleteTask(task: Task): Flow<Responses<Unit>> = flow {
+    fun deleteTask(task: List<Task>,): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.deleteTask(task)

@@ -1,18 +1,17 @@
 package com.aopr.tasks_presentation.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,45 +20,45 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
+import com.aopr.shared_ui.cardsView.background
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
-import com.aopr.tasks_presentation.ui.UiHandlers.CreatingTaskUiEventHandler
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForClock
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
+import com.aopr.tasks_presentation.view_models.ui_event_handlers.CreatingTaskUiEventHandler
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,18 +78,22 @@ fun CreatingTaskScreen() {
     val timeOfSubTask by viewModel.timeOfSubTask
     val dateOfSubTask by viewModel.dateOfSubTask
 
+    val isTaskDone by viewModel.isDoneTask.collectAsState()
+
     val priorityOfTask by viewModel.priority.collectAsState()
     val importanceItems = ImportanceOfTask.entries
     val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittleOfTask by viewModel.tittleOfTask.collectAsState()
     val descriptionOfTask by viewModel.descriptionOfTask.collectAsState()
     val listOfDatesWithTasks = viewModel.datesWithTasks
+    val backgroundTheme = background()
+    BackHandler {
 
-
+    }
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.DarkGray),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 actions = {
                     Box(
                         modifier = Modifier
@@ -102,30 +105,32 @@ fun CreatingTaskScreen() {
                                 .fillMaxWidth(0.95f),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
+
                             IconButton(
                                 onClick = { viewModel.onEvent(CreatingTaskEvents.NavigateToBack) },
                                 modifier = Modifier
                                     .clip(CircleShape)
-                                    .background(Color.White)
+                                    .background(Color.DarkGray.copy(alpha = 0.6f))
                                     .size(50.dp)
                             ) {
+
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                    imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                                     contentDescription = "",
-                                    tint = Color.Black
+                                    tint = Color.White, modifier = Modifier.size(20.dp)
                                 )
                             }
                             IconButton(
                                 onClick = { viewModel.onEvent(CreatingTaskEvents.SaveTask) },
                                 modifier = Modifier
                                     .clip(CircleShape)
-                                    .background(Color.White)
+                                    .background(Color.DarkGray.copy(alpha = 0.6f))
                                     .size(50.dp)
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "AddFloatingActionButton",
-                                    modifier = Modifier.size(20.dp)
+                                 imageVector = Icons.Default.Add,
+                                    contentDescription = "",
+                                    tint = Color.White, modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -139,402 +144,550 @@ fun CreatingTaskScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.DarkGray)
-                .padding(
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    top = paddingValues.calculateTopPadding(),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Rtl),
-                ),
-            contentAlignment = Alignment.Center
+                .background(backgroundTheme),
+            contentAlignment = Alignment.BottomCenter
         ) {
-
-            if (isClockVisible) {
-
-                BottomSheetForClock(
-                    onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
-                    sheetState = bottomSheetState,
-                    clockMode = viewModel.clockMode.value,
-                    timeOfTask = timeOfTask,
-                    timeOfSubTask = timeOfSubTask,
-                    updateTimeOfTask = {
-                        viewModel.onEvent(
-                            CreatingTaskEvents.UpdateTimeOfTask(it)
-                        )
-                    },
-                    updateTimeOfSubTask = {
-                        viewModel.onEvent(
-                            CreatingTaskEvents.UpdateTimeForSubTask(
-                               it
-                            )
-                        )
-                    },
-                    hideClock = {
-                        viewModel.onEvent(CreatingTaskEvents.HideClock)
-
-                    },
-                    heightOfScreen = heightScreen
-                )
-
-            }
-
-            if (isCalendarVisible) {
-
-                BottomSheetForCalendar(
-                    onDismiss = {
-                        viewModel.onEvent(CreatingTaskEvents.HideCalendar)
-
-                    },
-                    sheetState = bottomSheetState,
-                    initialSelectedDate = viewModel.dataOfTaskToBeDone.value,
-                    calendarMode = viewModel.calendarMode.value,
-                    updateDateOfTaskToBeDone = {
-                        viewModel.onEvent(
-                            CreatingTaskEvents.UpdateDateOfTaskToBeDone(it)
-                        )
-                    },
-                    updateDateOfTaskForReminder = {
-                        viewModel.onEvent(
-                            CreatingTaskEvents.UpdateDateOfTaskForReminder(it)
-                        )
-                    },
-                    updateDateForSubtask = {
-                        viewModel.onEvent(
-                            CreatingTaskEvents.UpdateDateForSubtask(it)
-                        )
-                    },
-                    hideCalendar = {
-                        viewModel.onEvent(CreatingTaskEvents.HideCalendar)
-
-                    },
-                    getTasksByDate = {
-                        viewModel.onEvent(CreatingTaskEvents.GetTasksByDate(it))
-
-                    },
-                    heightScreen = heightScreen,
-                    listOfTasks = viewModel.tasksByDate,
-                    listOfDatesWithTask = listOfDatesWithTasks
-                )
-
-            }
-
-            LazyColumn(
+            Box(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .background(Color.DarkGray)
-                    .fillMaxWidth(0.95f),
+                    .fillMaxHeight(0.9f)
+                    .fillMaxWidth(0.9f), contentAlignment = Alignment.Center
             ) {
 
-                item {
-                    Column(
-                        modifier = Modifier
-                            .height((heightScreen * 0.15).dp)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.tittle
-                        ))
-                        TextField(
-                            shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(60.dp),
-                            placeholder = {
-                                Text(text = stringResource(id =com.aopr.shared_ui.R.string.tittle))
-                            },
-                            value = tittleOfTask,
-                            onValueChange = {
-                                viewModel.onEvent(
-                                    CreatingTaskEvents.UpdateTittleOfTask(
-                                        it
-                                    )
-                                )
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
+                if (isClockVisible) {
 
+                    BottomSheetForClock(
+                        onDismissRequest = { viewModel.onEvent(CreatingTaskEvents.HideClock) },
+                        sheetState = bottomSheetState,
+                        clockMode = viewModel.clockMode.value,
+                        timeOfTask = timeOfTask,
+                        timeOfSubTask = timeOfSubTask,
+                        updateTimeOfTask = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateTimeOfTask(it)
                             )
-                    }
+                        },
+                        updateTimeOfSubTask = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateTimeForSubTask(
+                                    it
+                                )
+                            )
+                        },
+                        hideClock = {
+                            viewModel.onEvent(CreatingTaskEvents.HideClock)
+
+                        },
+                        heightOfScreen = heightScreen
+                    )
 
                 }
-                item {
-                    Column(
-                        modifier = Modifier
-                            .height((heightScreen * 0.28f).dp)
-                            .fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.description))
 
-                        Row(
+                if (isCalendarVisible) {
+
+                    BottomSheetForCalendar(
+                        onDismiss = {
+                            viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+
+                        },
+                        sheetState = bottomSheetState,
+                        initialSelectedDate = viewModel.dataOfTaskToBeDone.value,
+                        calendarMode = viewModel.calendarMode.value,
+                        updateDateOfTaskToBeDone = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateDateOfTaskToBeDone(it)
+                            )
+                        },
+                        updateDateOfTaskForReminder = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateDateOfTaskForReminder(it)
+                            )
+                        },
+                        updateDateForSubtask = {
+                            viewModel.onEvent(
+                                CreatingTaskEvents.UpdateDateForSubtask(it)
+                            )
+                        },
+                        hideCalendar = {
+                            viewModel.onEvent(CreatingTaskEvents.HideCalendar)
+
+                        },
+                        getTasksByDate = {
+                            viewModel.onEvent(CreatingTaskEvents.GetTasksByDate(it))
+
+                        },
+                        heightScreen = heightScreen,
+                        listOfTasks = viewModel.tasksByDate,
+                        listOfDatesWithTask = listOfDatesWithTasks
+                    )
+
+                }
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
+                ) {
+
+
+                    item {
+                        Spacer(modifier = Modifier.height(45.dp))
+
+                        Column(
                             modifier = Modifier
+                                .height((heightScreen * 0.15).dp)
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
-
-                            TextField(
-                                value = descriptionOfTask,
+                            Text(
+                                text = stringResource(
+                                    id = com.aopr.shared_ui.R.string.tittle
+                                )
+                            )
+                            OutlinedTextField(
                                 shape = MaterialTheme.shapes.medium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(60.dp)
+                                    .border(
+                                        width = 0.5.dp,
+                                        color = Color.Transparent,
+                                        shape = MaterialTheme.shapes.medium
+                                    ),
                                 placeholder = {
                                     Text(text = stringResource(id = com.aopr.shared_ui.R.string.tittle))
                                 },
+                                value = tittleOfTask,
                                 onValueChange = {
                                     viewModel.onEvent(
-                                        CreatingTaskEvents.UpdateDescriptionOfTask(
+                                        CreatingTaskEvents.UpdateTittleOfTask(
                                             it
                                         )
                                     )
                                 },
-                                colors = TextFieldDefaults.colors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.LightGray.copy(alpha = 0.2f),
+                                    unfocusedContainerColor = Color.LightGray.copy(alpha = 0.2f),
+                                    focusedBorderColor = Color.White.copy(alpha = 0.5f),
+                                    unfocusedBorderColor = Color.Transparent
                                 ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(170.dp),
-                                maxLines = 20,
-                            )
 
+                                )
                         }
+
                     }
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((heightScreen * 0.2).dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    item {
                         Column(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(0.5f),
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.SpaceEvenly
+                                .height((heightScreen * 0.28f).dp)
+                                .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
                         ) {
+                            Text(text = stringResource(id = com.aopr.shared_ui.R.string.description))
+
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Text(text = "date")
-                            }
-                            Card(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .fillMaxHeight(0.6f)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Row {
 
-
-                                    IconButton(onClick = {
-                                        viewModel.onEvent(CreatingTaskEvents.ShowCalendarForReminder)
-                                    }) {
-                                        Icon(
-                                            imageVector = Icons.Default.DateRange,
-                                            contentDescription = ""
-                                        )
-                                    }
-                                    IconButton(onClick = {
-                                        viewModel.onEvent(CreatingTaskEvents.CleanDateOfTaskReminder)
-                                    }) {
-                                        Icon(imageVector = Icons.Default.Delete,"")
-                                    }
-                                    Text(
-                                        text = dateOfTaskForReminder?.format(
-                                            DateTimeFormatter.ofPattern(
-                                                "dd MMM yyyy"
+                                OutlinedTextField(
+                                    value = descriptionOfTask,
+                                    shape = MaterialTheme.shapes.medium,
+                                    placeholder = {
+                                        Text(text = stringResource(id = com.aopr.shared_ui.R.string.description))
+                                    },
+                                    onValueChange = {
+                                        viewModel.onEvent(
+                                            CreatingTaskEvents.UpdateDescriptionOfTask(
+                                                it
                                             )
                                         )
-                                            ?: "Select Date for reminder",
-                                    )
-                                }
-                            }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(),
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Text(
-                                    text = timeOfTask?.format(DateTimeFormatter.ofPattern("HH:mm"))
-                                        ?: "",
-                                )
-                            }
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .fillMaxHeight(0.6f)
-                            ) {
-                                Row {
+                                    },
 
-                                IconButton(onClick = { viewModel.onEvent(CreatingTaskEvents.ShowClockForTaskReminder) }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Notifications,
-                                        contentDescription = ""
-                                    )
-                                }
-                                IconButton(onClick = {
-                                    viewModel.onEvent(CreatingTaskEvents.CleanTimeOfTaskReminder)
-                                }) {
-                                    Icon(imageVector = Icons.Default.Delete, "")
-                                }
-                            }
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedContainerColor = Color.LightGray.copy(alpha = 0.2f),
+                                        unfocusedContainerColor = Color.LightGray.copy(alpha = 0.2f),
+                                        focusedBorderColor = Color.White.copy(alpha = 0.5f),
+                                        unfocusedBorderColor = Color.Transparent
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(170.dp)
+                                        .border(
+                                            width = 0.5.dp,
+                                            color = Color.Transparent,
+                                            shape = MaterialTheme.shapes.medium
+                                        ),
+                                    maxLines = 20,
+                                )
+
                             }
                         }
                     }
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((heightScreen * 0.2).dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
+                    item {
+                        Box(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(0.5f),
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.SpaceEvenly
+                                .fillMaxWidth()
+                                .height((heightScreen * 0.25).dp),
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Text(text = "date")
-                            }
-                            Card(
+                            Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.9f)
-                                    .fillMaxHeight(0.6f)
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(20.dp)
                             ) {
-                                IconButton(onClick = {
-                                    viewModel.onEvent(CreatingTaskEvents.ShowCalendarForToBeDone)
-                                }) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                ) {
+                                    Text(text = stringResource(id = R.string.selectDateAndTimeForReminder))
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(0.9f),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(0.5f),
+                                        horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.9f)
+                                                .fillMaxHeight(0.7f),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = Color.LightGray.copy(alpha = 0.2f)
+                                            )
+                                        ) {
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.SpaceEvenly,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(0.95f),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    IconButton(onClick = {
+                                                        viewModel.onEvent(CreatingTaskEvents.ShowCalendarForReminder)
+                                                    }) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.DateRange,
+                                                            contentDescription = ""
+                                                        )
+                                                    }
+                                                    TextButton(onClick = {
+                                                        viewModel.onEvent(CreatingTaskEvents.CleanDateOfTaskReminder)
+                                                    }) {
+                                                        Text(
+                                                            text = stringResource(id = R.string.cleanField),
+                                                            color = Color.White
+                                                        )
+                                                    }
+
+                                                }
+                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                                Text(
+                                                    text = dateOfTaskForReminder?.format(
+                                                        DateTimeFormatter.ofPattern(
+                                                            "dd MMM yyyy"
+                                                        )
+                                                    )
+                                                        ?: "",
+                                                )
+                                            }
+                                            }
+                                        }
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.End
+                                    ) {
+
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.9f)
+                                                .fillMaxHeight(0.7f),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = Color.LightGray.copy(alpha = 0.2f)
+                                            )
+                                        ) {
+                                            Box(modifier = Modifier.fillMaxSize()) {
+                                                Column(
+                                                    modifier = Modifier.fillMaxSize(),
+                                                    verticalArrangement = Arrangement.SpaceEvenly,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(0.95f),
+                                                        horizontalArrangement = Arrangement.SpaceBetween
+                                                    ) {
+                                                        IconButton(onClick = {
+                                                            viewModel.onEvent(
+                                                                CreatingTaskEvents.ShowClockForTaskReminder
+                                                            )
+                                                        }) {
+                                                            Icon(
+                                                                imageVector = Icons.Outlined.Notifications,
+                                                                contentDescription = ""
+                                                            )
+                                                        }
+                                                        TextButton(onClick = {
+                                                            viewModel.onEvent(CreatingTaskEvents.CleanTimeOfTaskReminder)
+                                                        }) {
+                                                            Text(
+                                                                text = stringResource(id = R.string.cleanField),
+                                                                color = Color.White
+                                                            )
+                                                        }
+                                                    }
+
+                                                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+
+                                                        Text(
+                                                            text = timeOfTask?.format(
+                                                                DateTimeFormatter.ofPattern(
+                                                                    "HH:mm"
+                                                                )
+                                                            )
+                                                                ?: "",
+                                                        )
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height((heightScreen * 0.25).dp),
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(20.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(text = stringResource(id = R.string.selectDateForTaskToBeDone))
+                                    Spacer(modifier = Modifier.width(10.dp))
                                     Icon(
-                                        imageVector = Icons.Default.DateRange,
-                                        contentDescription = ""
+                                        painter = painterResource(id = R.drawable.should_be_filled_icon),
+                                        contentDescription = "should_be_filled_icon",
+                                        modifier = Modifier.size(20.dp)
                                     )
                                 }
-                                Text(
-                                    text = dateOfTaskToBeDone?.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))
-                                        ?: "Select Date to be done",
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(0.9f),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(0.5f),
+                                        horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.9f)
+                                                .fillMaxHeight(0.7f),
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = Color.LightGray.copy(alpha = 0.2f)
+                                            )
+                                        ) {
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.SpaceEvenly,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(0.95f),
+                                                    horizontalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    IconButton(onClick = {
+                                                        viewModel.onEvent(CreatingTaskEvents.ShowCalendarForToBeDone)
+                                                    }) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.DateRange,
+                                                            contentDescription = ""
+                                                        )
+                                                    }
+
+                                                }
+                                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+
+                                                    Text(
+                                                        text = dateOfTaskToBeDone?.format(
+                                                            DateTimeFormatter.ofPattern(
+                                                                "dd MMM yyyy"
+                                                            )
+                                                        )
+                                                            ?: "",
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .height((heightScreen * 0.15).dp)
+                                .fillMaxWidth(0.3f), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = stringResource(id = R.string.doneOrNo))
+                            Checkbox(colors = CheckboxColors(
+                                checkedCheckmarkColor = Color.White,
+                                uncheckedCheckmarkColor = Color.Gray,
+                                checkedBorderColor = Color.White,
+                                checkedBoxColor = Color.Transparent,
+                                uncheckedBoxColor = Color.Transparent,
+                                disabledBorderColor = Color.White,
+                                disabledUncheckedBoxColor = Color.White,
+                                uncheckedBorderColor = Color.White,
+                                disabledUncheckedBorderColor = Color.White,
+                                disabledCheckedBoxColor = Color.White,
+                                disabledIndeterminateBorderColor = Color.White,
+                                disabledIndeterminateBoxColor = Color.White
+                            ), checked = isTaskDone, onCheckedChange = { isChecked ->
+                               viewModel.onEvent(CreatingTaskEvents.UpdateIsDoneTask(isChecked))
+                            })
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .height((heightScreen * 0.2).dp)
+                                .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(30.dp)
+                            ) {
+                                Text(text = stringResource(id = R.string.choosePriority))
+                                SegmentedDemo(
+                                    items = importanceItems,
+                                    selectedItem = priorityOfTask,
+                                    heightOfTrack = 0.5f,
+                                    onImportanceChange = { selectedPriority ->
+                                        viewModel.onEvent(
+                                            CreatingTaskEvents.UpdatePriorityOfTask(
+                                                selectedPriority
+                                            )
+                                        )
+                                    }
                                 )
                             }
                         }
                     }
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .height((heightScreen * 0.25).dp)
-                            .fillMaxWidth(), horizontalArrangement = Arrangement.End
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceEvenly
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .height((heightScreen * 0.1).dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "Priority")
-                            SegmentedDemo(
-                                items = importanceItems,
-                                selectedItem = priorityOfTask, heightOfTrack = 0.4f,
-                                onImportanceChange = { selectedPriority ->
+                            Text(text = stringResource(id = R.string.addSubtask))
+                            Spacer(modifier = Modifier.width(10.dp))
+                            IconButton(
+                                onClick = { viewModel.onEvent(CreatingTaskEvents.AddTextFieldForSubTask) },
+                            ) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "", modifier = Modifier.size(20.dp))
+                            }
+                        }
+                    }
+
+                    item {
+                        SubTasksList(
+                            subtasks = viewModel.listOfSubTasks,
+                            onUpdateDescription = { index, description ->
+                                viewModel.onEvent(
+                                    CreatingTaskEvents.UpdateTempSubTaskDescription(
+                                        index,
+                                        description
+                                    )
+                                )
+                            },
+                            onUpdateIsCompleted = { index, isCompleted ->
+                                viewModel.onEvent(
+                                    CreatingTaskEvents.UpdateTempSubTaskIsDone(
+                                        index,
+                                        isCompleted
+                                    )
+                                )
+                            },
+                            onDeleteSubTask = { index ->
+                                if (viewModel.existingTask.value != null) {
                                     viewModel.onEvent(
-                                        CreatingTaskEvents.UpdatePriorityOfTask(
-                                            selectedPriority
+                                        CreatingTaskEvents.RemoveTextFieldForSubTask(
+                                            task = viewModel.existingTask.value, index
+                                        )
+                                    )
+                                } else {
+                                    viewModel.onEvent(
+                                        CreatingTaskEvents.RemoveTextFieldForSubTask(
+                                            task = viewModel.existingTask.value, index
                                         )
                                     )
                                 }
-                            )
-                        }
-                    }
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .height((heightScreen * 0.1).dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = "Add subtask")
-                        Spacer(modifier = Modifier.width(10.dp))
-                        IconButton(
-                            onClick = { viewModel.onEvent(CreatingTaskEvents.AddTextFieldForSubTask) },
-                        ) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "")
-                        }
-                    }
-                }
 
-                item {
-                    SubTasksList(
-                        subtasks = viewModel.listOfSubTasks,
-                        onUpdateDescription = { index, description ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.UpdateTempSubTaskDescription(
-                                    index,
-                                    description
-                                )
-                            )
-                        },
-                        onUpdateIsCompleted = { index, isCompleted ->
-                            viewModel.onEvent(
-                                CreatingTaskEvents.UpdateTempSubTaskIsDone(
-                                    index,
-                                    isCompleted
-                                )
-                            )
-                        },
-                        onDeleteSubTask = { index ->
-                            if (viewModel.existingTask.value != null) {
+
+                            },
+                            data = dateOfSubTask,
+                            time = timeOfSubTask,
+                            showCalendarForReminder = {
                                 viewModel.onEvent(
-                                    CreatingTaskEvents.RemoveTextFieldForSubTask(
-                                        task = viewModel.existingTask.value, index
+                                    CreatingTaskEvents.ShowCalendarForSubTask(
+                                        it
                                     )
                                 )
-                            } else {
+                            },
+                            showClockForReminder = {
                                 viewModel.onEvent(
-                                    CreatingTaskEvents.RemoveTextFieldForSubTask(
-                                        task = viewModel.existingTask.value, index
+                                    CreatingTaskEvents.ShowClockForSubTaskReminder(
+                                        it
                                     )
                                 )
+                            }, clearTimeOfSubTask = {
+                               viewModel.onEvent(CreatingTaskEvents.CleanTimeOfSubtask(it))
+
+                            }, clearDataOfSubTask = {
+                                viewModel.onEvent(CreatingTaskEvents.CleanDataOfSubTask(it))
                             }
+                        )
+                    }
 
-
-                        },
-                        data = dateOfSubTask,
-                        time = timeOfSubTask,
-                        showCalendarForReminder = {
-                            viewModel.onEvent(
-                                CreatingTaskEvents.ShowCalendarForSubTask(
-                                    it
-                                )
-                            )
-                        },
-                        showClockForReminder = {
-                            viewModel.onEvent(
-                                CreatingTaskEvents.ShowClockForSubTaskReminder(
-                                    it
-                                )
-                            )
-                        }, clearTimeOfSubTask = {
-                            viewModel.onEvent(CreatingTaskEvents.CleanTimeOfSubtask)
-
-                        }, clearDataOfSubTask = {
-                            viewModel.onEvent(CreatingTaskEvents.CleanDataOfSubTask)
-                        }
-                    )
                 }
-
             }
-
         }
     }
 }

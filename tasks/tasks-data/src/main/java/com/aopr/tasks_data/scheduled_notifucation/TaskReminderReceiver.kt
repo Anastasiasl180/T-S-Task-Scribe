@@ -8,6 +8,16 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.aopr.tasks_data.R
+import com.aopr.tasks_data.mapper.mapToTask
+import com.aopr.tasks_data.room.TasksDao
+import com.aopr.tasks_domain.models.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class TaskReminderReceiver : BroadcastReceiver() {
@@ -89,5 +99,34 @@ class TaskReminderReceiver : BroadcastReceiver() {
             .build()
 
         notificationManager.notify(taskId.hashCode() + subTaskDescription.hashCode(), notification)
+    }
+
+
+}
+
+class DailyCheckReceiver() :BroadcastReceiver(){
+
+    override fun onReceive(context: Context?, intent: Intent?) {
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val repo =
+
+            val today = LocalDate.now()
+            val tasksForToday = repo.getTasksForDate(today)
+            val uncompleted = tasksForToday.filter { !it.isCompleted }
+
+            // Only show a notification if there's at least 1 uncompleted task
+            if (uncompleted.isNotEmpty()) {
+                showUncompletedTasksNotification(context, uncompleted.size)
+            }
+        }
+    }
+
+}
+fun getTasksByDateFlow(dao: TasksDao, date: LocalDate): Flow<List<Task>> {
+    return dao.getTasksByDate(date).map { entities ->
+        entities.map { it.mapToTask() }
     }
 }

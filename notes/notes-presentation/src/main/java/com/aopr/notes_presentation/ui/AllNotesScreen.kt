@@ -39,6 +39,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
@@ -56,11 +58,12 @@ import androidx.compose.ui.unit.sp
 import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
 import com.aopr.notes_presentation.view_model.events.all_notes_events.AllNotesEvent
-import com.aopr.notes_presentation.view_model.ui_event_handler.UiEventHandlerForAllNotesScreen
+import com.aopr.notes_presentation.view_model.ui_event_handlers.UiEventHandlerForAllNotesScreen
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
-import com.radusalagean.infobarcompose.InfoBar
+import com.aopr.shared_ui.util.ViewModelKit
 import kotlinx.coroutines.delay
+import org.koin.android.annotation.KoinViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +72,7 @@ fun AllNotesScreen() {
     val viewModel = koinViewModel<AllNotesViewModel>()
     val listOfNotes = viewModel.listOfNotes.value?.toList()
     val isInSelectionMode by viewModel.isInSelectedMode.collectAsState()
-    val brush = background()
+    val backgroundTheme = background()
     BackHandler {
 
     }
@@ -122,7 +125,7 @@ fun AllNotesScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush), contentAlignment = Alignment.Center
+                .background(backgroundTheme), contentAlignment = Alignment.Center
         ) {
 
             Box(

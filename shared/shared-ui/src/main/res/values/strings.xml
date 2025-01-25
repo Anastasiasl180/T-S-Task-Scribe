@@ -8,4 +8,7 @@
     <string name="pinned">Pinned</string>
     <string name="unPinned">Unpinned</string>
     <string name="pinnedNotes">Pinned notes</string>
+    <string name="save">Save</string>
+    <string name="notes">Notes</string>
+    <string name="tasks">Tasks</string>
 </resources>

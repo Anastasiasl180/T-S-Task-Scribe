@@ -22,7 +22,7 @@ interface TasksDao {
     suspend fun updateTask(task: TaskEntity)
 
     @Delete
-    suspend fun deleteTask(task: TaskEntity)
+    suspend fun deleteTask(task: List<TaskEntity>)
 
     @Delete
     suspend fun deleteAllTask(task: List<TaskEntity>)

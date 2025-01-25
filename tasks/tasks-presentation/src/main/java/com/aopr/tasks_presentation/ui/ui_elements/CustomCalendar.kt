@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui.ui_elements
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,8 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.aopr.notes_presentation.R
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
@@ -49,12 +54,12 @@ fun BottomSheetForCalendar(
     sheetState: SheetState,
     initialSelectedDate: LocalDate?,
     calendarMode: CreatingTaskViewModel.CalendarMode,
-    updateDateOfTaskToBeDone:(LocalDate)-> Unit,
-    updateDateOfTaskForReminder:(LocalDate)-> Unit,
-    updateDateForSubtask:(LocalDate)-> Unit,
-    hideCalendar:()-> Unit,
-    getTasksByDate:(LocalDate)-> Unit,
-    heightScreen:Int,
+    updateDateOfTaskToBeDone: (LocalDate) -> Unit,
+    updateDateOfTaskForReminder: (LocalDate) -> Unit,
+    updateDateForSubtask: (LocalDate) -> Unit,
+    hideCalendar: () -> Unit,
+    getTasksByDate: (LocalDate) -> Unit,
+    heightScreen: Int,
     listOfDatesWithTask: List<LocalDate?>,
     listOfTasks: List<Task?>
 
@@ -72,7 +77,7 @@ fun BottomSheetForCalendar(
                 onDateSelected = { selectedDate ->
                     when (calendarMode) {
                         CreatingTaskViewModel.CalendarMode.TASK_DONE ->
-                          updateDateOfTaskToBeDone(selectedDate)
+                            updateDateOfTaskToBeDone(selectedDate)
 
                         CreatingTaskViewModel.CalendarMode.REMINDER ->
                             updateDateOfTaskForReminder(selectedDate)
@@ -82,18 +87,16 @@ fun BottomSheetForCalendar(
                     }
                 },
                 onDismiss = {
-                   hideCalendar()
+                    hideCalendar()
                 }, listOfDates = listOfDatesWithTask, getTasks = {
                     getTasksByDate(it)
-                  }, listOfTasks = listOfTasks
+                }, listOfTasks = listOfTasks
             )
         }
     }
 
 
-    }
-
-
+}
 
 
 @Composable
@@ -111,8 +114,39 @@ fun CustomCalendar(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            TextButton(onClick = onDismiss,  colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+                border = BorderStroke(
+                    width = 0.5.dp,
+                    color = Color.White.copy(alpha = 0.5f)
+                )
+            ) {
+                Text(text = stringResource(id = com.aopr.shared_ui.R.string.cancel), color = Color.White)
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(
+                onClick = {
+                    selectedDate.value?.let {
+                        onDateSelected(it)
+                    }
+                    onDismiss()
+                },  colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+                border = BorderStroke(
+                    width = 0.5.dp,
+                    color = Color.White.copy(alpha = 0.5f)
+                ),
+                enabled = selectedDate.value != null
+            ) {
+                Text(text = stringResource(id = com.aopr.shared_ui.R.string.save), color = Color.White)
+            }
+        }
         CalendarHeader(
             currentDate = currentDate.value,
             selectedDate = selectedDate.value,
@@ -139,28 +173,7 @@ fun CustomCalendar(
         )
 
         Spacer(modifier = Modifier.weight(1f))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(onClick = onDismiss) {
-                Text(text = "Cancel")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    selectedDate.value?.let {
-                        onDateSelected(it)
-                    }
-                    onDismiss()
-                },
-                enabled = selectedDate.value != null
-            ) {
-                Text(text = "Save")
-            }
-        }
+
     }
 }
 
@@ -171,7 +184,7 @@ fun CalendarHeader(
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit
 ) {
-    Column {
+    Column() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -243,23 +256,24 @@ fun DatesGrid(
     while (dates.size % 7 != 0) {
         dates.add(null)
     }
-
-    Column {
+    Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         dates.chunked(7).forEach { week ->
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier
+                .fillMaxWidth()) {
                 week.forEach { date ->
                     val isSelected = date == selectedDate
                     val isPastDate = date?.isBefore(LocalDate.now()) == true
                     val isTaskDate = listOfDates.contains(date)
 
                     val textColor = when {
-                        isPastDate -> Color.Gray
-                        isTaskDate -> Color.Red
-                        else -> Color.Black
+                        isPastDate -> Color.Black
+                        isTaskDate -> Color.Blue
+                        else -> Color.Gray
                     }
 
                     val backgroundColor = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
+                        Color.White
                     } else {
                         Color.Transparent
                     }
@@ -294,17 +308,42 @@ fun DatesGrid(
         }
 
         if (listOfTasks.isNotEmpty()) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+               Row(modifier = Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.15f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+
+
+                   Text(text = stringResource(id = R.string.tasks), color = Color.White)
+               }
                 listOfTasks.forEach { task ->
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        if (task != null) {
-                            Text(text = task.tittle)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .fillMaxHeight(0.3f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxHeight().fillMaxWidth(0.9f)
+                        ) {
+                            if (task != null) {
+                                Row(
+                                    modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(text = task.tittle, color = Color.White)
+                                }
+                            }
                         }
                     }
                 }
             }
         } else {
-            Text(text = "No Task")
+            Text(text = stringResource(id = R.string.noTasks))
         }
     }
+}
 }

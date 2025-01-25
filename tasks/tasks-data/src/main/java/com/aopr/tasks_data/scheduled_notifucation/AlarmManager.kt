@@ -43,7 +43,6 @@ fun scheduleTaskReminder(
         pendingIntent
     )
 }
-//gjfdflkjl
 fun cancelTaskReminder(context: Context, taskId: UUID, taskTitle: String, date: LocalDate, time: LocalTime) {
     val timeInMillis = getTimeInMillis(date, time)
 
@@ -53,7 +52,6 @@ fun cancelTaskReminder(context: Context, taskId: UUID, taskTitle: String, date: 
         putExtra("TASK_ID", taskId)
         putExtra("TASK_TITLE", taskTitle)
     }
-    Log.wtf("cancel", taskId.toString(), )
 
     val pendingIntent = PendingIntent.getBroadcast(
         context,
@@ -65,7 +63,7 @@ fun cancelTaskReminder(context: Context, taskId: UUID, taskTitle: String, date: 
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarmManager.cancel(pendingIntent)
 }
-//1
+
 fun cancelSubtaskReminder(context: Context, subTaskId: UUID, taskTitle: String, subTaskDescription: String, date: LocalDate, time: LocalTime) {
     val timeInMillis = getTimeInMillis(date, time)
 

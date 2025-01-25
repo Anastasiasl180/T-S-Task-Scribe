@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="selectDateAndTimeForReminder">Select date and time for reminder</string>
+    <string name="selectDateForTaskToBeDone">Select date when task should be done</string>
+    <string name="choosePriority">Choose priority</string>
+    <string name="cleanField">Clean</string>
+    <string name="addSubtask">Add subtask</string>
+    <string name="enterSubtask">Enter subtask</string>
+    <string name="delete">Delete</string>
+    <string name="selectDateForReminderOfSubtask"> Select date for reminder</string>
+    <string name="selectTimeForReminderOfSubtask"> Select time for reminder</string>
+    <string name="doneOrNo">Done</string>
+    <string name="noTasks">No tasks</string>
+
+    <string name="noTimeSelected"> "No time selected</string>
+    <string name="selectedTimeNotSet">Selected Time: Not Set</string>
+
+    <string name="tasks">Tasks</string>
+
+</resources>

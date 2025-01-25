@@ -1,5 +1,6 @@
 package com.aopr.notes_presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
 import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteEvents
-import com.aopr.notes_presentation.view_model.ui_event_handler.UiEventHandlerForCreatingNoteScreen
+import com.aopr.notes_presentation.view_model.ui_event_handlers.UiEventHandlerForCreatingNoteScreen
 import com.aopr.shared_ui.cardsView.background
 import org.koin.androidx.compose.koinViewModel
 
@@ -46,8 +47,9 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatingNoteScreen() {
     val viewModel = koinViewModel<CreatingNoteViewModel>()
     val tittle by viewModel.tittleOfNote.collectAsState()
-    val brush = background()
+    val backgroundTheme = background()
     val description by viewModel.descriptionOfNote.collectAsState()
+
     UiEventHandlerForCreatingNoteScreen()
     Scaffold(
         topBar = {
@@ -108,7 +110,7 @@ fun CreatingNoteScreen() {
 
         Box(
             modifier = Modifier
-                .background(brush), contentAlignment = Alignment.Center
+                .background(backgroundTheme), contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier

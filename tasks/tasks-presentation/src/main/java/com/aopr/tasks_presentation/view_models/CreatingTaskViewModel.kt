@@ -1,6 +1,5 @@
 package com.aopr.tasks_presentation.view_models
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -29,9 +28,8 @@ import java.time.LocalTime
 class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     ViewModelKit<CreatingTaskEvents, CreatingTaskUiEvents>() {
 
-        private val _existingTask = mutableStateOf<Task?>(null)
-    val existingTask:State<Task?> = _existingTask
-
+    private val _existingTask = mutableStateOf<Task?>(null)
+    val existingTask: State<Task?> = _existingTask
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
@@ -50,16 +48,15 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
     private val _dateOfTaskToBeDone = mutableStateOf<LocalDate?>(null)
     val dataOfTaskToBeDone: State<LocalDate?> = _dateOfTaskToBeDone
-    
 
     private val _dateOfSubTask = mutableStateOf<LocalDate?>(null)
-    val dateOfSubTask:State<LocalDate?> = _dateOfSubTask
+    val dateOfSubTask: State<LocalDate?> = _dateOfSubTask
 
     private val _timeOfSubTask = mutableStateOf<LocalTime?>(null)
-    val timeOfSubTask:State<LocalTime?> = _timeOfSubTask
+    val timeOfSubTask: State<LocalTime?> = _timeOfSubTask
 
-    private val _isDoneTask = mutableStateOf(false)
-    val isDoneTask: State<Boolean> = _isDoneTask
+    private val _isDoneTask = MutableStateFlow(false)
+    val isDoneTask: StateFlow<Boolean> = _isDoneTask
 
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
     val listOfSubTasks: List<Subtasks> = _listOfSubTasks
@@ -86,18 +83,18 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     val clockMode: State<ClockMode> = _clockMode
 
     private val _index = mutableIntStateOf(0)
-    val index:State<Int> = _index
-
+    val index: State<Int> = _index
 
     private val _event = MutableSharedFlow<CreatingTaskUiEvents>()
     val uiEvents = _event
 
 
     enum class CalendarMode {
-        TASK_DONE, REMINDER,SUB_REMINDER
+        TASK_DONE, REMINDER, SUB_REMINDER
     }
+
     enum class ClockMode {
-        REMINDER_TASK,SUB_REMINDER
+        REMINDER_TASK, SUB_REMINDER
     }
 
     init {
@@ -118,7 +115,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 }
 
                 is Responses.Success -> {
-                    result.data?.collect {list->
+                    result.data?.collect { list ->
                         _tasksByDate.clear()
                         _tasksByDate.addAll(list)
                     }
@@ -140,9 +137,10 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 }
 
                 is Responses.Success -> {
-                    result.data?.collect {list->
-                        val dates = list.map {task->
-                            task.dateOfTaskToBeDone }
+                    result.data?.collect { list ->
+                        val dates = list.map { task ->
+                            task.dateOfTaskToBeDone
+                        }
                         _datesWithTasks.addAll(dates)
                     }
                 }
@@ -155,7 +153,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
         tasksUseCase.createTask(task).onEach { result ->
             when (result) {
                 is Responses.Error -> {
-                  }
+                }
 
                 is Responses.Loading -> {
                 }
@@ -197,15 +195,18 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
         }.launchIn(viewModelScope)
     }
-    private fun deleteSubTask(task: Task?,indexOfSubTask:Int){
-        tasksUseCase.deleteSubTask(task,indexOfSubTask).onEach {result->
-            when(result){
+
+    private fun deleteSubTask(task: Task?, indexOfSubTask: Int) {
+        tasksUseCase.deleteSubTask(task, indexOfSubTask).onEach { result ->
+            when (result) {
                 is Responses.Error -> {
 
                 }
+
                 is Responses.Loading -> {
 
                 }
+
                 is Responses.Success -> {
 
                 }
@@ -223,6 +224,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             _listOfSubTasks.removeAt(index)
         }
     }
+
     override fun onEvent(event: CreatingTaskEvents) {
         when (event) {
             is CreatingTaskEvents.GetTakById -> {
@@ -246,6 +248,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         dateForReminder = _dateOfTaskForReminder.value,
                         dateOfTaskToBeDone = _dateOfTaskToBeDone.value,
                         timeForReminder = _timeOfTask.value,
+                        isCompleted = _isDoneTask.value,
                         listOfSubtasks = _listOfSubTasks as List<Subtasks>,
                         importance = _priority.value
                     )
@@ -274,7 +277,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
 
             is CreatingTaskEvents.UpdateTimeOfTask -> {
-                if (_clockMode.value == ClockMode.REMINDER_TASK){
+                if (_clockMode.value == ClockMode.REMINDER_TASK) {
                     _timeOfTask.value = event.time
                 }
 
@@ -299,7 +302,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             is CreatingTaskEvents.UpdatePriorityOfTask -> {
                 _priority.value = event.priority
             }
-            
+
             CreatingTaskEvents.LoadDatesWithTask -> {
                 viewModelScope.launch {
                     getDatesWithTasks()
@@ -317,33 +320,34 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                     _dateOfTaskToBeDone.value = event.date
                 }
             }
-            
+
             is CreatingTaskEvents.RemoveTextFieldForSubTask -> {
-                if (event.task!=null){
-                    deleteSubTask(event.task,event.index)
+                if (event.task != null) {
+                    deleteSubTask(event.task, event.index)
                     removeSubTask(event.index)
-                }else{
+                } else {
                     removeSubTask(event.index)
                 }
 
             }
 
             is CreatingTaskEvents.UpdateDateForSubtask -> {
-                    _listOfSubTasks[_index.intValue] =
-                        _listOfSubTasks[_index.intValue].copy(date = event.date)
-                    _dateOfSubTask.value = event.date
+                _listOfSubTasks[_index.intValue] =
+                    _listOfSubTasks[_index.intValue].copy(date = event.date)
+                _dateOfSubTask.value = event.date
             }
+
             is CreatingTaskEvents.UpdateTimeForSubTask -> {
-                    _listOfSubTasks[_index.intValue] =
-                        _listOfSubTasks[_index.intValue].copy(time = event.time)
-                    _timeOfSubTask.value = event.time
+                _listOfSubTasks[_index.intValue] =
+                    _listOfSubTasks[_index.intValue].copy(time = event.time)
+                _timeOfSubTask.value = event.time
             }
 
 
-          is  CreatingTaskEvents.ShowCalendarForSubTask -> {
+            is CreatingTaskEvents.ShowCalendarForSubTask -> {
                 _calendarMode.value = CalendarMode.SUB_REMINDER
                 _isCalendarVisible.value = true
-              _index.intValue = event.index
+                _index.intValue = event.index
             }
 
             CreatingTaskEvents.ShowCalendarForToBeDone -> {
@@ -361,32 +365,41 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 _isClockVisible.value = true
             }
 
-          is  CreatingTaskEvents.ShowClockForSubTaskReminder -> {
+            is CreatingTaskEvents.ShowClockForSubTaskReminder -> {
                 _clockMode.value = ClockMode.SUB_REMINDER
                 _isClockVisible.value = true
-              _index.intValue = event.index
+                _index.intValue = event.index
             }
+
             CreatingTaskEvents.HideClock -> {
                 _isClockVisible.value = false
             }
+
             CreatingTaskEvents.HideCalendar -> {
                 _isCalendarVisible.value = false
             }
 
-            CreatingTaskEvents.CleanDataOfSubTask -> {
+            is CreatingTaskEvents.CleanDataOfSubTask -> {
+                _listOfSubTasks[event.index] =
+                    _listOfSubTasks[event.index].copy(date = null)
                 _dateOfSubTask.value = null
             }
+
             CreatingTaskEvents.CleanDateOfTaskReminder -> {
                 _dateOfTaskForReminder.value = null
             }
-            CreatingTaskEvents.CleanTimeOfSubtask -> {
-                Log.wtf("", "onEvent:data ", )
+
+            is CreatingTaskEvents.CleanTimeOfSubtask -> {
+                _listOfSubTasks[event.index] =
+                    _listOfSubTasks[event.index].copy(time = null)
                 _timeOfSubTask.value = null
             }
+
             CreatingTaskEvents.CleanTimeOfTaskReminder -> {
-                Log.wtf("", "onEvent:time ", )
                 _timeOfTask.value = null
             }
+
+
         }
     }
 }

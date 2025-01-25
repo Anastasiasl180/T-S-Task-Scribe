@@ -12,6 +12,7 @@ hazeJetpackCompose = "0.4.1"
 infoBarCompose = "1.0.0"
 javaOpengraphParser = "1.0.0"
 jsoup = "1.10.3"
+koinAndroid = "2.0.1"
 kotlin = "2.0.10"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -61,6 +62,7 @@ java-opengraph-parser = { module = "com.github.grammarly:java-opengraph-parser",
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
+koin-koin-android = { module = "org.koin:koin-android", version.ref = "koinAndroid" }
 koin-ksp = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
