@@ -8,6 +8,7 @@ import android.util.Log
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.util.Calendar
 import java.util.UUID
 
 fun scheduleTaskReminder(
@@ -92,4 +93,34 @@ fun getTimeInMillis(localDate: LocalDate, localTime: LocalTime): Long {
     val zoneId = ZoneId.systemDefault()
     val zoneDateTime = localDateTime.atZone(zoneId)
     return zoneDateTime.toInstant().toEpochMilli()
+}
+fun scheduleDailyCheck(context: Context) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    val intent = Intent(context, DailyCheckReceiver::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        12345,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val calendar = Calendar.getInstance().apply {
+        timeInMillis = System.currentTimeMillis()
+        set(Calendar.HOUR_OF_DAY, 21)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+
+        if (before(Calendar.getInstance())) {
+            add(Calendar.DAY_OF_YEAR, 1)
+        }
+    }
+
+    alarmManager.setInexactRepeating(
+        AlarmManager.RTC_WAKEUP,
+        calendar.timeInMillis,
+        AlarmManager.INTERVAL_DAY,
+        pendingIntent
+    )
 }
