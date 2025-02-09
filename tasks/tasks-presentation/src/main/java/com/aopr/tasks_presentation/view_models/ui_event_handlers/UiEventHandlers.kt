@@ -2,6 +2,7 @@ package com.aopr.tasks_presentation.view_models.ui_event_handlers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.navigation.toRoute
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
@@ -11,6 +12,7 @@ import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEve
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
 import com.aopr.tasks_presentation.view_models.AllTasksViewModel
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AllTasksUiEventHandler() {
@@ -23,11 +25,6 @@ fun AllTasksUiEventHandler() {
                 is AllTasksUiEvents.NavigateToCreateTaskScreen -> {
                     navigator.navigate(AllTasksNavRoutes.CreatingTaskScreen(event.id))
                 }
-
-                is AllTasksUiEvents.DeleteTask -> {
-
-                }
-
                 AllTasksUiEvents.NavigateBack -> {
                     navigator.popBackStack()
                 }
@@ -41,8 +38,8 @@ fun CreatingTaskUiEventHandler() {
 
     val navigator = LocalNavigator.currentOrThrow()
     val viewModel = koinViewModel<CreatingTaskViewModel>()
-    val id = navigator.currentBackStackEntry?.toRoute<AllTasksNavRoutes.CreatingTaskScreen>()
-    val idd = id?.id
+    val route = navigator.currentBackStackEntry?.toRoute<AllTasksNavRoutes.CreatingTaskScreen>()
+    val id = route?.id
 
     LaunchedEffect(Unit) {
         viewModel.uiEvents.collect { event ->
@@ -54,9 +51,10 @@ fun CreatingTaskUiEventHandler() {
         }
     }
     LaunchedEffect(Unit) {
-        if (idd != null) {
-            viewModel.onEvent(CreatingTaskEvents.GetTakById(idd))
+        if (id != null) {
+            viewModel.onEvent(CreatingTaskEvents.GetTakById(id))
         }
     }
 
+}
 }

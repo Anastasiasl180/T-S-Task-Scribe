@@ -5,5 +5,8 @@
     <string name="EmptyDescription">Field cannot be without description</string>
     <string name="EmptyTimeReminder">Field cannot be without time</string>
     <string name="EmptyDateReminder">Field cannot be without date</string>
+    <string name="EmptyDateForTaskToBeDoneReminder">Field cannot be without date</string>
+    <string name="WrongTimeSet">Please, set correct time</string>
+
 
 </resources>

@@ -35,7 +35,7 @@ class AllNotesViewModel(private val useCase: NotesUseCase) :
     val isInSelectedMode: StateFlow<Boolean> = _isInSelectionMode
 
     private val _selectedNotesToDelete = mutableStateListOf<Note>()
-    val selectedNotesToDelete: List<Note> get() = _selectedNotesToDelete
+    val selectedNotesToDelete: List<Note>  = _selectedNotesToDelete
 
     private val _event = MutableSharedFlow<AllNotesUiEvent>()
     val event = _event.asSharedFlow()

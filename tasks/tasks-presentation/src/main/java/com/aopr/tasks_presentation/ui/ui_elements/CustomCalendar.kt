@@ -116,35 +116,51 @@ fun CustomCalendar(
             .fillMaxSize()
 
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.End
+                .fillMaxWidth().fillMaxHeight(0.1f), contentAlignment = Alignment.CenterEnd
         ) {
-            TextButton(onClick = onDismiss,  colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-                border = BorderStroke(
-                    width = 0.5.dp,
-                    color = Color.White.copy(alpha = 0.5f)
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.5f)
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = stringResource(id = com.aopr.shared_ui.R.string.cancel), color = Color.White)
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    selectedDate.value?.let {
-                        onDateSelected(it)
-                    }
-                    onDismiss()
-                },  colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-                border = BorderStroke(
-                    width = 0.5.dp,
-                    color = Color.White.copy(alpha = 0.5f)
-                ),
-                enabled = selectedDate.value != null
-            ) {
-                Text(text = stringResource(id = com.aopr.shared_ui.R.string.save), color = Color.White)
+
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+                    border = BorderStroke(
+                        width = 0.5.dp,
+                        color = Color.White.copy(alpha = 0.5f)
+                    ),
+                    enabled = selectedDate.value != null
+                ) {
+                    Text(
+                        text = stringResource(id = com.aopr.shared_ui.R.string.cancel),
+                        color = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = {
+                        selectedDate.value?.let {
+                            onDateSelected(it)
+                        }
+                        onDismiss()
+                    }, colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
+                    border = BorderStroke(
+                        width = 0.5.dp,
+                        color = Color.White.copy(alpha = 0.5f)
+                    ),
+                    enabled = selectedDate.value != null
+                ) {
+                    Text(
+                        text = stringResource(id = com.aopr.shared_ui.R.string.save),
+                        color = Color.White
+                    )
+                }
             }
         }
         CalendarHeader(
@@ -257,93 +273,110 @@ fun DatesGrid(
         dates.add(null)
     }
     Box(modifier = Modifier.fillMaxSize()) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        dates.chunked(7).forEach { week ->
-            Row(modifier = Modifier
-                .fillMaxWidth()) {
-                week.forEach { date ->
-                    val isSelected = date == selectedDate
-                    val isPastDate = date?.isBefore(LocalDate.now()) == true
-                    val isTaskDate = listOfDates.contains(date)
+        Column(modifier = Modifier.fillMaxSize()) {
+            dates.chunked(7).forEach { week ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    week.forEach { date ->
+                        val isSelected = date == selectedDate
+                        val isPastDate = date?.isBefore(LocalDate.now()) == true
+                        val isTaskDate = listOfDates.contains(date)
 
-                    val textColor = when {
-                        isPastDate -> Color.Black
-                        isTaskDate -> Color.Blue
-                        else -> Color.Gray
-                    }
-
-                    val backgroundColor = if (isSelected) {
-                        Color.White
-                    } else {
-                        Color.Transparent
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .padding(4.dp)
-                            .background(
-                                color = backgroundColor.takeIf { date != null }
-                                    ?: Color.Transparent,
-                                shape = CircleShape
-                            )
-                            .clickable(enabled = date != null && !isPastDate) {
-                                date?.let {
-                                    onDateSelected(it)
-                                    getTasks(it)
-                                }
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        date?.let {
-                            Text(
-                                text = it.dayOfMonth.toString(),
-                                color = textColor,
-                            )
+                        val textColor = when {
+                            isPastDate -> Color.Gray
+                            isTaskDate -> Color.Blue
+                            else -> Color.White
                         }
-                    }
-                }
-            }
-        }
 
-        if (listOfTasks.isNotEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-               Row(modifier = Modifier.fillMaxWidth(0.2f).fillMaxHeight(0.15f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                        val backgroundColor = if (isSelected) {
+                            Color.Gray
+                        } else {
+                            Color.Transparent
+                        }
 
-
-                   Text(text = stringResource(id = R.string.tasks), color = Color.White)
-               }
-                listOfTasks.forEach { task ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .fillMaxHeight(0.3f),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Card(
+                        Box(
                             modifier = Modifier
-                                .fillMaxHeight().fillMaxWidth(0.9f)
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .padding(4.dp)
+                                .background(
+                                    color = backgroundColor.takeIf { date != null }
+                                        ?: Color.Transparent,
+                                    shape = CircleShape
+                                )
+                                .clickable(enabled = date != null && !isPastDate) {
+                                    date?.let {
+                                        onDateSelected(it)
+                                        getTasks(it)
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (task != null) {
-                                Row(
-                                    modifier = Modifier.fillMaxSize().padding(start = 10.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(text = task.tittle, color = Color.White)
-                                }
+                            date?.let {
+                                Text(
+                                    text = it.dayOfMonth.toString(),
+                                    color = textColor,
+                                )
                             }
                         }
                     }
                 }
             }
-        } else {
-            Text(text = stringResource(id = R.string.noTasks))
+
+            if (listOfTasks.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.2f)
+                            .fillMaxHeight(0.15f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+
+
+                        Text(text = stringResource(id = R.string.tasks), color = Color.White)
+                    }
+                    listOfTasks.forEach { task ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .fillMaxHeight(0.3f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(0.9f)
+                            ) {
+                                if (task != null) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(start = 10.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(text = task.tittle, color = Color.White)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 10.dp, top = 15.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.noTasks))
+                }
+            }
         }
     }
-}
 }
