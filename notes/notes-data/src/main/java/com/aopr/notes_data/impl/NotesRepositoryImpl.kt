@@ -37,7 +37,7 @@ class NotesRepositoryImpl(private val dao: NoteDao) : NotesRepository {
         }
     }
 
-    override suspend fun deleteNote(note: List<Note>) {
+    override suspend fun deleteChosenNotes(note: List<Note>) {
         dao.deleteCertainNotes(note.map { it.mapToEntity()
         })
     }

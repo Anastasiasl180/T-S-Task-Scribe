@@ -6,19 +6,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
 import com.aopr.tasks_data.R
 import com.aopr.tasks_data.mapper.mapToTask
 import com.aopr.tasks_data.room.TasksDao
-import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.time.LocalDate
@@ -64,7 +61,7 @@ class TaskReminderReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Task Reminder")
             .setContentText(taskTitle)
-            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setSmallIcon(R.drawable.icon_for_notification)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
@@ -97,7 +94,7 @@ class TaskReminderReceiver : BroadcastReceiver() {
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Subtask Reminder")
             .setContentText("Subtask: $subTaskDescription (Task: $taskTitle)")
-            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setSmallIcon(R.drawable.icon_for_notification)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()
@@ -146,15 +143,15 @@ class DailyCheckReceiver() : BroadcastReceiver(), KoinComponent {
                 channelName,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Channel for daily tasks check at 21:00"
+                description = R.string.dailyCheckTime.toString()
             }
             notificationManager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle("Uncompleted Tasks Today")
+            .setContentTitle(R.string.unCompletedTasksForToday.toString())
             .setContentText("You have $count uncompleted task(s) due today.")
-            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setSmallIcon(R.drawable.icon_for_notification)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()

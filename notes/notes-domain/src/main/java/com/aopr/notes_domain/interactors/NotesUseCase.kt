@@ -50,7 +50,7 @@ class NotesUseCase(private val repository: NotesRepository) {
     fun deleteNote(note: List<Note>): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
-            val data = repository.deleteNote(note)
+            val data = repository.deleteChosenNotes(note)
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))

@@ -212,12 +212,12 @@ fun AllTasksScreen() {
 
 @Composable
 fun TaskCard(
-    goToTask: () -> Unit,
-    onSelectTask: (Task, Boolean) -> Unit,
+    task: Task,
     tittle: String,
     description: String,
     isInSelectionMode: Boolean,
-    task: Task
+    goToTask: () -> Unit,
+    onSelectTask: (Task, Boolean) -> Unit
 ) {
 
     val isSelected = remember(task) { mutableStateOf(false) }

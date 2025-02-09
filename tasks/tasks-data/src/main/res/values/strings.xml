@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unCompletedTasksForToday">Uncompleted Tasks Today</string>
+    <string name="dailyCheckTime">Channel for daily tasks check at 21:00</string>
+
+
+</resources>

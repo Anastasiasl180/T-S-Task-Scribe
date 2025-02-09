@@ -4,6 +4,9 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +17,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Notifications
@@ -35,11 +41,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
+import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.tasks_domain.models.Subtasks
 import java.time.LocalDate
 import java.time.LocalTime
@@ -109,7 +118,7 @@ fun SubTaskCard(
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.White.copy(alpha = 0.5f),
                             unfocusedIndicatorColor = Color.Transparent
                         )
                     )
@@ -181,29 +190,18 @@ fun SubTaskCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth(0.25f),
+                            modifier = Modifier.fillMaxWidth(0.2f),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
 
                             Text(stringResource(id = R.string.doneOrNo))
-                            Checkbox(colors = CheckboxColors(
-                                checkedCheckmarkColor = Color.White,
-                                uncheckedCheckmarkColor = Color.Gray,
-                                checkedBorderColor = Color.White,
-                                checkedBoxColor = Color.Transparent,
-                                uncheckedBoxColor = Color.Transparent,
-                                disabledBorderColor = Color.White,
-                                disabledUncheckedBoxColor = Color.White,
-                                uncheckedBorderColor = Color.White,
-                                disabledUncheckedBorderColor = Color.White,
-                                disabledCheckedBoxColor = Color.White,
-                                disabledIndeterminateBorderColor = Color.White,
-                                disabledIndeterminateBoxColor = Color.White
-                            ), checked = isCompleted, onCheckedChange = { isChecked ->
-                                onIsCompletedChange(index, isChecked)
-                            })
+                            CircularCheckbox(
+                                checked = isCompleted,
+                                onCheckedChange = { isChecked -> onIsCompletedChange(index, isChecked) }
+                            )
+
                         }
                         TextButton(onClick = { onDelete(index) }) {
                             Text(text = stringResource(id = R.string.delete), color = Color.Gray)
@@ -215,6 +213,7 @@ fun SubTaskCard(
         }
     }
 }
+
 
 @Composable
 fun SubTasksList(

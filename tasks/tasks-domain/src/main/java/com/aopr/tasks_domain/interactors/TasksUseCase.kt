@@ -1,13 +1,13 @@
 package com.aopr.tasks_domain.interactors
 
-import android.util.Log
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.resource_manager.SharedStringResourceManager
 import com.aopr.shared_domain.throws.EmptyDateForReminderException
+import com.aopr.shared_domain.throws.EmptyDayToBeDoneException
 import com.aopr.shared_domain.throws.EmptyDescriptionException
 import com.aopr.shared_domain.throws.EmptyTimeForReminderException
 import com.aopr.shared_domain.throws.EmptyTittleException
-import com.aopr.tasks_domain.R
+import com.aopr.shared_domain.throws.SetCorrectTimeForReminderException
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,22 +18,29 @@ import java.time.LocalDate
 @Single
 class TasksUseCase(private val repository: TasksRepository) {
 
-    fun deleteAllTasks():Flow<Responses<Unit>> = flow {
+    fun deleteAllTasks(): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.deleteAllTask()
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        } catch (e: EmptyDescriptionException) {
+            emit(Responses.Error(SharedStringResourceManager.EmptyDescriptionMessage.messageId))
+
         }
     }
-    fun setTasksFromFire(tasks:List<Task>?):Flow<Responses<Unit>> = flow {
+
+    fun setTasksFromFire(tasks: List<Task>?): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
             val data = repository.setTasksFromFire(tasks)
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        } catch (e: EmptyDescriptionException) {
+            emit(Responses.Error(SharedStringResourceManager.EmptyDescriptionMessage.messageId))
+
         }
     }
 
@@ -43,37 +50,46 @@ class TasksUseCase(private val repository: TasksRepository) {
             val data = repository.createTask(task)
             emit(Responses.Success(data))
         } catch (e: IOException) {
-           emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         } catch (e: EmptyDescriptionException) {
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDescription))
+            emit(Responses.Error(SharedStringResourceManager.EmptyDescriptionMessage.messageId))
+
         } catch (e: EmptyTittleException) {
-           emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
+            emit(Responses.Error(SharedStringResourceManager.EmptyTittleMessage.messageId))
+
         } catch (e: EmptyDateForReminderException) {
-           emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDateReminder))
+            emit(Responses.Error(SharedStringResourceManager.EmptyDataForReminderMessage.messageId))
+
         } catch (e: EmptyTimeForReminderException) {
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTimeReminder))
+            emit(Responses.Error(SharedStringResourceManager.EmptyTimeForReminderMessage.messageId))
+
+        } catch (e: EmptyDayToBeDoneException) {
+            emit(Responses.Error(SharedStringResourceManager.EmptyDataForTaskToBeDoneMessage.messageId))
+
+        }
+        catch (e: SetCorrectTimeForReminderException) {
+            emit(Responses.Error(SharedStringResourceManager.WrongTimeForReminderMessage.messageId))
+
         }
 
     }
 
-    fun deleteTask(task: List<Task>,): Flow<Responses<Unit>> = flow {
+    fun deleteTask(task: List<Task>): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
-            val data = repository.deleteTask(task)
+            val data = repository.deleteChosenTasks(task)
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-        } catch (e: EmptyTittleException) {
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyTittle))
-        } catch (e: EmptyDescriptionException) {
-            emit(Responses.Error(com.aopr.shared_domain.R.string.EmptyDescription))
+        } catch (e: Exception) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
         }
     }
 
     fun getTaskById(id: Int): Flow<Responses<Flow<Task>>> = flow {
         try {
             emit(Responses.Loading())
-            val data = repository.getTaskBuId(id)
+            val data = repository.getTaskById(id)
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
@@ -101,20 +117,19 @@ class TasksUseCase(private val repository: TasksRepository) {
             emit(Responses.Success(data))
         } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-
         } catch (e: Exception) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
 
         }
     }
-    fun deleteSubTask(task: Task?,indexOfSubTask:Int):Flow<Responses<Unit>> = flow {
+
+    fun deleteSubTask(task: Task, indexOfSubTask: Int): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())
-            val data = repository.deleteSubTask(task,indexOfSubTask)
+            val data = repository.deleteSubTask(task, indexOfSubTask)
             emit(Responses.Success(data))
-        }catch (e: IOException) {
+        } catch (e: IOException) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
-
         } catch (e: Exception) {
             emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
 

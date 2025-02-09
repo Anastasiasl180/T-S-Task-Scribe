@@ -1,13 +1,27 @@
 package com.aopr.shared_ui.cardsView
 
 import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.aopr.shared_domain.colors_for_theme.Themes
 import com.aopr.shared_ui.MainViewModel
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
@@ -194,6 +208,37 @@ fun background(): Brush {
     return backgroundLooks
 }
 
+@Composable
+fun CircularCheckbox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    circleSize: Dp = 20.dp,
+    borderColor: Color = Color.Gray,
+    checkedColor: Color = Color.White,
+    uncheckedColor: Color = Color.Transparent
+) {
+    Box(
+        modifier = modifier
+            .size(circleSize)
+            .clip(CircleShape)
+            .background(if (checked) checkedColor else uncheckedColor)
+            .border(2.dp, borderColor, CircleShape)
+            .clickable {
+                onCheckedChange(!checked)
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        if (checked) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = borderColor,
+                modifier = Modifier.size(circleSize * 0.5f)
+            )
+        }
+    }
+}
 
 @Composable
 fun textGradient(): List<Color> {

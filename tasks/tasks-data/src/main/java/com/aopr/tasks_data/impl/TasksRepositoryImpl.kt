@@ -23,9 +23,9 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
     override suspend fun createTask(task: Task) {
         val existingTask = dao.getTaskById(task.id).firstOrNull()
         if (existingTask != null) {
-          updateTask(task)
+            updateTask(task)
         } else {
-           FieldsValidator.validateTask(
+            FieldsValidator.validateTask(
                 task.tittle,
                 task.description,
                 task.dateForReminder,
@@ -52,7 +52,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         }
     }
 
-    override suspend fun deleteTask(task: List<Task>) {
+    override suspend fun deleteChosenTasks(task: List<Task>) {
         task.forEach { taskToDelete ->
             dao.deleteTask(listOf(taskToDelete.mapToEntity()))
 
@@ -65,7 +65,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
                     time = taskToDelete.timeForReminder!!
                 )
             }
-   taskToDelete.listOfSubtasks
+            taskToDelete.listOfSubtasks
                 ?.filter { it.date != null && it.time != null }
                 ?.forEach { subtask ->
                     cancelSubtaskReminder(
@@ -77,11 +77,11 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
                         time = subtask.time!!
                     )
                 }
-    }
+        }
     }
 
     override suspend fun deleteAllTask() {
-       val allTasks = dao.getALlTasks().first()
+        val allTasks = dao.getALlTasks().first()
         dao.deleteAllTask(allTasks)
     }
 
@@ -106,7 +106,7 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         dao.updateTask(task.mapToEntity().copy(listOfSubtasks = list))
     }
 
-    override suspend fun getTaskBuId(id: Int): Flow<Task> {
+    override suspend fun getTaskById(id: Int): Flow<Task> {
         return dao.getTaskById(id).map { it.mapToTask() }
     }
 
@@ -116,28 +116,26 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         }
     }
 
-    override suspend fun deleteSubTask(task: Task?, indexOfSubTak: Int) {
-        if (task != null) {
-            val existingTask = dao.getTaskById(task.id).first()
-            val list = existingTask.listOfSubtasks
-            if (list != null) {
-                val subTaskRemi = list[indexOfSubTak]
-                if (subTaskRemi.time != null && subTaskRemi.date != null) {
-                    cancelSubtaskReminder(
-                        context,
-                        subTaskId = existingTask.uuid,
-                        taskTitle = existingTask.tittle,
-                        subTaskDescription = subTaskRemi.description,
-                        date = subTaskRemi.date!!,
-                        time = subTaskRemi.time!!
-                    )
-                }
-                val updatedList = list.toMutableList().apply {
-                    removeAt(indexOfSubTak)
-                }
-                val updatedTask = existingTask.mapToTask().copy(listOfSubtasks = updatedList)
-                updateTask(updatedTask)
+    override suspend fun deleteSubTask(task: Task, indexOfSubTak: Int) {
+        val existingTask = dao.getTaskById(task.id).first()
+        val list = existingTask.listOfSubtasks
+        if (list != null) {
+            val subTaskRemi = list[indexOfSubTak]
+            if (subTaskRemi.time != null && subTaskRemi.date != null) {
+                cancelSubtaskReminder(
+                    context,
+                    subTaskId = existingTask.uuid,
+                    taskTitle = existingTask.tittle,
+                    subTaskDescription = subTaskRemi.description,
+                    date = subTaskRemi.date!!,
+                    time = subTaskRemi.time!!
+                )
             }
+            val updatedList = list.toMutableList().apply {
+                removeAt(indexOfSubTak)
+            }
+            val updatedTask = existingTask.mapToTask().copy(listOfSubtasks = updatedList)
+            updateTask(updatedTask)
         }
     }
 

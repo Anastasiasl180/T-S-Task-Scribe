@@ -5,6 +5,5 @@ import com.aopr.tasks_domain.models.Task
 
 sealed class AllTasksUiEvents:UiEventsType {
     data class NavigateToCreateTaskScreen(val id:Int?):AllTasksUiEvents()
-    data class DeleteTask(val task:Task):AllTasksUiEvents()
     data object NavigateBack:AllTasksUiEvents()
 }

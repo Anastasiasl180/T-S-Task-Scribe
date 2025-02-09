@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,7 +50,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
+import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
+import com.aopr.shared_ui.infoBar.CustomInfoBar
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForCalendar
@@ -72,21 +75,20 @@ fun CreatingTaskScreen() {
     val dateOfTaskToBeDone by viewModel.dataOfTaskToBeDone
     val isCalendarVisible by viewModel.isCalendarVisible.collectAsState()
     val isClockVisible by viewModel.isClockVisible.collectAsState()
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val timeOfTask by viewModel.timeOfTask
-
     val timeOfSubTask by viewModel.timeOfSubTask
     val dateOfSubTask by viewModel.dateOfSubTask
-
     val isTaskDone by viewModel.isDoneTask.collectAsState()
-
     val priorityOfTask by viewModel.priority.collectAsState()
-    val importanceItems = ImportanceOfTask.entries
-    val heightScreen = LocalConfiguration.current.screenHeightDp
     val tittleOfTask by viewModel.tittleOfTask.collectAsState()
     val descriptionOfTask by viewModel.descriptionOfTask.collectAsState()
     val listOfDatesWithTasks = viewModel.datesWithTasks
+
+    val importanceItems = ImportanceOfTask.entries
     val backgroundTheme = background()
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val heightScreen = LocalConfiguration.current.screenHeightDp
+
     BackHandler {
 
     }
@@ -183,7 +185,6 @@ fun CreatingTaskScreen() {
                 }
 
                 if (isCalendarVisible) {
-
                     BottomSheetForCalendar(
                         onDismiss = {
                             viewModel.onEvent(CreatingTaskEvents.HideCalendar)
@@ -561,24 +562,11 @@ fun CreatingTaskScreen() {
                         Row(
                             modifier = Modifier
                                 .height((heightScreen * 0.15).dp)
-                                .fillMaxWidth(0.3f), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
+                                .fillMaxWidth(0.2f), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = stringResource(id = R.string.doneOrNo))
-                            Checkbox(colors = CheckboxColors(
-                                checkedCheckmarkColor = Color.White,
-                                uncheckedCheckmarkColor = Color.Gray,
-                                checkedBorderColor = Color.White,
-                                checkedBoxColor = Color.Transparent,
-                                uncheckedBoxColor = Color.Transparent,
-                                disabledBorderColor = Color.White,
-                                disabledUncheckedBoxColor = Color.White,
-                                uncheckedBorderColor = Color.White,
-                                disabledUncheckedBorderColor = Color.White,
-                                disabledCheckedBoxColor = Color.White,
-                                disabledIndeterminateBorderColor = Color.White,
-                                disabledIndeterminateBoxColor = Color.White
-                            ), checked = isTaskDone, onCheckedChange = { isChecked ->
-                               viewModel.onEvent(CreatingTaskEvents.UpdateIsDoneTask(isChecked))
+                            CircularCheckbox(checked = isTaskDone, onCheckedChange =  { isChecked ->
+                                viewModel.onEvent(CreatingTaskEvents.UpdateIsDoneOfTask(isChecked))
                             })
                         }
                     }
@@ -689,5 +677,6 @@ fun CreatingTaskScreen() {
                 }
             }
         }
+        viewModel.infoBar.value?.let {CustomInfoBar(message = it) }
     }
 }

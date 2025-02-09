@@ -25,7 +25,6 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
     private val _listOfTasks = mutableStateOf<List<Task>?>(null)
     val listOfTasks: State<List<Task>?> = _listOfTasks
 
-
     private val _isInSelectionMode = MutableStateFlow(false)
     val isInSelectedMode: StateFlow<Boolean> = _isInSelectionMode
 
@@ -58,7 +57,6 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
             val tasksToDelete = _selectedTasksToDelete.toList()
             onEvent(AllTasksEvents.DeleteTask(tasksToDelete))
         }
-        // Clear selection mode
         _selectedTasksToDelete.clear()
         _isInSelectionMode.value = false
     }

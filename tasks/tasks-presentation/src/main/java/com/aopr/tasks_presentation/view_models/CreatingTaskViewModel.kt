@@ -13,7 +13,6 @@ import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,8 +72,8 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     private val _datesWithTasks = mutableStateListOf<LocalDate?>()
     val datesWithTasks: List<LocalDate?> = _datesWithTasks
 
-    private val _tasksByDate = mutableStateListOf<Task?>(null)
-    val tasksByDate: List<Task?> = _tasksByDate
+    private val _tasksByDate = mutableStateListOf<Task>()
+    val tasksByDate: List<Task> = _tasksByDate
 
     private val _calendarMode = mutableStateOf(CalendarMode.TASK_DONE)
     val calendarMode: State<CalendarMode> = _calendarMode
@@ -153,13 +152,15 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
         tasksUseCase.createTask(task).onEach { result ->
             when (result) {
                 is Responses.Error -> {
+                    hideInfoBar()
+                    result.message?.let { showShortInfoBar(it, 2) }
                 }
 
                 is Responses.Loading -> {
                 }
 
                 is Responses.Success -> {
-
+                    onEvent(CreatingTaskEvents.NavigateToBack)
                 }
             }
 
@@ -196,7 +197,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteSubTask(task: Task?, indexOfSubTask: Int) {
+    private fun deleteSubTask(task: Task, indexOfSubTask: Int) {
         tasksUseCase.deleteSubTask(task, indexOfSubTask).onEach { result ->
             when (result) {
                 is Responses.Error -> {
@@ -253,8 +254,6 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         importance = _priority.value
                     )
                     createTask(task)
-                    delay(500)
-                    onEvent(CreatingTaskEvents.NavigateToBack)
                 }
             }
 
@@ -272,7 +271,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                 }
             }
 
-            is CreatingTaskEvents.UpdateIsDoneTask -> {
+            is CreatingTaskEvents.UpdateIsDoneOfTask -> {
                 _isDoneTask.value = event.isDone
             }
 
