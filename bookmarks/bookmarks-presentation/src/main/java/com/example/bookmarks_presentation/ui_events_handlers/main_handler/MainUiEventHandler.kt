@@ -1,5 +1,6 @@
 package com.example.bookmarks_presentation.ui_events_handlers.main_handler
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.aopr.shared_ui.util.LocalNavigator
@@ -19,6 +20,7 @@ fun MainUiEventHandler() {
         viewModel.event.collect {uiEvent->
             when(uiEvent){
                 is UiMainEvents.NavigateToCreateBookmark -> {
+                    Log.wtf("dfhf", uiEvent.id.toString(), )
                     navigator.navigate(BookmarksNavRoutes.CreatingBookMarkScreen(BookmarksRoutesInfo(bookmarkId = uiEvent.id)))
                 }
 

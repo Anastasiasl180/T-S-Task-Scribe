@@ -209,6 +209,79 @@ fun background(): Brush {
 }
 
 @Composable
+fun dialogBackground(): Brush {
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+
+    val themes by mainViewModel.chosenTheme.collectAsState()
+
+
+    val backgroundLooks: Brush = when (themes) {
+        Themes.METALIC -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.onPrimary,
+                    0.4f to MaterialTheme.colorScheme.onBackground,
+                    0.75f to MaterialTheme.colorScheme.primaryContainer,
+                    0.99f to MaterialTheme.colorScheme.onSecondary,
+                ), end = Offset.Infinite
+            )
+        }
+
+        Themes.`DUSKY-EVENING` -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primaryContainer,
+                    0.9f to MaterialTheme.colorScheme.onBackground,
+
+                    ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+
+        Themes.ORANGE -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.onSecondary,
+                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
+                    0.99f to MaterialTheme.colorScheme.tertiary,
+
+                    ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+
+        Themes.PASTEL -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.onSecondary,
+                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
+                    0.99f to MaterialTheme.colorScheme.primary,
+
+                    ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+
+        else ->
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    0.4f to MaterialTheme.colorScheme.tertiary,
+                    1.0f to MaterialTheme.colorScheme.onPrimary,
+                    0.0f to MaterialTheme.colorScheme.onSecondary,
+                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
+                    0.8f to MaterialTheme.colorScheme.primary,
+                    1.0f to MaterialTheme.colorScheme.tertiary,
+
+                    ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+    }
+    return backgroundLooks
+}
+
+
+@Composable
 fun CircularCheckbox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
