@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColor
 import com.aopr.tasks_data.R
 import com.aopr.tasks_data.mapper.mapToTask
 import com.aopr.tasks_data.room.TasksDao
@@ -57,8 +59,7 @@ class TaskReminderReceiver : BroadcastReceiver() {
             }
             notificationManager.createNotificationChannel(channel)
         }
-
-        val notification = NotificationCompat.Builder(context, channelId)
+       val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Task Reminder")
             .setContentText(taskTitle)
             .setSmallIcon(R.drawable.icon_for_notification)

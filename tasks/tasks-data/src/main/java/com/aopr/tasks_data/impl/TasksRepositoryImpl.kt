@@ -1,7 +1,6 @@
 package com.aopr.tasks_data.impl
 
 import android.content.Context
-import android.util.Log
 import com.aopr.tasks_data.mapper.mapToEntity
 import com.aopr.tasks_data.mapper.mapToTask
 import com.aopr.tasks_data.room.TasksDao

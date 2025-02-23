@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.notes_presentation.R
+import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
 import com.aopr.tasks_domain.models.Task
@@ -290,10 +291,10 @@ fun TaskCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (isInSelectionMode) {
-                        Checkbox(checked = isSelected.value, onCheckedChange = { checked ->
+                        CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
                             isSelected.value = checked
                             onSelectTask(task, checked)
-                        })
+                        }, circleSize = 25.dp)
                     }
                 }
             }

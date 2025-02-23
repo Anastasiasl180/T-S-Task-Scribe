@@ -46,7 +46,6 @@ fun CreatingTaskUiEventHandler() {
             when (event) {
                 CreatingTaskUiEvents.NavigateToBack -> {
                     navigator.popBackStack()
-                    //dfdfdf
                 }
             }
         }
@@ -58,4 +57,4 @@ fun CreatingTaskUiEventHandler() {
     }
 
 }
-}
+

@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.aopr.shared_ui.MainViewModel
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
-import com.example.bookmarks_presentation.ui_elements.CustomDropDownMenu
+import com.example.bookmarks_presentation.ui.ui_elements.CustomDropDownMenu
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
 

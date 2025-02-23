@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
@@ -27,8 +29,8 @@ import java.time.LocalTime
 class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
     ViewModelKit<CreatingTaskEvents, CreatingTaskUiEvents>() {
 
-    private val _existingTask = mutableStateOf<Task?>(null)
-    val existingTask: State<Task?> = _existingTask
+    private val _existingTask = MutableStateFlow<Task?>(null)
+    val existingTask: StateFlow<Task?> = _existingTask
 
     private val _tittleOfTask = MutableStateFlow("")
     val tittleOfTask: StateFlow<String> = _tittleOfTask
@@ -80,6 +82,9 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
 
     private val _clockMode = mutableStateOf(ClockMode.REMINDER_TASK)
     val clockMode: State<ClockMode> = _clockMode
+
+    private val _isCompletedButtonShowed = MutableStateFlow(false)
+    val isCompletedButtonShowed: StateFlow<Boolean> = _isCompletedButtonShowed
 
     private val _index = mutableIntStateOf(0)
     val index: State<Int> = _index
@@ -189,8 +194,11 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         _descriptionOfTask.value = task.description
                         _tittleOfTask.value = task.tittle
                         _dateOfTaskToBeDone.value = task.dateOfTaskToBeDone
-                        _existingTask.value = task
+                        _existingTask.update { task }
+                        _isCompletedButtonShowed.value = true
+
                     }
+
                 }
             }
 
@@ -231,6 +239,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             is CreatingTaskEvents.GetTakById -> {
                 viewModelScope.launch {
                     event.id?.let { getTaskById(it) }
+
                 }
             }
 
@@ -250,7 +259,7 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
                         dateOfTaskToBeDone = _dateOfTaskToBeDone.value,
                         timeForReminder = _timeOfTask.value,
                         isCompleted = _isDoneTask.value,
-                        listOfSubtasks = _listOfSubTasks as List<Subtasks>,
+                        listOfSubtasks = _listOfSubTasks.map { it.copy(isSubTaskSaved = true) },
                         importance = _priority.value
                     )
                     createTask(task)

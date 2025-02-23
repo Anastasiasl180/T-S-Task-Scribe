@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,8 +23,8 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
 
-    private val _listOfTasks = mutableStateOf<List<Task>?>(null)
-    val listOfTasks: State<List<Task>?> = _listOfTasks
+    private val _listOfTasks = mutableStateOf(emptyList<Task>())
+    val listOfTasks: State<List<Task>> = _listOfTasks
 
     private val _isInSelectionMode = MutableStateFlow(false)
     val isInSelectedMode: StateFlow<Boolean> = _isInSelectionMode
@@ -56,16 +57,16 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
         if (_selectedTasksToDelete.isNotEmpty()) {
             val tasksToDelete = _selectedTasksToDelete.toList()
             onEvent(AllTasksEvents.DeleteTask(tasksToDelete))
+            _selectedTasksToDelete.clear()
+            _isInSelectionMode.value = false
         }
-        _selectedTasksToDelete.clear()
-        _isInSelectionMode.value = false
+
     }
 
     private fun getAllTasks() {
         tasksUseCase.getAllTasks().onEach { result ->
             when (result) {
                 is Responses.Error -> {
-
                 }
 
                 is Responses.Loading -> {
@@ -112,7 +113,6 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
             }
 
             AllTasksEvents.GetAllTasks -> {
-
                 viewModelScope.launch {
                     getAllTasks()
                 }
@@ -131,7 +131,10 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
             }
 
             AllTasksEvents.TurnOnSelectionModeForDelete -> {
-                _isInSelectionMode.value = !_isInSelectionMode.value
+                if(_listOfTasks.value.isNotEmpty()){
+
+                    _isInSelectionMode.value = !_isInSelectionMode.value
+                }
 
             }
         }

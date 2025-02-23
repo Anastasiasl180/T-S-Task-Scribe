@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -29,20 +31,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
+import com.aopr.shared_domain.colors_for_theme.Themes
+import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.MainViewModelStoreOwner
 import com.aopr.tasks_domain.models.Task
-import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -61,7 +67,7 @@ fun BottomSheetForCalendar(
     getTasksByDate: (LocalDate) -> Unit,
     heightScreen: Int,
     listOfDatesWithTask: List<LocalDate?>,
-    listOfTasks: List<Task?>
+    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit
 
 ) {
 
@@ -90,7 +96,9 @@ fun BottomSheetForCalendar(
                     hideCalendar()
                 }, listOfDates = listOfDatesWithTask, getTasks = {
                     getTasksByDate(it)
-                }, listOfTasks = listOfTasks
+                }, listOfTasks = listOfTasks, navigateToTask = {
+                    navigateToTask(it)
+                }
             )
         }
     }
@@ -106,7 +114,7 @@ fun CustomCalendar(
     onDismiss: () -> Unit,
     listOfDates: List<LocalDate?>,
     getTasks: (LocalDate) -> Unit,
-    listOfTasks: List<Task?>
+    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit
 ) {
     val currentDate = remember { mutableStateOf(LocalDate.now()) }
     val selectedDate = remember { mutableStateOf(initialSelectedDate) }
@@ -185,7 +193,9 @@ fun CustomCalendar(
             },
             getTasks = {
                 getTasks(it)
-            }, listOfTasks = listOfTasks
+            }, listOfTasks = listOfTasks, navigateToTask = {
+                navigateToTask(it)
+            }
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -255,8 +265,34 @@ fun DatesGrid(
     onDateSelected: (LocalDate) -> Unit,
     listOfDates: List<LocalDate?>,
     getTasks: (LocalDate) -> Unit,
-    listOfTasks: List<Task?>
+    listOfTasks: List<Task?>,
+    navigateToTask:(Int)->Unit
 ) {
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val chosenTheme = mainViewModel.chosenTheme.collectAsState()
+    val colorForDate = when(chosenTheme.value){
+        Themes.BLUE -> {
+            MaterialTheme.colorScheme.onPrimary
+        }
+        Themes.VIOLET -> {
+            MaterialTheme.colorScheme.secondary
+        }
+        Themes.HAKI -> {
+            MaterialTheme.colorScheme.primaryContainer
+        }
+        Themes.METALIC -> {
+            MaterialTheme.colorScheme.secondary
+        }
+        Themes.`DUSKY-EVENING` -> {
+            MaterialTheme.colorScheme.onBackground
+        }
+        Themes.ORANGE -> {
+            MaterialTheme.colorScheme.onBackground
+        }
+        Themes.PASTEL -> {
+            MaterialTheme.colorScheme.secondary
+        }
+    }
     val firstDayOfMonth = currentDate.withDayOfMonth(1)
     val firstDayOfWeek = (firstDayOfMonth.dayOfWeek.value % 7)
     val daysInMonth = currentDate.lengthOfMonth()
@@ -286,7 +322,7 @@ fun DatesGrid(
 
                         val textColor = when {
                             isPastDate -> Color.Gray
-                            isTaskDate -> Color.Blue
+                            isTaskDate -> colorForDate
                             else -> Color.White
                         }
 
@@ -326,48 +362,62 @@ fun DatesGrid(
             }
 
             if (listOfTasks.isNotEmpty()) {
-                Column(
+                Spacer(modifier = Modifier.height(30.dp))
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
+                        .fillMaxHeight().fillMaxWidth(0.95f)
+                        .clip(RoundedCornerShape(30.dp)),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(0.2f)
-                            .fillMaxHeight(0.15f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-
-                        Text(text = stringResource(id = R.string.tasks), color = Color.White)
-                    }
-                    listOfTasks.forEach { task ->
+                    item {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .fillMaxHeight(0.3f),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                                .fillMaxWidth(0.2f)
+                                .fillMaxHeight(0.1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Card(
+                            Text(text = stringResource(id = R.string.tasks), color = Color.White)
+                        }
+                    }
+
+                    listOfTasks.forEach { task ->
+                        item {
+                            Row(
                                 modifier = Modifier
-                                    .fillMaxHeight()
-                                    .fillMaxWidth(0.9f)
+                                    .fillMaxWidth()
+                                    .height(100.dp)
+                                    .padding(vertical = 5.dp)
+                                ,
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                if (task != null) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(start = 10.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(text = task.tittle, color = Color.White)
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth(0.9f).clickable {
+                                            if (task != null) {
+                                                navigateToTask(task.id)
+                                            }
+                                        }
+                                ) {
+                                    if (task != null) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(start = 10.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(text = task.tittle, color = Color.White)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
             } else {
                 Row(
                     modifier = Modifier
