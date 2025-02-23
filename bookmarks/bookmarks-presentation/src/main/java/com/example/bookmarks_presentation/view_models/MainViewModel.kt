@@ -1,5 +1,6 @@
 package com.example.bookmarks_presentation.view_models
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
     private val _listOfCategories = MutableStateFlow<List<Category>>(emptyList())
     val listOfCategories: StateFlow<List<Category>> = _listOfCategories
 
-    private val _event = MutableSharedFlow<UiMainEvents>()
+    private val _event = MutableSharedFlow<UiMainEvents>(replay = 1)
     val event = _event.asSharedFlow()
 
     init {
@@ -102,7 +103,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
         when (event) {
             is MainEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
-
+                    Log.wtf("j", event.id.toString() )
                     _event.emit(NavigateToCreateBookmark(event.id))
                 }
             }
