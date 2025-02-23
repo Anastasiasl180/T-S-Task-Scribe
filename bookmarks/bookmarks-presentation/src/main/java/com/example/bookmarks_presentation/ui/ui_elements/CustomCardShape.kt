@@ -1,4 +1,4 @@
-package com.example.bookmarks_presentation.ui_elements
+package com.example.bookmarks_presentation.ui.ui_elements
 
 
 import androidx.compose.foundation.Canvas

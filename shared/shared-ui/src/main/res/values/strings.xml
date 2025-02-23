@@ -10,5 +10,7 @@
     <string name="pinnedNotes">Pinned notes</string>
     <string name="save">Save</string>
     <string name="notes">Notes</string>
+    <string name="all">All</string>
+    <string name="plus">+</string>
     <string name="tasks">Tasks</string>
 </resources>

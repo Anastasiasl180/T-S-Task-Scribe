@@ -66,8 +66,7 @@ class TasksUseCase(private val repository: TasksRepository) {
         } catch (e: EmptyDayToBeDoneException) {
             emit(Responses.Error(SharedStringResourceManager.EmptyDataForTaskToBeDoneMessage.messageId))
 
-        }
-        catch (e: SetCorrectTimeForReminderException) {
+        } catch (e: SetCorrectTimeForReminderException) {
             emit(Responses.Error(SharedStringResourceManager.WrongTimeForReminderMessage.messageId))
 
         }

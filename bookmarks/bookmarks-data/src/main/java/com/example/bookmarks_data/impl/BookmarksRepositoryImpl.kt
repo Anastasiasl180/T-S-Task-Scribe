@@ -1,9 +1,7 @@
 package com.example.bookmarks_data.impl
 
 import android.content.Context
-import android.util.Log
 import com.aopr.firebase_data.helpers.Helpers
-import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.internetConnectionFun.isInternetAvailable
 import com.example.bookmarks_data.mapper.mapToBookmark
 import com.example.bookmarks_data.mapper.mapToCategory
@@ -13,13 +11,10 @@ import com.example.bookmarks_domain.interactors.BookmarksRepository
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import org.koin.core.annotation.Single
 
 @Single
@@ -37,8 +32,6 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
             if (isInternetAvailable(context)) {
                 val listUpdated = getAllBookmarks().first()
                 val firestoreData = listUpdated.map { it.toFirestore() }
-                Log.wtf("bookmarksImpl", firestoreData.toString())
-
                 Helpers.FirebaseHelper.updateUserDataBookmark(
                     userId,
                     mapOf("listOfBookmarks" to firestoreData)
@@ -68,9 +61,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
         if (bookmarks != null) {
             dao.saveBookmarks(bookmarks.map { it.mapToEntity() })
         } else {
-            Log.wtf("bo", bookmarks.toString())
-
-        }
+          }
     }
 
     override suspend fun updateBookmark(bookmark: Bookmark, userId: String?) {

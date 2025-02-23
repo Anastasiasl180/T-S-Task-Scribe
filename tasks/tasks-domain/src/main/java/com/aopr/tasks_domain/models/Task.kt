@@ -51,7 +51,8 @@ data class Subtasks(
     val description:String,
     val isCompleted:Boolean,
     val date:LocalDate? = null,
-    val time:LocalTime?=null
+    val time:LocalTime?=null,
+    val isSubTaskSaved:Boolean = false
 ){
     fun toFirestore(): Map<String, Any?> {
         return mapOf(

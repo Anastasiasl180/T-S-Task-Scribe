@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksEvents
 import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
-import com.example.bookmarks_presentation.ui_elements.CustomCard
+import com.example.bookmarks_presentation.ui.ui_elements.CustomCard
 import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_handler.AllBookmarksUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksViewModel
 import org.koin.androidx.compose.koinViewModel

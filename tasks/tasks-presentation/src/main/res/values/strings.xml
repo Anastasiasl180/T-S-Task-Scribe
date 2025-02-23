@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="selectDateAndTimeForReminder">Select date and time for reminder</string>
+    <string name="selectDateReminder">Select date</string>
+    <string name="reminder">Reminder</string>
     <string name="selectDateForTaskToBeDone">Select date when task should be done</string>
+
+    <string name="selectTimeForReminder">Select time</string>
     <string name="choosePriority">Choose priority</string>
     <string name="cleanField">Clean</string>
     <string name="addSubtask">Add subtask</string>

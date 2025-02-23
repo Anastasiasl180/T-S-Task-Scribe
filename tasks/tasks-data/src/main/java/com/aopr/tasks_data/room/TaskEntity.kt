@@ -40,7 +40,7 @@ class Converts {
     @TypeConverter
     fun fromListOfSubtasks(value: List<Subtasks>?): String? {
         return value?.joinToString(separator = ";") {
-            "${it.description}|${it.isCompleted}|${it.date}|${it.time}"
+            "${it.description}|${it.isCompleted}|${it.date}|${it.time}|${it.isSubTaskSaved}"
         }
     }
 
@@ -48,12 +48,13 @@ class Converts {
     fun toListOfSubtasks(value: String?): List<Subtasks>? {
         return value?.split(";")?.mapNotNull { subtaskString ->
             val parts = subtaskString.split("|")
-            if (parts.size == 4) {
+            if (parts.size == 5) {
                 Subtasks(
                     description = parts[0],
                     isCompleted = parts[1].toBoolean(),
                     date = parts[2].takeIf { it != "null" }?.let { LocalDate.parse(it) },
-                    time = parts[3].takeIf { it != "null" }?.let { LocalTime.parse(it) }
+                    time = parts[3].takeIf { it != "null" }?.let { LocalTime.parse(it) },
+                    isSubTaskSaved = parts[4].toBoolean()
                 )
             } else {
                 null
