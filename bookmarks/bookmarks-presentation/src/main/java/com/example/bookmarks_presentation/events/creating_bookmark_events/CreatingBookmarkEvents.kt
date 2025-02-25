@@ -15,5 +15,6 @@ sealed interface CreatingBookmarkEvents {
     data class UpdateTittleOfBookmark(val tittle: String) : CreatingBookmarkEvents
     data object ExpandDropDownMenu: CreatingBookmarkEvents
     data class SelectCategory(val id:Int?): CreatingBookmarkEvents
+    data object NavigateBack: CreatingBookmarkEvents
 
 }

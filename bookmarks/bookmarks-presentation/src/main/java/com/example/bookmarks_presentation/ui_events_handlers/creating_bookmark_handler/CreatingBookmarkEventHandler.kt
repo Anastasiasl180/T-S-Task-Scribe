@@ -6,6 +6,7 @@ import androidx.navigation.toRoute
 import com.aopr.shared_ui.util.LocalNavigator
 import com.aopr.shared_ui.util.currentOrThrow
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkUiEvents
 import com.example.bookmarks_presentation.navigation.BookmarksNavRoutes
 import com.example.bookmarks_presentation.view_models.CreatingBookmarkViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -20,9 +21,18 @@ fun CreatingBookmarkUiEventHandlerWithCategoryId() {
         navigator.currentBackStackEntry!!.toRoute<BookmarksNavRoutes.CreatingBookMarkScreen>()
     val bookmarkId = bookmarkInfo.bookmarksInfo
 
+LaunchedEffect(Unit) {
+    viewModel.event.collect {event->
+        when(event){
+            CreatingBookmarkUiEvents.NavigateBack -> {
+                navigator.popBackStack()
+            }
+        }
 
+    }
+}
     LaunchedEffect(Unit) {
-        viewModel.oEvent(CreatingBookmarkEvents.GetBookmarkById(bookmarkId))
+        viewModel.onEvent(CreatingBookmarkEvents.GetBookmarkById(bookmarkId))
     }
 
 }

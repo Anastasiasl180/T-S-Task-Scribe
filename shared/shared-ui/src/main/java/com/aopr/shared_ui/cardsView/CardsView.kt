@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aopr.shared_domain.colors_for_theme.Themes
@@ -208,8 +209,9 @@ fun background(): Brush {
     return backgroundLooks
 }
 
+
 @Composable
-fun dialogBackground(): Brush {
+fun gradientOfDialogs(): Brush {
     val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
 
     val themes by mainViewModel.chosenTheme.collectAsState()
@@ -219,21 +221,21 @@ fun dialogBackground(): Brush {
         Themes.METALIC -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
-                    0.0f to MaterialTheme.colorScheme.onPrimary,
-                    0.4f to MaterialTheme.colorScheme.onBackground,
-                    0.75f to MaterialTheme.colorScheme.primaryContainer,
-                    0.99f to MaterialTheme.colorScheme.onSecondary,
-                ), end = Offset.Infinite
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.secondary,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
+                end = Offset.Infinite
             )
         }
 
         Themes.`DUSKY-EVENING` -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
-                    0.0f to MaterialTheme.colorScheme.primaryContainer,
-                    0.9f to MaterialTheme.colorScheme.onBackground,
-
-                    ), start = Offset.Zero,
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.onBackground,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
                 end = Offset.Infinite
             )
         }
@@ -241,11 +243,10 @@ fun dialogBackground(): Brush {
         Themes.ORANGE -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
-                    0.0f to MaterialTheme.colorScheme.onSecondary,
-                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
-                    0.99f to MaterialTheme.colorScheme.tertiary,
-
-                    ), start = Offset.Zero,
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.onBackground,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
                 end = Offset.Infinite
             )
         }
@@ -253,29 +254,47 @@ fun dialogBackground(): Brush {
         Themes.PASTEL -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
-                    0.0f to MaterialTheme.colorScheme.onSecondary,
-                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
-                    0.99f to MaterialTheme.colorScheme.primary,
-
-                    ), start = Offset.Zero,
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.secondary,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
                 end = Offset.Infinite
             )
         }
 
-        else ->
+        Themes.VIOLET -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
-                    0.0f to MaterialTheme.colorScheme.primary,
-                    0.4f to MaterialTheme.colorScheme.tertiary,
-                    1.0f to MaterialTheme.colorScheme.onPrimary,
-                    0.0f to MaterialTheme.colorScheme.onSecondary,
-                    0.5f to MaterialTheme.colorScheme.onSecondaryContainer,
-                    0.8f to MaterialTheme.colorScheme.primary,
-                    1.0f to MaterialTheme.colorScheme.tertiary,
-
-                    ), start = Offset.Zero,
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.secondary,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
                 end = Offset.Infinite
             )
+        }
+
+        Themes.HAKI -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.primaryContainer,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+
+        Themes.BLUE -> {
+            Brush.linearGradient(
+                colorStops = arrayOf(
+                    0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                    0.95f to MaterialTheme.colorScheme.onPrimary,
+                    1f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
+                ), start = Offset.Zero,
+                end = Offset.Infinite
+            )
+        }
+
     }
     return backgroundLooks
 }

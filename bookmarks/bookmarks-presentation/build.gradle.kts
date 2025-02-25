@@ -42,6 +42,9 @@ android {
 
 dependencies {
 
+        implementation(libs.coil.compose.v222)
+
+
 
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))

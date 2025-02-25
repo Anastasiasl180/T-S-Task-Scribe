@@ -1,6 +1,6 @@
 package com.example.bookmarks_presentation.ui
 
-import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,6 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.shared_ui.cardsView.background
@@ -124,7 +126,13 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth(), contentAlignment = Alignment.CenterStart
 
                     ) {
-                        Text(text = stringResource(R.string.bookmarks), fontSize = 30.sp)
+                        Text(
+                            text = stringResource(R.string.bookmarks),
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily(
+                                Font(com.aopr.shared_ui.R.font.open_sans_light)
+                            )
+                        )
                     }
                     Box(
                         modifier = Modifier
@@ -162,7 +170,9 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     ) {
                                         Text(
                                             text = stringResource(com.aopr.shared_ui.R.string.plus),
-                                            fontSize = 30.sp
+                                            fontSize = 30.sp,
+                                            fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light))
+
                                         )
                                     }
                                 }
@@ -170,8 +180,11 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                 Card(
                                     modifier = Modifier
                                         .height(220.dp)
-                                        .width(180.dp), shape = MaterialTheme.shapes.extraLarge,
-                                    colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+                                        .width(180.dp).border(
+                                            border = BorderStroke(0.5.dp, color = Color.White.copy(alpha = 0.1f)),
+                                            shape = MaterialTheme.shapes.extraLarge
+                                        ), shape = MaterialTheme.shapes.extraLarge,
+                                    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 ) {
                                     Box(
                                         modifier = Modifier
@@ -184,6 +197,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     ) {
                                         Text(
                                             text = stringResource(com.aopr.shared_ui.R.string.all),
+                                            fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light)),
                                             modifier = Modifier
                                         )
                                     }
@@ -197,7 +211,11 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     .fillMaxHeight(0.15f),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(text = stringResource(R.string.categories), fontSize = 20.sp)
+                                Text(
+                                    text = stringResource(R.string.categories),
+                                    fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light)),
+                                    fontSize = 20.sp
+                                )
 
                             }
                             LazyVerticalGrid(
@@ -214,6 +232,10 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                         modifier = Modifier
                                             .height(220.dp)
                                             .width(180.dp)
+                                            .border(
+                                                border = BorderStroke(0.5.dp, color = Color.White.copy(alpha = 0.1f)),
+                                                shape = MaterialTheme.shapes.extraLarge
+                                            )
                                             .clickable {
                                                 viewModel.onEvent(
                                                     MainEvents.NavigateToBookmarksByCategoryId(
@@ -233,6 +255,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
 
                                             Text(
                                                 text = stringResource(com.aopr.shared_ui.R.string.all),
+                                                fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light)),
                                                 modifier = Modifier
                                             )
                                             Button(onClick = {

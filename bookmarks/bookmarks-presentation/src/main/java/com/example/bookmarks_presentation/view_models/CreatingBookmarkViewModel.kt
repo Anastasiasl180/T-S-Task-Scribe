@@ -1,6 +1,5 @@
 package com.example.bookmarks_presentation.view_models
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,8 +10,11 @@ import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkUiEvents
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,7 +23,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 class CreatingBookmarkViewModel(
     private val bookmarksUseCase: BookmarksUseCase,
-    private val fireUser:FireUser
+    private val fireUser: FireUser
 ) : ViewModel() {
 
     private val _tittleOfBookmark = MutableStateFlow("")
@@ -45,9 +47,12 @@ class CreatingBookmarkViewModel(
     private val _fileUri = MutableStateFlow<String?>(null)
     val fileUri: StateFlow<String?> = _fileUri
 
+    private val _event = MutableSharedFlow<CreatingBookmarkUiEvents>()
+    val event = _event.asSharedFlow()
+
 
     init {
-        oEvent(CreatingBookmarkEvents.GetAllCategories)
+        onEvent(CreatingBookmarkEvents.GetAllCategories)
     }
 
     private fun createBookmark(bookmark: Bookmark, userId: String?) {
@@ -105,7 +110,6 @@ class CreatingBookmarkViewModel(
                         _fileUri.value = bookmark.fileUri
                         _contentUrl.value = bookmark.url
                         _idOfCategory.value = bookmark.categoryId
-                        Log.wtf("getByID", bookmark.toString())
                     }
 
                 }
@@ -114,10 +118,11 @@ class CreatingBookmarkViewModel(
     }
 
 
-    fun oEvent(events: CreatingBookmarkEvents) {
+    fun onEvent(events: CreatingBookmarkEvents) {
         when (events) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
                 viewModelScope.launch {
+
                     events.bookmarkInfo.bookmarkId?.let {
                         getBookMarkById(it)
                     }
@@ -125,7 +130,7 @@ class CreatingBookmarkViewModel(
                 }
             }
 
-          is  CreatingBookmarkEvents.SaveBookmark -> {
+            is CreatingBookmarkEvents.SaveBookmark -> {
                 viewModelScope.launch {
                     val bookmark = Bookmark(
                         id = _idOfBookamrk.value ?: 0,
@@ -134,7 +139,6 @@ class CreatingBookmarkViewModel(
                         url = _contentUrl.value,
                         categoryId = _idOfCategory.value
                     )
-Log.wtf("createFromVM",  fireUser.userId.toString())
                     createBookmark(bookmark, fireUser.userId)
                 }
             }
@@ -174,6 +178,12 @@ Log.wtf("createFromVM",  fireUser.userId.toString())
 
             is CreatingBookmarkEvents.SelectCategory -> {
                 _idOfCategory.value = events.id
+            }
+
+            CreatingBookmarkEvents.NavigateBack -> {
+                viewModelScope.launch {
+                    _event.emit(CreatingBookmarkUiEvents.NavigateBack)
+                }
             }
         }
     }

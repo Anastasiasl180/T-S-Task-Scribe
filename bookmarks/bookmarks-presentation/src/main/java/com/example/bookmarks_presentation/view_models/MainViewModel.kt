@@ -32,7 +32,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
     private val _listOfCategories = MutableStateFlow<List<Category>>(emptyList())
     val listOfCategories: StateFlow<List<Category>> = _listOfCategories
 
-    private val _event = MutableSharedFlow<UiMainEvents>(replay = 1)
+    private val _event = MutableSharedFlow<UiMainEvents>()
     val event = _event.asSharedFlow()
 
     init {
@@ -103,7 +103,6 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
         when (event) {
             is MainEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
-                    Log.wtf("j", event.id.toString() )
                     _event.emit(NavigateToCreateBookmark(event.id))
                 }
             }
