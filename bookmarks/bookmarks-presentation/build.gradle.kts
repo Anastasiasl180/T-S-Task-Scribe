@@ -41,10 +41,13 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.logging.interceptor)
+    implementation (libs.github.glide)
         implementation(libs.coil.compose.v222)
-
-
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.jsoup)
+    implementation (libs.kotlinx.coroutines.android)
 
     implementation(project(":shared:shared-ui"))
     implementation(project(":shared:shared-domain"))

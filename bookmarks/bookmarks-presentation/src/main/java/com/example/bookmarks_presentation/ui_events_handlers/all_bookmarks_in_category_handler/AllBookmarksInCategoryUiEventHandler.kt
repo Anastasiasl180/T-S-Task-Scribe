@@ -33,6 +33,20 @@ fun AllBookmarksByCategoryUiEventHandler() {
                         )
                     )
                 }
+
+                AllBookmarksInCategoryUiEvents.NavigateBack -> {
+                    navigator.popBackStack()
+                }
+
+                is AllBookmarksInCategoryUiEvents.NavigateToBookmarkById -> {
+                    navigator.navigate(
+                        BookmarksNavRoutes.CreatingBookMarkScreen(
+                            BookmarksRoutesInfo(
+                                bookmarkId = uiEvent.id
+                            )
+                        )
+                    )
+                }
             }
 
         }

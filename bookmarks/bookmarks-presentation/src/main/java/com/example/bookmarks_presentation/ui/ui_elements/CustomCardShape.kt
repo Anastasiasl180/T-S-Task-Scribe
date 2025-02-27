@@ -2,18 +2,26 @@ package com.example.bookmarks_presentation.ui.ui_elements
 
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,9 +34,17 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.aopr.shared_ui.cardsView.CircularCheckbox
+import com.aopr.shared_ui.cardsView.bookmarkCardsViews
+import com.example.bookmarks_domain.models.Bookmark
+import com.example.bookmarks_presentation.R
 
 
 class SecondShape(
@@ -138,47 +154,132 @@ class CustomShape(
 @Composable
 fun CustomCard(
     modifier: Modifier = Modifier,
+    bookmark: Bookmark,
+    tittleOfBookmark: String,
     navigateToBookmark: () -> Unit,
-    deleteBookmark:()-> Unit
+    deleteBookmark: () -> Unit,
+    isInSelectionMode: Boolean,
+    isOnSelectedBookmark: (Bookmark, Boolean) -> Unit
 
-    ) {
+) {
     val density = LocalDensity.current
     val customShape = CustomShape()
     val secondShape = SecondShape()
+    val isSelected = remember(bookmark) { mutableStateOf(false) }
 
+    val cardViews = bookmarkCardsViews()
     Box(modifier = modifier) {
 
-            Card(
+        Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(customShape)
+                .clickable(onClick = { navigateToBookmark() }),
+            shape = customShape,
+            colors = CardDefaults.cardColors(containerColor = if (isSelected.value) Color.Transparent else Color.Gray),
+            elevation = CardDefaults.cardElevation(20.dp)
+        ) {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(customShape)
-                    .clickable(onClick = navigateToBookmark),
-                shape = customShape,
-                colors = CardDefaults.cardColors(containerColor = Color.Magenta),
-                elevation = CardDefaults.cardElevation(20.dp)
+                    .background(cardViews)
             ) {
+                if (isInSelectionMode) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.95f)
+                            .fillMaxHeight(0.35f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
+                            isSelected.value = checked
+                            isOnSelectedBookmark(bookmark, checked)
+                        }, circleSize = 25.dp)
 
-                IconButton(onClick = {
-                    deleteBookmark()
-                }) { Text("delete") }
-            }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.35f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(), contentAlignment = Alignment.BottomEnd
-            ) {
-                Canvas(modifier = Modifier.fillMaxHeight(0.35f).fillMaxWidth(0.15f)) {
-                    val path = secondShape.createPath(size, density)
-                    drawPath(
-                        path = path,
-                        color = Color.Transparent
+
+                    Text(
+                        text = tittleOfBookmark,
+                        fontSize = 30.sp,
+                        color = Color.White,
+                        fontFamily = FontFamily(
+                            Font(com.aopr.shared_ui.R.font.open_sans_light)
+                        ),
+                        modifier = Modifier.padding(start = 20.dp)
+
                     )
-                    drawPath(
-                        path = path,
-                        color = Color.Magenta,
-                        style = Stroke(width = 2.dp.toPx())
+                }
+
+
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize(), contentAlignment = Alignment.BottomEnd
+
+        ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight(0.35f)
+                        .fillMaxWidth(0.15f),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { deleteBookmark() },
+                        tint = Color.White.copy(alpha = 0.7f)
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.follow_the_link_icon),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { navigateToBookmark() },
+                        tint = Color.White.copy(alpha = 0.7f)
                     )
                 }
             }
+
+
+            Canvas(
+                modifier = Modifier
+                    .fillMaxHeight(0.35f)
+                    .fillMaxWidth(0.15f)
+            ) {
+                val path = secondShape.createPath(size, density)
+                drawPath(
+                    path = path,
+                    color = Color.Transparent
+                )
+
+                drawPath(
+                    path = path,
+                    color = Color.White.copy(alpha = 0.5f),
+                    style = Stroke(width = 2.dp.toPx())
+                )
+
+
+            }
+        }
+
     }
 }

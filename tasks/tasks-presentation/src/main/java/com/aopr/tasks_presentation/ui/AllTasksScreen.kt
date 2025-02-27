@@ -51,8 +51,10 @@ import com.aopr.notes_presentation.R
 import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
+import com.aopr.shared_ui.deletion_row.DeletionRow
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
+import com.aopr.tasks_presentation.ui.ui_elements.TaskCard
 import com.aopr.tasks_presentation.view_models.AllTasksViewModel
 import com.aopr.tasks_presentation.view_models.ui_event_handlers.AllTasksUiEventHandler
 import org.koin.androidx.compose.koinViewModel
@@ -129,7 +131,7 @@ fun AllTasksScreen() {
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Spacer(modifier = Modifier.height(70.dp))
-                    Row(
+                   Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.08f),
@@ -142,32 +144,11 @@ fun AllTasksScreen() {
                             ),
                             fontSize = 20.sp
                         )
-                        TextButton(onClick = {
-                            viewModel.onEvent(AllTasksEvents.TurnOnSelectionModeForDelete)
-                        }) {
-                            Text(
-                                text = stringResource(id = com.aopr.shared_ui.R.string.chooseToDelete),
-                                color = Color.White
-                            )
-                        }
-                        if (isInSelectionMode) {
-                            Row {
-                                TextButton(onClick = { viewModel.cancelTaskFromDelete() }) {
-                                    Text(
-                                        text = stringResource(id = com.aopr.shared_ui.R.string.cancel),
-                                        color = Color.White
-                                    )
-                                }
+                       DeletionRow(isInSelectionMode, turnOnSelectionMode = {viewModel.onEvent(AllTasksEvents.TurnOnSelectionModeForDelete)
+                       }, deleteChosenItems = {viewModel.deleteSelectedNotes() })
 
-                                TextButton(onClick = { viewModel.deleteSelectedNotes() }) {
-                                    Text(
-                                        text = stringResource(id = com.aopr.shared_ui.R.string.delete),
-                                        color = Color.White
-                                    )
-                                }
-                            }
-                        }
-                    }
+
+                   }
                     Spacer(modifier = Modifier.height(10.dp))
                     LazyVerticalGrid(
                         modifier = Modifier.clip(MaterialTheme.shapes.large),
@@ -210,98 +191,4 @@ fun AllTasksScreen() {
         }
     }
 }
-
-@Composable
-fun TaskCard(
-    task: Task,
-    tittle: String,
-    description: String,
-    isInSelectionMode: Boolean,
-    goToTask: () -> Unit,
-    onSelectTask: (Task, Boolean) -> Unit
-) {
-
-    val isSelected = remember(task) { mutableStateOf(false) }
-
-    ElevatedCard(
-        modifier = Modifier
-            .height(220.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(cardViews()), contentAlignment = Alignment.Center
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.9f)
-                    .fillMaxWidth(0.9f)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.2f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-
-                    IconButton(
-                        onClick = { goToTask() }, modifier = Modifier.size(40.dp),
-                        colors = IconButtonDefaults.outlinedIconButtonColors(
-                            Color.White.copy(
-                                alpha = 0.2f
-                            )
-                        ),
-
-                        ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                            contentDescription = "ArrowRight",
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.3f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = tittle)
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxHeight(0.6f)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = if (description.length > 50) description.take(50) + "..." else description,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxHeight(0.6f)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (isInSelectionMode) {
-                        CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
-                            isSelected.value = checked
-                            onSelectTask(task, checked)
-                        }, circleSize = 25.dp)
-                    }
-                }
-            }
-
-        }
-    }
-
-}
-
 

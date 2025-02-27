@@ -30,10 +30,16 @@ interface BookmarksDao {
     suspend fun deleteCategory(category:CategoryEntity)
 
     @Delete
+    suspend fun deleteSeveralCategories(category:List<CategoryEntity>)
+
+    @Delete
     suspend fun deleteAllBookmark(bookmark:List< BookmarksEntity>)
 
     @Delete
     suspend fun deleteBookmark(bookmark: BookmarksEntity)
+
+    @Delete
+    suspend fun deleteSeveralBookmark(bookmark: List<BookmarksEntity>)
 
     @Query("SELECT * FROM categories")
     fun getAllCategories():Flow<List<CategoryEntity>>

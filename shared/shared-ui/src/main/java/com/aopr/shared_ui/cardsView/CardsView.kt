@@ -138,6 +138,115 @@ fun cardViews(): Brush {
 }
 
 @Composable
+fun bookmarkCardsViews(): Brush {
+    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val themes by mainViewModel.chosenTheme.collectAsState()
+    val colorsForCards: Brush = when (themes) {
+        Themes.BLUE -> {
+            Brush.radialGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    0.35f to MaterialTheme.colorScheme.secondary,
+                    0.45f to MaterialTheme.colorScheme.tertiary,
+                    0.75f to MaterialTheme.colorScheme.primaryContainer,
+                    1.0f to MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f)
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+
+        Themes.VIOLET -> {
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.onPrimary,
+                    MaterialTheme.colorScheme.primaryContainer
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+
+        Themes.HAKI -> {
+            Brush.radialGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.tertiary.copy(alpha = 0.8f),
+                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f),
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+
+        Themes.METALIC -> {
+
+            Brush.radialGradient(
+
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    0.3f to MaterialTheme.colorScheme.secondary,
+                    0.5f to MaterialTheme.colorScheme.tertiary,
+                    0.9f to MaterialTheme.colorScheme.onPrimary,
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+
+        Themes.`DUSKY-EVENING` -> {
+            Brush.radialGradient(
+                colorStops = arrayOf(
+                    0.2f to MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f),
+                    0.9f to MaterialTheme.colorScheme.onSecondary,
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+
+        Themes.ORANGE -> {
+            Brush.radialGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    0.2f to MaterialTheme.colorScheme.secondary,
+                    0.5f to MaterialTheme.colorScheme.tertiary,
+                    0.8f to MaterialTheme.colorScheme.onBackground
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+
+        }
+
+        Themes.PASTEL -> {
+
+            Brush.radialGradient(
+                colorStops = arrayOf(
+                    0.0f to MaterialTheme.colorScheme.primary,
+                    0.2f to MaterialTheme.colorScheme.secondary,
+                    0.4f to MaterialTheme.colorScheme.tertiary,
+                    0.45f to MaterialTheme.colorScheme.onPrimary,
+                    0.6f to MaterialTheme.colorScheme.onBackground,
+                    0.7f to MaterialTheme.colorScheme.primaryContainer,
+                    0.8f to MaterialTheme.colorScheme.onSecondary,
+                    0.9f to MaterialTheme.colorScheme.secondaryContainer
+                ),
+                center = Offset.VisibilityThreshold,
+                radius = 1000f
+            )
+        }
+    }
+    return colorsForCards
+
+
+}
+
+
+@Composable
 fun background(): Brush {
     val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
 

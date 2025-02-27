@@ -3,6 +3,7 @@ package com.example.bookmarks_data.impl
 import android.content.Context
 import com.aopr.firebase_data.helpers.Helpers
 import com.aopr.shared_domain.internetConnectionFun.isInternetAvailable
+import com.aopr.shared_domain.throws.EmptyTittleException
 import com.example.bookmarks_data.mapper.mapToBookmark
 import com.example.bookmarks_data.mapper.mapToCategory
 import com.example.bookmarks_data.mapper.mapToEntity
@@ -51,6 +52,8 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
                     )
 
                 }
+            }else{
+                throw EmptyTittleException()
             }
         }
 
@@ -67,11 +70,17 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
     override suspend fun updateBookmark(bookmark: Bookmark, userId: String?) {
         if (bookmark.tittle.isNotEmpty()) {
             dao.updateBookmark(bookmark.mapToEntity())
+        }else{
+            throw EmptyTittleException()
         }
     }
 
     override suspend fun deleteBookmark(bookmark: Bookmark) {
         dao.deleteBookmark(bookmark.mapToEntity())
+    }
+
+    override suspend fun deleteSeveralBookmarks(bookmarks: List<Bookmark>) {
+    dao.deleteSeveralBookmark(bookmarks.map { it.mapToEntity() })
     }
 
     override suspend fun getBookmarkById(id: Int): Flow<Bookmark> {
@@ -97,6 +106,10 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
 
     override suspend fun deleteCategory(category: Category) {
         dao.deleteCategory(category.mapToEntity())
+    }
+
+    override suspend fun deleteSeveralCategories(category: List<Category>) {
+        dao.deleteSeveralCategories(category.map { it.mapToEntity() })
     }
 
     override suspend fun getBookmarksByCategoryId(id: Int?): Flow<List<Bookmark>> {

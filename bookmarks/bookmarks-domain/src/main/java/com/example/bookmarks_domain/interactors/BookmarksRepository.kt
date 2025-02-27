@@ -10,10 +10,12 @@ interface BookmarksRepository {
     suspend fun setBookmarksFromFire(bookmarks:List<Bookmark>?)
     suspend fun updateBookmark(bookmark: Bookmark,userId:String?)
     suspend fun deleteBookmark(bookmark: Bookmark)
+    suspend fun deleteSeveralBookmarks(bookmark: List<Bookmark>)
     suspend fun getBookmarkById(id:Int): Flow<Bookmark>
     suspend fun getAllBookmarks():Flow<List<Bookmark>>
     suspend fun createCategory(category: Category)
     suspend fun deleteCategory(category: Category)
+    suspend fun deleteSeveralCategories(category: List<Category>)
     suspend fun getBookmarksByCategoryId(id:Int?): Flow<List<Bookmark>>
     suspend fun getAllCategories():Flow<List<Category>>
 }

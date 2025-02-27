@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
+class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModelKit<AllTasksEvents,AllTasksUiEvents>() {
 
     private val _listOfTasks = mutableStateOf(emptyList<Task>())
     val listOfTasks: State<List<Task>> = _listOfTasks
@@ -102,7 +103,7 @@ class AllTasksViewModel(private val tasksUseCase: TasksUseCase) : ViewModel() {
     }
 
 
-    fun onEvent(event: AllTasksEvents) {
+    override fun onEvent(event: AllTasksEvents) {
         when (event) {
             is AllTasksEvents.NavigateToCreatingTaskScreen -> {
                 viewModelScope.launch {

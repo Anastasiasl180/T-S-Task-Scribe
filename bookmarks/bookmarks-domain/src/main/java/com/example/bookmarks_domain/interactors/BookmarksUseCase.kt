@@ -1,11 +1,11 @@
 package com.example.bookmarks_domain.interactors
 
-import android.util.Log
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_domain.resource_manager.SharedStringResourceManager
+import com.aopr.shared_domain.throws.EmptyTittleException
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
@@ -28,6 +28,20 @@ class BookmarksUseCase(private val repository: BookmarksRepository) {
         response is Responses.Success || response is Responses.Error
     }
 
+    fun deleteSeveralBookmarks(bookmarks: List<Bookmark>):Flow<Responses<Unit>> = flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.deleteSeveralBookmarks(bookmarks)
+            emit(Responses.Success(result))
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }/*.filter { response ->
+        response is Responses.Success || response is Responses.Error
+    }*/
+
 fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow {
     try {
         emit(Responses.Loading())
@@ -44,7 +58,10 @@ fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow
             emit(Responses.Loading())
             val result = repository.createBookmark(bookmark,userId)
             emit(Responses.Success(result))
-        } catch (e: IOException) {
+        } catch (e: EmptyTittleException) {
+            emit(Responses.Error(SharedStringResourceManager.EmptyTittleMessage.messageId))
+        }
+        catch (e: IOException) {
             println(e.message.toString())
         } catch (e: Exception) {
             println(e.message.toString())
@@ -93,6 +110,19 @@ fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow
 
             emit(Responses.Loading())
             val result = repository.deleteCategory(category)
+            emit(Responses.Success(result))
+
+        } catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
+    fun deleteSeveralCategories(category: List<Category>): Flow<Responses<Unit>> = flow {
+        try {
+
+            emit(Responses.Loading())
+            val result = repository.deleteSeveralCategories(category)
             emit(Responses.Success(result))
 
         } catch (e: IOException) {

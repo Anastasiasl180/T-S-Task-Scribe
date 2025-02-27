@@ -1,97 +1,187 @@
 package com.example.bookmarks_presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.aopr.shared_ui.cardsView.background
+import com.aopr.shared_ui.deletion_row.DeletionRow
+import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
+import com.example.bookmarks_presentation.R
 import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksEvents
-import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
 import com.example.bookmarks_presentation.ui.ui_elements.CustomCard
 import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_handler.AllBookmarksUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllBookmarksScreen(modifier: Modifier = Modifier) {
+fun AllBookmarksScreen() {
     val viewModel = koinViewModel<AllBookmarksViewModel>()
+    val isInSelectionMode = viewModel.isInSelectedMode.collectAsState()
+    val backgroundTheme = background()
     val list = viewModel.listOfBookmarks.collectAsState()
     AllBookmarksUiEventHandler()
-    Scaffold(modifier = Modifier.background(Color.DarkGray), floatingActionButton = {
-        FloatingActionButton(onClick = {
-        }) {
-            Text("+")
-        }
-    }) { _ ->
+    val topAppBarDefaults = searchBarScrollBehaviour()
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(AllBookmarksEvents.NavigateToCreateBookmarkScreen)
+                }, modifier = Modifier
+                    .clip(CircleShape)
+                    .size(60.dp), containerColor = Color.DarkGray.copy(alpha = 0.6f)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "AddFloatingActionButton",
+                    modifier = Modifier.size(20.dp)
+                )
 
-Box(modifier = Modifier.fillMaxSize().background(Color.DarkGray), contentAlignment = Alignment.Center) {
-    Box(
-        modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.9f)
-            .background(Color.DarkGray), contentAlignment = Alignment.Center
-    ) {
+
+            }
+        }, topBar = {
+            TopAppBar(colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent
+            ), scrollBehavior = topAppBarDefaults,
+                navigationIcon = {
+                    IconButton(
+                        onClick = { viewModel.onEvent(AllBookmarksEvents.NavigateBack) },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.DarkGray.copy(alpha = 0.6f))
+                            .size(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            contentDescription = "",
+                            tint = Color.White, modifier = Modifier.size(20.dp)
+                        )
+                    }
+                },
+                title = { /*TODO*/ })
+        }
+
+    ) { _ ->
         Box(
             modifier = Modifier
-                .fillMaxSize(), contentAlignment = Alignment.BottomCenter
+                .fillMaxSize()
+                .background(backgroundTheme),
+            contentAlignment = Alignment.BottomCenter
         ) {
-
-            LazyColumn(
+            Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.7f)
-                    .fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(20.dp)
+                    .fillMaxHeight(0.9f)
+                    .fillMaxWidth(0.9f), contentAlignment = Alignment.Center
             ) {
-
-                if (list.value != null) {
-                    items(list.value!!) {
-                        Box(
-                            modifier = Modifier
-                                .height(250.dp)
-                                .fillMaxWidth()
-                        ) {
-                            CustomCard(
-                                modifier = Modifier.fillMaxSize(), navigateToBookmark = {
-                                    viewModel.onEvent(
-                                        AllBookmarksEvents.NavigateToBookmarkById(
-                                            it.id
-                                        )
-                                    )
-                                }, deleteBookmark = {
-                                    viewModel.onEvent(AllBookmarksEvents.DeleteBookmark(it))
-                                }
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.25f),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.all_bookmarks),
+                            fontSize = 30.sp,
+                            fontFamily = FontFamily(
+                                Font(com.aopr.shared_ui.R.font.open_sans_light)
                             )
+                        )
+                        if (list.value!=null){
+                            DeletionRow(
+                                isInSelectionMode.value,
+                                turnOnSelectionMode = { viewModel.onEvent(AllBookmarksEvents.TurnOnSelectionModeForDelete) },
+                                deleteChosenItems = {
+                                    viewModel.deleteChosenCategories()
+                                })
                         }
+
+                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxHeight(0.95f)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(20.dp)),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+
+                        if (list.value != null) {
+                            items(list.value!!) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(250.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    CustomCard(
+                                        modifier = Modifier.fillMaxSize(),
+                                        navigateToBookmark = {
+                                            viewModel.onEvent(
+                                                AllBookmarksEvents.NavigateToBookmarkById(
+                                                    it.id
+                                                )
+                                            )
+                                        },
+                                        deleteBookmark = {
+                                            viewModel.onEvent(AllBookmarksEvents.DeleteBookmark(it))
+                                        },
+                                        tittleOfBookmark = it.tittle,
+                                        bookmark = it,
+                                        isInSelectionMode = isInSelectionMode.value,
+                                        isOnSelectedBookmark = { bookmark, isSelected ->
+                                            if (isSelected) {
+                                                viewModel.addBookmarkToDelete(bookmark)
+                                            } else {
+                                                viewModel.removeBookmarkFromDeletion(bookmark)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+
+
+                        }
+
                     }
 
 
                 }
-
             }
-
-
         }
     }
-}
-    }
+
 }

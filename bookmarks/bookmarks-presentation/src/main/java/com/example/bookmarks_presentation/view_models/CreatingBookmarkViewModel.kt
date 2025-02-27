@@ -2,10 +2,10 @@ package com.example.bookmarks_presentation.view_models
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
+import com.aopr.shared_ui.util.ViewModelKit
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
@@ -24,7 +24,7 @@ import org.koin.android.annotation.KoinViewModel
 class CreatingBookmarkViewModel(
     private val bookmarksUseCase: BookmarksUseCase,
     private val fireUser: FireUser
-) : ViewModel() {
+) : ViewModelKit<CreatingBookmarkEvents,CreatingBookmarkUiEvents>() {
 
     private val _tittleOfBookmark = MutableStateFlow("")
     val tittle: StateFlow<String> = _tittleOfBookmark
@@ -59,6 +59,9 @@ class CreatingBookmarkViewModel(
         bookmarksUseCase.createBookmark(bookmark, userId).onEach { result ->
             when (result) {
                 is Responses.Error -> {
+                    hideInfoBar()
+                    result.message?.let { showShortInfoBar(it, 2) }
+
                 }
 
                 is Responses.Loading -> {
@@ -66,6 +69,7 @@ class CreatingBookmarkViewModel(
                 }
 
                 is Responses.Success -> {
+                    onEvent(CreatingBookmarkEvents.NavigateBack)
                 }
             }
 
@@ -118,15 +122,15 @@ class CreatingBookmarkViewModel(
     }
 
 
-    fun onEvent(events: CreatingBookmarkEvents) {
-        when (events) {
+    override fun onEvent(event: CreatingBookmarkEvents) {
+        when (event) {
             is CreatingBookmarkEvents.GetBookmarkById -> {
                 viewModelScope.launch {
 
-                    events.bookmarkInfo.bookmarkId?.let {
+                    event.bookmarkInfo.bookmarkId?.let {
                         getBookMarkById(it)
                     }
-                    _idOfCategory.value = events.bookmarkInfo.categoryId
+                    _idOfCategory.value = event.bookmarkInfo.categoryId
                 }
             }
 
@@ -144,15 +148,15 @@ class CreatingBookmarkViewModel(
             }
 
             is CreatingBookmarkEvents.UpdateTittleOfBookmark -> {
-                _tittleOfBookmark.value = events.tittle
+                _tittleOfBookmark.value = event.tittle
             }
 
             is CreatingBookmarkEvents.AddFile -> {
-                _fileUri.value = events.uri
+                _fileUri.value = event.uri
             }
 
             is CreatingBookmarkEvents.AddLink -> {
-                _contentUrl.value = events.url
+                _contentUrl.value = event.url
             }
 
             CreatingBookmarkEvents.CancelFile -> {
@@ -163,10 +167,7 @@ class CreatingBookmarkViewModel(
                 _contentUrl.value = null
             }
 
-            is CreatingBookmarkEvents.OpenFile -> TODO()
-            is CreatingBookmarkEvents.OpenLink -> TODO()
-
-            CreatingBookmarkEvents.ExpandDropDownMenu -> {
+         CreatingBookmarkEvents.ExpandDropDownMenu -> {
                 _isDropDownMenuExpanded.value = !_isDropDownMenuExpanded.value
             }
 
@@ -177,7 +178,7 @@ class CreatingBookmarkViewModel(
             }
 
             is CreatingBookmarkEvents.SelectCategory -> {
-                _idOfCategory.value = events.id
+                _idOfCategory.value = event.id
             }
 
             CreatingBookmarkEvents.NavigateBack -> {

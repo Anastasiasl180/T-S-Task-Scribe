@@ -68,10 +68,6 @@ fun CustomDropDownMenu(
     }
 }
 
-/**
- * Helper function to get the selected category title.
- * Returns "No Category" if chosenCategory is null.
- */
 @Composable
 fun getSelectedOptionTitle(
     chosenCategory: Int?,

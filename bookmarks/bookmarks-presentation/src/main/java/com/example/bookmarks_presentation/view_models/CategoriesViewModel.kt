@@ -1,16 +1,18 @@
 package com.example.bookmarks_presentation.view_models
 
-import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Category
-import com.example.bookmarks_presentation.events.main_events.MainEvents
-import com.example.bookmarks_presentation.events.main_events.UiMainEvents
-import com.example.bookmarks_presentation.events.main_events.UiMainEvents.*
+import com.example.bookmarks_presentation.events.categories_events.CategoriesEvents
+import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents
+import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToAllBookMarks
+import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToBookmarksByCategoryId
+import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToCreateBookmark
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,10 +23,13 @@ import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
-class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel() {
+class CategoriesViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel() {
 
     private val _isDialogForAddingCategoryIsShowed = mutableStateOf(false)
     val isDialogForAddingCategoryIsShowed: State<Boolean> = _isDialogForAddingCategoryIsShowed
+
+    private val _isInSelectionMode = MutableStateFlow(false)
+    val isInSelectedMode: StateFlow<Boolean> = _isInSelectionMode
 
     private val _tittleOfCategory = mutableStateOf("")
     val tittleOfCategory: State<String> = _tittleOfCategory
@@ -32,11 +37,50 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
     private val _listOfCategories = MutableStateFlow<List<Category>>(emptyList())
     val listOfCategories: StateFlow<List<Category>> = _listOfCategories
 
-    private val _event = MutableSharedFlow<UiMainEvents>()
+    private val _listOfCategoriesToDelete = mutableStateListOf<Category>()
+    val listOfCategoriesToDelete: List<Category> = _listOfCategoriesToDelete
+
+    private val _event = MutableSharedFlow<UiCategoriesEvents>()
     val event = _event.asSharedFlow()
 
     init {
         getAllCategories()
+    }
+
+    fun addCategoryToDelete(category: Category) {
+        _listOfCategoriesToDelete.add(category)
+    }
+
+    fun removeCategoryFromDeletion(category: Category) {
+        _listOfCategoriesToDelete.remove(category)
+    }
+
+    fun deleteChosenCategories() {
+        if (_listOfCategoriesToDelete.isNotEmpty()) {
+            val list = _listOfCategoriesToDelete.toList()
+            onEvent(CategoriesEvents.DeleteCategories(list))
+            _listOfCategoriesToDelete.clear()
+            _isInSelectionMode.value = false
+        }
+    }
+
+    private fun deleteSeveralCategories(category: List<Category>) {
+        bookmarksUseCase.deleteSeveralCategories(category).onEach { result ->
+            when (result) {
+                is Responses.Error -> {
+
+                }
+
+                is Responses.Loading -> {
+
+                }
+
+                is Responses.Success -> {
+
+                }
+            }
+
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteCategory(category: Category) {
@@ -70,7 +114,7 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
                 }
 
                 is Responses.Success<*> -> {
-
+                    onEvent(CategoriesEvents.HideDialogForAddingCategory)
                 }
             }
 
@@ -99,15 +143,15 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun onEvent(event: MainEvents) {
+    fun onEvent(event: CategoriesEvents) {
         when (event) {
-            is MainEvents.NavigateToCreateBookmark -> {
+            is CategoriesEvents.NavigateToCreateBookmark -> {
                 viewModelScope.launch {
                     _event.emit(NavigateToCreateBookmark(event.id))
                 }
             }
 
-            MainEvents.AddCategory -> {
+            CategoriesEvents.AddCategory -> {
                 viewModelScope.launch {
                     val category = Category(
                         tittle = _tittleOfCategory.value
@@ -116,37 +160,49 @@ class MainViewModel(private val bookmarksUseCase: BookmarksUseCase) : ViewModel(
                 }
             }
 
-            is MainEvents.DeleteCategory -> {
+            is CategoriesEvents.DeleteCategory -> {
                 viewModelScope.launch {
                     deleteCategory(event.category)
                 }
             }
 
-            MainEvents.NavigateBack -> {
+            CategoriesEvents.NavigateBack -> {
 
             }
 
-            MainEvents.NavigateToAllBookmarks -> {
+            CategoriesEvents.NavigateToAllBookmarks -> {
                 viewModelScope.launch {
-                    _event.emit(UiMainEvents.NavigateToAllBookMarks)
+                    _event.emit(NavigateToAllBookMarks)
                 }
             }
 
-            MainEvents.HideDialogForAddingCategory -> {
+            CategoriesEvents.HideDialogForAddingCategory -> {
                 _isDialogForAddingCategoryIsShowed.value = false
             }
 
-            MainEvents.ShowDialogForAddingCategory -> {
+            CategoriesEvents.ShowDialogForAddingCategory -> {
                 _isDialogForAddingCategoryIsShowed.value = true
             }
 
-            is MainEvents.UpdateTittleOfCategory -> {
+            is CategoriesEvents.UpdateTittleOfCategory -> {
                 _tittleOfCategory.value = event.tittle
             }
 
-            is MainEvents.NavigateToBookmarksByCategoryId -> {
+            is CategoriesEvents.NavigateToBookmarksByCategoryId -> {
                 viewModelScope.launch {
-                    _event.emit(UiMainEvents.NavigateToBookmarksByCategoryId(event.id))
+                    _event.emit(NavigateToBookmarksByCategoryId(event.id))
+                }
+            }
+
+            is CategoriesEvents.DeleteCategories -> {
+                viewModelScope.launch {
+                    deleteSeveralCategories(event.categories)
+                }
+            }
+
+            CategoriesEvents.TurnOnSelectionModeForDelete -> {
+                if (listOfCategories.value.isNotEmpty()) {
+                    _isInSelectionMode.value = !_isInSelectionMode.value
                 }
             }
         }

@@ -18,10 +18,30 @@ fun AllBookmarksUiEventHandler() {
     val navigator = LocalNavigator.currentOrThrow()
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect {uiEvent->
-            when(uiEvent){
+        viewModel.event.collect { uiEvent ->
+            when (uiEvent) {
                 is AllBookmarksUiEvents.NavigateToBookmarkById -> {
-                    navigator.navigate(BookmarksNavRoutes.CreatingBookMarkScreen(BookmarksRoutesInfo(bookmarkId = uiEvent.id)))
+                    navigator.navigate(
+                        BookmarksNavRoutes.CreatingBookMarkScreen(
+                            BookmarksRoutesInfo(
+                                bookmarkId = uiEvent.id
+                            )
+                        )
+                    )
+                }
+
+                AllBookmarksUiEvents.NavigateBack -> {
+                    navigator.popBackStack()
+                }
+
+                AllBookmarksUiEvents.NavigateToCreateBookmarkScreen -> {
+                    navigator.navigate(
+                        BookmarksNavRoutes.CreatingBookMarkScreen(
+                            BookmarksRoutesInfo(
+                                bookmarkId = null
+                            )
+                        )
+                    )
                 }
             }
 

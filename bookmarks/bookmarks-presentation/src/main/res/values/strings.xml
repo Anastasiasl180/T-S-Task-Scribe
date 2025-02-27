@@ -2,8 +2,10 @@
 <resources>
     <string name="categories">Categories</string>
     <string name="bookmarks">Your bookmarks</string>
+    <string name="all_bookmarks">All bookmarks</string>
     <string name="no_file">No file</string>
     <string name="paste_url">Paste url</string>
     <string name="tap_to_pick_the_file">Tap to pick the file</string>
     <string name="add_category">Add category</string>
+    <string name="unknown">Unknown</string>
 </resources>

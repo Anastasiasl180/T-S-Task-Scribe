@@ -22,9 +22,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,6 +37,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,23 +48,27 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
+import com.aopr.shared_ui.deletion_row.DeletionRow
 import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.R
-import com.example.bookmarks_presentation.events.main_events.MainEvents
+import com.example.bookmarks_presentation.events.categories_events.CategoriesEvents
 import com.example.bookmarks_presentation.ui.ui_elements.AddCategoryDialog
 import com.example.bookmarks_presentation.ui_events_handlers.main_handler.MainUiEventHandler
-import com.example.bookmarks_presentation.view_models.MainViewModel
+import com.example.bookmarks_presentation.view_models.CategoriesViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainBookmarksScreen(modifier: Modifier = Modifier) {
-    val viewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val viewModel = koinViewModel<CategoriesViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
     val tittleOfCategory by viewModel.tittleOfCategory
     val isDialogShowed by viewModel.isDialogForAddingCategoryIsShowed
     val backgroundTheme = background()
+    val isInSelectionModeForDelete = viewModel.isInSelectedMode.collectAsState()
     val list by viewModel.listOfCategories.collectAsState()
 
     MainUiEventHandler()
@@ -71,7 +77,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
             FloatingActionButton(
                 onClick = {
                     viewModel.onEvent(
-                        MainEvents.NavigateToCreateBookmark(null)
+                        CategoriesEvents.NavigateToCreateBookmark(null)
                     )
                 }, modifier = Modifier
                     .clip(CircleShape)
@@ -158,12 +164,12 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                             .size(100.dp)
                                             .background(Color.Transparent)
                                             .clickable {
-                                                viewModel.onEvent(MainEvents.ShowDialogForAddingCategory)
+                                                viewModel.onEvent(CategoriesEvents.ShowDialogForAddingCategory)
                                             }
 
                                             .border(
                                                 width = 1.dp,
-                                                color = Color.Black,
+                                                color = Color.White,
                                                 shape = MaterialTheme.shapes.extraLarge
                                             ),
                                         contentAlignment = Alignment.Center,
@@ -180,10 +186,15 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                 Card(
                                     modifier = Modifier
                                         .height(220.dp)
-                                        .width(180.dp).border(
-                                            border = BorderStroke(0.5.dp, color = Color.White.copy(alpha = 0.1f)),
+                                        .width(180.dp)
+                                        .border(
+                                            border = BorderStroke(
+                                                0.5.dp,
+                                                color = Color.White.copy(alpha = 0.1f)
+                                            ),
                                             shape = MaterialTheme.shapes.extraLarge
-                                        ), shape = MaterialTheme.shapes.extraLarge,
+                                        ),
+                                    shape = MaterialTheme.shapes.extraLarge,
                                     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
                                 ) {
                                     Box(
@@ -191,7 +202,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                             .fillMaxSize()
                                             .background(cardViews())
                                             .clickable {
-                                                viewModel.onEvent(MainEvents.NavigateToAllBookmarks)
+                                                viewModel.onEvent(CategoriesEvents.NavigateToAllBookmarks)
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -209,14 +220,20 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight(0.15f),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
                                     text = stringResource(R.string.categories),
                                     fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light)),
                                     fontSize = 20.sp
                                 )
-
+                                if (list.isNotEmpty()) {
+                                    DeletionRow(
+                                        isInSelectionModeForDelete.value,
+                                        turnOnSelectionMode = { viewModel.onEvent(CategoriesEvents.TurnOnSelectionModeForDelete) },
+                                        deleteChosenItems = { viewModel.deleteChosenCategories() })
+                                }
                             }
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),
@@ -228,47 +245,27 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                 horizontalArrangement = Arrangement.spacedBy(20.dp)
                             ) {
                                 items(list) { category ->
-                                    Card(
-                                        modifier = Modifier
-                                            .height(220.dp)
-                                            .width(180.dp)
-                                            .border(
-                                                border = BorderStroke(0.5.dp, color = Color.White.copy(alpha = 0.1f)),
-                                                shape = MaterialTheme.shapes.extraLarge
-                                            )
-                                            .clickable {
-                                                viewModel.onEvent(
-                                                    MainEvents.NavigateToBookmarksByCategoryId(
-                                                        category.id
-                                                    )
+                                    CategoryCard(
+                                        category,
+                                        category.tittle,
+                                        isInSelectionMode = isInSelectionModeForDelete.value,
+                                        goToCategory = {
+                                            viewModel.onEvent(
+                                                CategoriesEvents.NavigateToBookmarksByCategoryId(
+                                                    category.id
                                                 )
-                                            },
-                                        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                                        shape = MaterialTheme.shapes.extraLarge
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .background(cardViews()),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-
-                                            Text(
-                                                text = stringResource(com.aopr.shared_ui.R.string.all),
-                                                fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.open_sans_light)),
-                                                modifier = Modifier
                                             )
-                                            Button(onClick = {
-                                                viewModel.onEvent(
-                                                    MainEvents.DeleteCategory(
-                                                        category
-                                                    )
+                                        },
+                                        onSelectCategory = { selectedCategory, isOnSelected ->
+                                            if (isOnSelected) {
+                                                viewModel.addCategoryToDelete(selectedCategory)
+                                            } else {
+                                                viewModel.removeCategoryFromDeletion(
+                                                    selectedCategory
                                                 )
-                                            }) { }
-                                            Text(category.tittle)
+                                            }
+                                        })
 
-                                        }
-                                    }
                                 }
 
                             }
@@ -285,15 +282,74 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
     }
     if (isDialogShowed) {
         AddCategoryDialog(
-            onDismiss = { viewModel.onEvent(MainEvents.HideDialogForAddingCategory) },
+            onDismiss = { viewModel.onEvent(CategoriesEvents.HideDialogForAddingCategory) },
             onConfirm = {
-                viewModel.onEvent(MainEvents.AddCategory)
+                viewModel.onEvent(CategoriesEvents.AddCategory)
             },
             updateTittle = {
-                viewModel.onEvent(MainEvents.UpdateTittleOfCategory(it))
+                viewModel.onEvent(CategoriesEvents.UpdateTittleOfCategory(it))
             },
             tittle = tittleOfCategory
         )
+    }
+
+}
+
+
+@Composable
+fun CategoryCard(
+    category: Category,
+    tittle: String,
+    isInSelectionMode: Boolean,
+    goToCategory: () -> Unit,
+    onSelectCategory: (Category, Boolean) -> Unit
+) {
+
+    val isSelected = remember(category) { mutableStateOf(false) }
+
+    ElevatedCard(
+        modifier = Modifier
+            .height(220.dp)
+            .width(180.dp)
+            .clickable { goToCategory() },
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(cardViews()), contentAlignment = Alignment.Center
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.3f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = tittle)
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.8f)
+                    .fillMaxWidth(0.9f), contentAlignment = Alignment.BottomEnd
+            ) {
+                Row(
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (isInSelectionMode) {
+                        CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
+                            isSelected.value = checked
+                            onSelectCategory(category, checked)
+                        }, circleSize = 25.dp)
+                    }
+                }
+            }
+
+        }
     }
 
 }
