@@ -7,25 +7,25 @@ import com.aopr.authentication_presentation.events.registration_events.Registrat
 import com.aopr.authentication_presentation.model.LogInViewModel
 import com.aopr.authentication_presentation.model.RegistrationViewModel
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.navigation.AuthenticationRoutes
-import com.aopr.shared_ui.util.LocalNavigator
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
-import com.aopr.shared_ui.util.currentOrThrow
-import kotlinx.coroutines.delay
+import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
+import com.aopr.shared_ui.navigation.currentOrThrow
+import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegistrationUiEventHandler() {
     val viewmodel = koinViewModel<RegistrationViewModel>()
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val navigator = LocalNavigator.currentOrThrow()
     LaunchedEffect(key1 = Unit) {
         viewmodel.event.collect { event ->
             when (event) {
                 RegistrationUiEvents.NavigateToHomeScreen -> {
                     navigator.navigate(HomeNavRoutes.HomeScreen)
-                    mainViewModel.onEvent(MainViewModel.MainEvent.SetFirstLaunchToFalse)
+                    globalViewModel.onEvent(GlobalEvents.SetFirstLaunchToFalse)
                 }
 
                 RegistrationUiEvents.NavigateToLogInScreen -> {
@@ -41,13 +41,13 @@ fun RegistrationUiEventHandler() {
 fun LogInUiEventHandler() {
     val viewmodel = koinViewModel<LogInViewModel>()
     val navigator = LocalNavigator.currentOrThrow()
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     LaunchedEffect(key1 = Unit) {
         viewmodel.event.collect { event ->
             when (event) {
                 LogInUiEvents.NavigateToHomeScreen -> {
                     navigator.navigate(HomeNavRoutes.HomeScreen)
-                    mainViewModel.onEvent(MainViewModel.MainEvent.SetFirstLaunchToFalse)
+                    globalViewModel.onEvent(GlobalEvents.SetFirstLaunchToFalse)
                 }
 
             }

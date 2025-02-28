@@ -11,19 +11,19 @@ import com.aopr.onboarding_presentation.model.FirstOnBoardingViewModel
 import com.aopr.onboarding_presentation.model.LoadingViewModel
 import com.aopr.onboarding_presentation.model.SecondOnBoardingViewModel
 import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.navigation.AuthenticationRoutes
-import com.aopr.shared_ui.util.LocalNavigator
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
-import com.aopr.shared_ui.util.currentOrThrow
-import kotlinx.coroutines.delay
+import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
+import com.aopr.shared_ui.navigation.currentOrThrow
+import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoadingUiEventsHandler() {
     val viewModel = koinViewModel<LoadingViewModel>()
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-    val isFirstLaunched = mainViewModel.isFirstLaunch.collectAsState()
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val isFirstLaunched = globalViewModel.isFirstLaunch.collectAsState()
     val navigator = LocalNavigator.currentOrThrow()
 
     LaunchedEffect(key1 = Unit) {
@@ -34,7 +34,7 @@ fun LoadingUiEventsHandler() {
                         navigator.navigate(OnBoardingNavRoutes.FirstScreen)
                     } else {
                         navigator.navigate(HomeNavRoutes.HomeScreen)
-                        mainViewModel.onEvent(MainViewModel.MainEvent.ShowBottomBar)
+                        globalViewModel.onEvent(GlobalEvents.ShowBottomBar)
                     }
                 }
             }
@@ -62,7 +62,7 @@ fun FirstScreenOnBoardingUiEventsHandler() {
 @Composable
 fun SecondScreenOnBoardingUiEventsHandler() {
     val viewModel = koinViewModel<SecondOnBoardingViewModel>()
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val navigator = LocalNavigator.currentOrThrow()
     LaunchedEffect(key1 = Unit) {
         viewModel.event.collect { events ->

@@ -5,7 +5,7 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -25,21 +25,21 @@ sealed interface MainNavRoutes {
 enum class NavigationBarItems(
     val icon: ImageVector,
     val routes: MainNavRoutes,
-    val event: MainViewModel.MainEvent
+    val event: GlobalEvents
 ) {
     Home(
         icon = Icons.Default.Home,
         routes = MainNavRoutes.HomeNavHost,
-        event = MainViewModel.MainEvent.NavigateToHomeScreen
+        event = GlobalEvents.NavigateToHomeScreen
     ),
     DashBoard(
         icon = Icons.Default.Menu,
         routes = MainNavRoutes.DashBoard,
-        event = MainViewModel.MainEvent.NavigateToDashBoardScreen
+        event =GlobalEvents.NavigateToDashBoardScreen
     ),
     Ai(
         icon = Icons.Default.Face,
         routes = MainNavRoutes.AI,
-        event = MainViewModel.MainEvent.NavigateToAiScreen
+        event = GlobalEvents.NavigateToAiScreen
     )
 }

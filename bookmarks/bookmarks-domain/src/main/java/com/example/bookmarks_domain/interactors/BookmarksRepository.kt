@@ -17,5 +17,6 @@ interface BookmarksRepository {
     suspend fun deleteCategory(category: Category)
     suspend fun deleteSeveralCategories(category: List<Category>)
     suspend fun getBookmarksByCategoryId(id:Int?): Flow<List<Bookmark>>
+    suspend fun getCategoryById(id:Int): Flow<Category>
     suspend fun getAllCategories():Flow<List<Category>>
 }

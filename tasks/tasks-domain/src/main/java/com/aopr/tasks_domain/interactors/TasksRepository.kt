@@ -11,6 +11,7 @@ interface TasksRepository {
     suspend fun updateTask(task: Task)
     suspend fun getAllTasks(): Flow<List<Task>>
     suspend fun getTaskById(id: Int): Flow<Task>
+    suspend fun filterTaskByTodayDate(): Flow<List<Task>>
     suspend fun setTasksFromFire(tasks: List<Task>?)
     suspend fun deleteChosenTasks(task: List<Task>)
     suspend fun deleteSubTask(task: Task, indexOfSubTak: Int)

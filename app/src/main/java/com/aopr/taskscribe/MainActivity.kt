@@ -17,11 +17,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.theme.TaskScribeTheme
-import com.aopr.shared_ui.util.LocalNavigator
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
+import com.aopr.shared_ui.util.global_view_model.events.GlobalUiEvents
 import com.aopr.tasks_data.scheduled_notifucation.scheduleDailyCheck
 import com.aopr.taskscribe.ui.AppNavHost
 import com.aopr.taskscribe.ui.BottomBar
@@ -37,17 +38,18 @@ class MainActivity : ComponentActivity() {
         checkAndRequestNotificationPermission()
         enableEdgeToEdge()
         setContent {
-            val mainViewModel =
-                koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-            val isBottomBarShowed = mainViewModel.isBottomBarShowed.collectAsState()
+            val globalViewModel =
+                koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+            val isBottomBarShowed = globalViewModel.isBottomBarShowed.collectAsState()
             val navHost = rememberNavController()
             GlobalUiEventHandler(navHost = navHost)
 
-            TaskScribeTheme(taskScribeThemesFlow = mainViewModel.chosenTheme) {
+            TaskScribeTheme(taskScribeThemesFlow = globalViewModel.chosenTheme) {
 
                 Scaffold(bottomBar = {
 
                     if (isBottomBarShowed.value) {
+                        Log.wtf("", "onCreate:BOTOTOM ", )
                         BottomBar(navController = navHost)
                     }
                 }) { _ ->
@@ -101,11 +103,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GlobalUiEventHandler(navHost: NavHostController) {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     LaunchedEffect(Unit) {
-        mainViewModel.event.collect() { event ->
+        globalViewModel.event.collect() { event ->
             when (event) {
-                MainViewModel.UiEvent.NavigateToAiScreen -> {
+               GlobalUiEvents.NavigateToAiScreen -> {
                     navHost.navigate(MainNavRoutes.AI) {
                         val currentRoute = navHost.currentDestination?.route
                         if (currentRoute != null) {
@@ -118,7 +120,7 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
                     }
                 }
 
-                MainViewModel.UiEvent.NavigateToDashBoardScreen -> {
+                GlobalUiEvents.NavigateToDashBoardScreen -> {
                     navHost.navigate(MainNavRoutes.DashBoard) {
                         val currentRoute = navHost.currentDestination?.route
                         if (currentRoute != null) {
@@ -131,7 +133,7 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
                     }
                 }
 
-                MainViewModel.UiEvent.NavigateToHomeScreen -> {
+               GlobalUiEvents.NavigateToHomeScreen -> {
                     navHost.navigate(MainNavRoutes.HomeNavHost) {
                         val currentRoute = navHost.currentDestination?.route
                         if (currentRoute != null) {

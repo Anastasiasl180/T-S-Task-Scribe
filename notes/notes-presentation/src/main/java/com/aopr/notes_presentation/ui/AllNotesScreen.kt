@@ -59,6 +59,7 @@ import com.aopr.notes_domain.models.Note
 import com.aopr.notes_presentation.view_model.AllNotesViewModel
 import com.aopr.notes_presentation.view_model.events.all_notes_events.AllNotesEvent
 import com.aopr.notes_presentation.view_model.ui_event_handlers.UiEventHandlerForAllNotesScreen
+import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
 import com.aopr.shared_ui.util.ViewModelKit
@@ -156,14 +157,15 @@ fun AllNotesScreen() {
                         }
                         if (isInSelectionMode) {
                             Row {
-                                TextButton(onClick = { viewModel.cancelNoteFromDelete() }) {
+                                TextButton(onClick = { viewModel.onEvent(AllNotesEvent.TurnOnSelectionModeForDelete)
+                                }) {
                                     Text(
                                         text = stringResource(id = com.aopr.shared_ui.R.string.cancel),
                                         color = Color.White
                                     )
                                 }
 
-                                TextButton(onClick = { viewModel.deleteSelectedNotes() }) {
+                                TextButton(onClick = { viewModel.onEvent(AllNotesEvent.DeleteSeveralNotes)}) {
                                     Text(
                                         text = stringResource(id = com.aopr.shared_ui.R.string.delete),
                                         color = Color.White
@@ -204,9 +206,9 @@ fun AllNotesScreen() {
                                     isInSelectionMode = isInSelectionMode,
                                     onSelectNote = { selectedNote, isSelected ->
                                         if (isSelected) {
-                                            viewModel.addNoteToDelete(selectedNote)
+                                            viewModel.onEvent(AllNotesEvent.AddNoteForDeletion(selectedNote))
                                         } else {
-                                            viewModel.removeNoteFromDelete(selectedNote)
+                                            viewModel.onEvent(AllNotesEvent.RemoveNoteForDeletion(selectedNote))
                                         }
 
                                     }
@@ -338,19 +340,20 @@ fun NoteCard(
                         ) {
                             Text(text = stringResource(id = com.aopr.shared_ui.R.string.pinned))
                             if (isInSelectionMode) {
-                                Checkbox(checked = isSelected.value, onCheckedChange = { checked ->
+                                CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
                                     isSelected.value = checked
                                     onSelectNote(note, checked)
-                                })
+                                }, circleSize = 25.dp)
                             }
                         }
 
                     } else {
                         if (isInSelectionMode) {
-                            Checkbox(checked = isSelected.value, onCheckedChange = { checked ->
+                            CircularCheckbox(checked = isSelected.value, onCheckedChange = { checked ->
                                 isSelected.value = checked
                                 onSelectNote(note, checked)
-                            })
+                            }, circleSize = 25.dp)
+
                         }
                     }
 

@@ -44,8 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.aopr.notes_presentation.R
 import com.aopr.shared_domain.colors_for_theme.Themes
-import com.aopr.shared_ui.MainViewModel
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import com.aopr.tasks_domain.models.Task
 import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -268,8 +268,8 @@ fun DatesGrid(
     listOfTasks: List<Task?>,
     navigateToTask:(Int)->Unit
 ) {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-    val chosenTheme = mainViewModel.chosenTheme.collectAsState()
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val chosenTheme = globalViewModel.chosenTheme.collectAsState()
     val colorForDate = when(chosenTheme.value){
         Themes.BLUE -> {
             MaterialTheme.colorScheme.onPrimary
@@ -280,10 +280,10 @@ fun DatesGrid(
         Themes.HAKI -> {
             MaterialTheme.colorScheme.primaryContainer
         }
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
             MaterialTheme.colorScheme.secondary
         }
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             MaterialTheme.colorScheme.onBackground
         }
         Themes.ORANGE -> {

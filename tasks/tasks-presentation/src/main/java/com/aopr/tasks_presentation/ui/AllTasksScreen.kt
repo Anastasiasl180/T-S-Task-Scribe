@@ -18,44 +18,32 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.notes_presentation.R
-import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
-import com.aopr.shared_ui.cardsView.cardViews
 import com.aopr.shared_ui.deletion_row.DeletionRow
-import com.aopr.tasks_domain.models.Task
-import com.aopr.tasks_presentation.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.ui.ui_elements.TaskCard
 import com.aopr.tasks_presentation.view_models.AllTasksViewModel
+import com.aopr.tasks_presentation.view_models.events.all_tasks_events.AllTasksEvents
 import com.aopr.tasks_presentation.view_models.ui_event_handlers.AllTasksUiEventHandler
 import org.koin.androidx.compose.koinViewModel
 
@@ -131,7 +119,7 @@ fun AllTasksScreen() {
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Spacer(modifier = Modifier.height(70.dp))
-                   Row(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(0.08f),
@@ -144,11 +132,17 @@ fun AllTasksScreen() {
                             ),
                             fontSize = 20.sp
                         )
-                       DeletionRow(isInSelectionMode, turnOnSelectionMode = {viewModel.onEvent(AllTasksEvents.TurnOnSelectionModeForDelete)
-                       }, deleteChosenItems = {viewModel.deleteSelectedNotes() })
+                        DeletionRow(
+                            isInSelectionMode,
+                            turnOnSelectionMode = {
+                                viewModel.onEvent(
+                                    AllTasksEvents.TurnOnSelectionModeForDelete
+                                )
+                            },
+                            deleteChosenItems = { viewModel.onEvent(AllTasksEvents.DeleteSeveralCategories) })
 
 
-                   }
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
                     LazyVerticalGrid(
                         modifier = Modifier.clip(MaterialTheme.shapes.large),
@@ -173,9 +167,17 @@ fun AllTasksScreen() {
                                     isInSelectionMode = isInSelectionMode,
                                     onSelectTask = { selectedNote, isSelected ->
                                         if (isSelected) {
-                                            viewModel.addTaskToDelete(selectedNote)
+                                            viewModel.onEvent(
+                                                AllTasksEvents.AddCategoryForDeletion(
+                                                    selectedNote
+                                                )
+                                            )
                                         } else {
-                                            viewModel.removeTaskFromDelete(selectedNote)
+                                            viewModel.onEvent(
+                                                AllTasksEvents.RemoveCategoryForDeletion(
+                                                    selectedNote
+                                                )
+                                            )
                                         }
 
                                     }

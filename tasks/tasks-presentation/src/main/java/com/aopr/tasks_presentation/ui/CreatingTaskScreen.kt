@@ -69,7 +69,7 @@ import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.infoBar.CustomInfoBar
 import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
 import com.aopr.tasks_domain.models.ImportanceOfTask
-import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
+import com.aopr.tasks_presentation.view_models.events.creating_task_events.CreatingTaskEvents
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForClock
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo

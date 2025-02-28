@@ -1,7 +1,7 @@
 package com.aopr.notes_presentation.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,8 @@ fun CreatingNoteScreen() {
     val tittle by viewModel.tittleOfNote.collectAsState()
     val backgroundTheme = background()
     val description by viewModel.descriptionOfNote.collectAsState()
+    val heightScreen = LocalConfiguration.current.screenHeightDp
+
 
     UiEventHandlerForCreatingNoteScreen()
     Scaffold(
@@ -110,77 +113,114 @@ fun CreatingNoteScreen() {
 
         Box(
             modifier = Modifier
-                .background(backgroundTheme), contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .background(backgroundTheme),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Column(
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxHeight(0.9f)
+                    .fillMaxWidth(0.9f), contentAlignment = Alignment.Center
             ) {
-                Spacer(modifier = Modifier.height(100.dp))
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.15f),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    TextField(
+
+                    Spacer(modifier = Modifier.height(35.dp))
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize(),
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = com.aopr.shared_ui.R.string.tittle),
-                                fontSize = 35.sp,
-                                color = Color.White
+                            .fillMaxHeight(0.3f)
+                            .fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .height((heightScreen * 0.15).dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                TextField(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    placeholder = {
+                                        Text(
+                                            text = stringResource(id = com.aopr.shared_ui.R.string.tittle),
+                                            fontSize = 35.sp,
+                                            color = Color.White
+                                        )
+                                    },
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent
+                                    ),
+                                    value = tittle,
+                                    onValueChange = { tittle ->
+                                        viewModel.onEvent(CreatingNoteEvents.UpdateTittle(tittle))
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 35.sp
+                                    ),
+                                )
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .height((heightScreen * 0.7f).dp)
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                TextField(
+                                    modifier = Modifier.fillMaxSize(),
+                                    value = description,
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent
+                                    ),
+                                    placeholder = {
+                                        Text(
+                                            text = stringResource(
+                                                id = com.aopr.shared_ui.R.string.description
+                                            ),
+                                            color = Color.White, fontSize = 20.sp
+                                        )
+                                    },
+                                    onValueChange = { description ->
+                                        viewModel.onEvent(
+                                            CreatingNoteEvents.UpdateDescription(
+                                                description
+                                            )
+                                        )
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 20.sp
+                                    )
+                                )
+                            }
+                        }
+                        viewModel.infoBar.value?.let {
+                            com.aopr.shared_ui.infoBar.CustomInfoBar(
+                                message = it
                             )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent
-                        ),
-                        value = tittle,
-                        onValueChange = { tittle ->
-                            viewModel.onEvent(CreatingNoteEvents.UpdateTittle(tittle))
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 35.sp
-                        ),
-                    )
+                        }
+
+                    }
+
+
                 }
-                TextField(
-                    modifier = Modifier.fillMaxSize(),
-                    value = description,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = {
-                        Text(
-                            text = stringResource(
-                                id = com.aopr.shared_ui.R.string.description
-                            ),
-                            color = Color.White, fontSize = 20.sp
-                        )
-                    },
-                    onValueChange = { description ->
-                        viewModel.onEvent(CreatingNoteEvents.UpdateDescription(description))
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 20.sp
-                    )
-                )
 
             }
-            viewModel.infoBar.value?.let { com.aopr.shared_ui.infoBar.CustomInfoBar(message = it) }
-
         }
-
-
     }
-
 }

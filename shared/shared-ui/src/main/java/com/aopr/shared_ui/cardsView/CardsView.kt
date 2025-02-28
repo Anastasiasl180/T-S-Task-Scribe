@@ -24,15 +24,15 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aopr.shared_domain.colors_for_theme.Themes
-import com.aopr.shared_ui.MainViewModel
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun cardViews(): Brush {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-    val themes by mainViewModel.chosenTheme.collectAsState()
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val themes by globalViewModel.chosenTheme.collectAsState()
     val colorsForCards: Brush = when (themes) {
         Themes.BLUE -> {
             Brush.radialGradient(
@@ -74,7 +74,7 @@ fun cardViews(): Brush {
             )
         }
 
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
 
             Brush.radialGradient(
 
@@ -89,7 +89,7 @@ fun cardViews(): Brush {
             )
         }
 
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             Brush.radialGradient(
                 colorStops = arrayOf(
                     0.2f to MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f),
@@ -139,8 +139,8 @@ fun cardViews(): Brush {
 
 @Composable
 fun bookmarkCardsViews(): Brush {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-    val themes by mainViewModel.chosenTheme.collectAsState()
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val themes by globalViewModel.chosenTheme.collectAsState()
     val colorsForCards: Brush = when (themes) {
         Themes.BLUE -> {
             Brush.radialGradient(
@@ -182,7 +182,7 @@ fun bookmarkCardsViews(): Brush {
             )
         }
 
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
 
             Brush.radialGradient(
 
@@ -197,7 +197,7 @@ fun bookmarkCardsViews(): Brush {
             )
         }
 
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             Brush.radialGradient(
                 colorStops = arrayOf(
                     0.2f to MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f),
@@ -248,13 +248,13 @@ fun bookmarkCardsViews(): Brush {
 
 @Composable
 fun background(): Brush {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
 
-    val themes by mainViewModel.chosenTheme.collectAsState()
+    val themes by globalViewModel.chosenTheme.collectAsState()
 
 
     val backgroundLooks: Brush = when (themes) {
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.0f to MaterialTheme.colorScheme.onPrimary,
@@ -265,7 +265,7 @@ fun background(): Brush {
             )
         }
 
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.0f to MaterialTheme.colorScheme.primaryContainer,
@@ -321,13 +321,13 @@ fun background(): Brush {
 
 @Composable
 fun gradientOfDialogs(): Brush {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
 
-    val themes by mainViewModel.chosenTheme.collectAsState()
+    val themes by globalViewModel.chosenTheme.collectAsState()
 
 
     val backgroundLooks: Brush = when (themes) {
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
@@ -338,7 +338,7 @@ fun gradientOfDialogs(): Brush {
             )
         }
 
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             Brush.linearGradient(
                 colorStops = arrayOf(
                     0.75f to colorResource(com.aopr.shared_ui.R.color.backgroundOfDialogs),
@@ -443,11 +443,11 @@ fun CircularCheckbox(
 
 @Composable
 fun textGradient(): List<Color> {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
-    val themes by mainViewModel.chosenTheme.collectAsState()
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val themes by globalViewModel.chosenTheme.collectAsState()
 
     val text: List<Color> = when (themes) {
-        Themes.METALIC -> {
+        Themes.METALLIC -> {
             listOf(
                 MaterialTheme.colorScheme.primaryContainer,
                 MaterialTheme.colorScheme.onBackground,
@@ -455,7 +455,7 @@ fun textGradient(): List<Color> {
             )
         }
 
-        Themes.`DUSKY-EVENING` -> {
+        Themes.`DUSKY_EVENING` -> {
             listOf(
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0.8f),
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f),

@@ -45,23 +45,7 @@ class AllNotesViewModel(private val useCase: NotesUseCase) :
         onEvent(AllNotesEvent.GetAllNotes)
     }
 
-    fun addNoteToDelete(note: Note) {
-        _selectedNotesToDelete.add(note)
-    }
 
-    fun removeNoteFromDelete(note: Note) {
-        _selectedNotesToDelete.remove(note)
-    }
-    fun cancelNoteFromDelete() {
-        _selectedNotesToDelete.clear()
-        _isInSelectionMode.value = false
-    }
-
-    fun deleteSelectedNotes() {
-        onEvent(AllNotesEvent.DeleteNote(_selectedNotesToDelete))
-        _selectedNotesToDelete.clear()
-        _isInSelectionMode.value = false
-    }
 
     private fun updateNote(note: Note) {
         useCase.updatedNote(note).onEach { result ->
@@ -133,12 +117,6 @@ class AllNotesViewModel(private val useCase: NotesUseCase) :
                 }
             }
 
-            is AllNotesEvent.DeleteNote -> {
-                viewModelScope.launch {
-                    deleteNote(event.note)
-                }
-            }
-
             is AllNotesEvent.PinNote -> {
                 viewModelScope.launch {
                     updateNote(event.note)
@@ -153,12 +131,26 @@ class AllNotesViewModel(private val useCase: NotesUseCase) :
 
             AllNotesEvent.TurnOnSelectionModeForDelete -> {
                 _isInSelectionMode.value = !_isInSelectionMode.value
+                _selectedNotesToDelete.clear()
             }
 
             AllNotesEvent.NavigateBack -> {
                 viewModelScope.launch {
                     _event.emit(AllNotesUiEvent.NavigateBack)
                 }
+            }
+
+            is AllNotesEvent.AddNoteForDeletion -> {
+                _selectedNotesToDelete.add(event.note)
+            }
+            AllNotesEvent.DeleteSeveralNotes -> {
+                val notes = _selectedNotesToDelete
+                deleteNote(notes)
+                _selectedNotesToDelete.clear()
+                _isInSelectionMode.value = false
+            }
+            is AllNotesEvent.RemoveNoteForDeletion -> {
+                _selectedNotesToDelete.remove(event.note)
             }
         }
     }

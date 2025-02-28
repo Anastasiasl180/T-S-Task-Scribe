@@ -18,6 +18,19 @@ import java.time.LocalDate
 @Single
 class TasksUseCase(private val repository: TasksRepository) {
 
+    fun  filterTaskByTodayDate():Flow<Responses<Flow<List<Task>>>> = flow {
+        try {
+            emit(Responses.Loading())
+            val data = repository.filterTaskByTodayDate()
+            emit(Responses.Success(data))
+        } catch (e: IOException) {
+            emit(Responses.Error(SharedStringResourceManager.DefaultMessage.messageId))
+        } catch (e: EmptyDescriptionException) {
+            emit(Responses.Error(SharedStringResourceManager.EmptyDescriptionMessage.messageId))
+
+        }
+    }
+
     fun deleteAllTasks(): Flow<Responses<Unit>> = flow {
         try {
             emit(Responses.Loading())

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -27,30 +26,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.navigation.NavigationBarItems
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun BottomBar(navController: NavHostController) {
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val navItems = remember {
         NavigationBarItems.entries
     }
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
     val currentRoute = currentDestination?.route
-    val isBottomBarMoved by mainViewModel.isBottomBarMoved.collectAsState()
+    val isBottomBarMoved by globalViewModel.isBottomBarMoved.collectAsState()
 
 
     val offsetX by animateDpAsState(
@@ -99,7 +95,7 @@ fun BottomBar(navController: NavHostController) {
                         indicatorColor = Color.Transparent
                     ),
                     onClick = {
-                        mainViewModel.onEvent(mainNavRoute.event)
+                        globalViewModel.onEvent(mainNavRoute.event)
                     },
                     icon = {
                         Icon(

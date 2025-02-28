@@ -10,11 +10,15 @@ import com.aopr.tasks_data.utils.FieldsValidator
 import com.aopr.tasks_domain.interactors.TasksRepository
 import com.aopr.tasks_domain.models.Task
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Date
+import java.util.Locale
 
 @Single
 class TasksRepositoryImpl(private val dao: TasksDao, private val context: Context) :
@@ -109,40 +113,48 @@ class TasksRepositoryImpl(private val dao: TasksDao, private val context: Contex
         return dao.getTaskById(id).map { it.mapToTask() }
     }
 
-    override suspend fun getAllTasks(): Flow<List<Task>> {
-        return dao.getALlTasks().map { list ->
-            list.map { entity -> entity.mapToTask() }
+    override suspend fun filterTaskByTodayDate(): Flow<List<Task>> {
+        val todayDate = LocalDate.now()
+        return dao.getALlTasks().map { it ->
+            it.map { it.mapToTask() }.filter { task -> task.dateOfTaskToBeDone == todayDate }
         }
+
     }
 
-    override suspend fun deleteSubTask(task: Task, indexOfSubTak: Int) {
-        val existingTask = dao.getTaskById(task.id).first()
-        val list = existingTask.listOfSubtasks
-        if (list != null) {
-            val subTaskRemi = list[indexOfSubTak]
-            if (subTaskRemi.time != null && subTaskRemi.date != null) {
-                cancelSubtaskReminder(
-                    context,
-                    subTaskId = existingTask.uuid,
-                    taskTitle = existingTask.tittle,
-                    subTaskDescription = subTaskRemi.description,
-                    date = subTaskRemi.date!!,
-                    time = subTaskRemi.time!!
-                )
-            }
-            val updatedList = list.toMutableList().apply {
-                removeAt(indexOfSubTak)
-            }
-            val updatedTask = existingTask.mapToTask().copy(listOfSubtasks = updatedList)
-            updateTask(updatedTask)
-        }
+override suspend fun getAllTasks(): Flow<List<Task>> {
+    return dao.getALlTasks().map { list ->
+        list.map { entity -> entity.mapToTask() }
     }
+}
 
-    override suspend fun getTasksByDate(date: LocalDate): Flow<List<Task>> {
-        return dao.getTasksByDate(date).map { list ->
-            list.map { task -> task.mapToTask() }
-
+override suspend fun deleteSubTask(task: Task, indexOfSubTak: Int) {
+    val existingTask = dao.getTaskById(task.id).first()
+    val list = existingTask.listOfSubtasks
+    if (list != null) {
+        val subTaskRemi = list[indexOfSubTak]
+        if (subTaskRemi.time != null && subTaskRemi.date != null) {
+            cancelSubtaskReminder(
+                context,
+                subTaskId = existingTask.uuid,
+                taskTitle = existingTask.tittle,
+                subTaskDescription = subTaskRemi.description,
+                date = subTaskRemi.date!!,
+                time = subTaskRemi.time!!
+            )
         }
+        val updatedList = list.toMutableList().apply {
+            removeAt(indexOfSubTak)
+        }
+        val updatedTask = existingTask.mapToTask().copy(listOfSubtasks = updatedList)
+        updateTask(updatedTask)
     }
+}
+
+override suspend fun getTasksByDate(date: LocalDate): Flow<List<Task>> {
+    return dao.getTasksByDate(date).map { list ->
+        list.map { task -> task.mapToTask() }
+
+    }
+}
 
 }

@@ -9,8 +9,8 @@ import com.aopr.notes_presentation.view_model.CreatingNoteViewModel
 import com.aopr.notes_presentation.view_model.events.all_notes_events.AllNotesUiEvent
 import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteEvents
 import com.aopr.notes_presentation.view_model.events.creating_note_events.CreatingNoteUiEvents
-import com.aopr.shared_ui.util.LocalNavigator
-import com.aopr.shared_ui.util.currentOrThrow
+import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.navigation.currentOrThrow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Category
-import com.example.bookmarks_presentation.events.categories_events.CategoriesEvents
-import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents
-import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToAllBookMarks
-import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToBookmarksByCategoryId
-import com.example.bookmarks_presentation.events.categories_events.UiCategoriesEvents.NavigateToCreateBookmark
+import com.example.bookmarks_presentation.view_models.events.categories_events.CategoriesEvents
+import com.example.bookmarks_presentation.view_models.events.categories_events.UiCategoriesEvents
+import com.example.bookmarks_presentation.view_models.events.categories_events.UiCategoriesEvents.NavigateToAllBookMarks
+import com.example.bookmarks_presentation.view_models.events.categories_events.UiCategoriesEvents.NavigateToBookmarksByCategoryId
+import com.example.bookmarks_presentation.view_models.events.categories_events.UiCategoriesEvents.NavigateToCreateBookmark
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,22 +47,6 @@ class CategoriesViewModel(private val bookmarksUseCase: BookmarksUseCase) : View
         getAllCategories()
     }
 
-    fun addCategoryToDelete(category: Category) {
-        _listOfCategoriesToDelete.add(category)
-    }
-
-    fun removeCategoryFromDeletion(category: Category) {
-        _listOfCategoriesToDelete.remove(category)
-    }
-
-    fun deleteChosenCategories() {
-        if (_listOfCategoriesToDelete.isNotEmpty()) {
-            val list = _listOfCategoriesToDelete.toList()
-            onEvent(CategoriesEvents.DeleteCategories(list))
-            _listOfCategoriesToDelete.clear()
-            _isInSelectionMode.value = false
-        }
-    }
 
     private fun deleteSeveralCategories(category: List<Category>) {
         bookmarksUseCase.deleteSeveralCategories(category).onEach { result ->
@@ -167,7 +151,9 @@ class CategoriesViewModel(private val bookmarksUseCase: BookmarksUseCase) : View
             }
 
             CategoriesEvents.NavigateBack -> {
-
+                viewModelScope.launch {
+                    _event.emit(UiCategoriesEvents.NavigateBack)
+                }
             }
 
             CategoriesEvents.NavigateToAllBookmarks -> {
@@ -194,16 +180,27 @@ class CategoriesViewModel(private val bookmarksUseCase: BookmarksUseCase) : View
                 }
             }
 
-            is CategoriesEvents.DeleteCategories -> {
-                viewModelScope.launch {
-                    deleteSeveralCategories(event.categories)
-                }
-            }
-
             CategoriesEvents.TurnOnSelectionModeForDelete -> {
                 if (listOfCategories.value.isNotEmpty()) {
                     _isInSelectionMode.value = !_isInSelectionMode.value
                 }
+            }
+
+            is CategoriesEvents.AddCategoryForDeletion -> {
+                _listOfCategoriesToDelete.add(event.category)
+            }
+
+            CategoriesEvents.DeleteSeveralCategories -> {
+                if (_listOfCategoriesToDelete.isNotEmpty()) {
+                    val list = _listOfCategoriesToDelete.toList()
+                    deleteSeveralCategories(list)
+                    _listOfCategoriesToDelete.clear()
+                    _isInSelectionMode.value = false
+                }
+            }
+
+            is CategoriesEvents.RemoveCategoryForDeletion -> {
+                _listOfCategoriesToDelete.remove(event.category)
             }
         }
 

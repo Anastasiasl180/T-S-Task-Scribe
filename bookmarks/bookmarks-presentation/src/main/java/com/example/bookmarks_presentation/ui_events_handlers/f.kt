@@ -1,2 +1,0 @@
-package com.example.bookmarks_presentation.ui_events_handlers
-

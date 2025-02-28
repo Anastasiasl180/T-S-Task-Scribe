@@ -9,8 +9,8 @@ import com.aopr.shared_ui.util.ViewModelKit
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
-import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
-import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkUiEvents
+import com.example.bookmarks_presentation.view_models.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.view_models.events.creating_bookmark_events.CreatingBookmarkUiEvents
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ import org.koin.android.annotation.KoinViewModel
 class CreatingBookmarkViewModel(
     private val bookmarksUseCase: BookmarksUseCase,
     private val fireUser: FireUser
-) : ViewModelKit<CreatingBookmarkEvents,CreatingBookmarkUiEvents>() {
+) : ViewModelKit<CreatingBookmarkEvents, CreatingBookmarkUiEvents>() {
 
     private val _tittleOfBookmark = MutableStateFlow("")
     val tittle: StateFlow<String> = _tittleOfBookmark

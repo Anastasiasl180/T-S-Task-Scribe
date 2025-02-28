@@ -142,6 +142,17 @@ fun setBookmarksFromFire(bookmarks:List<Bookmark>?):Flow<Responses<Unit>> = flow
             println(e.message.toString())
         }
     }
+    fun getCategoryById(id:Int):Flow<Responses<Flow<Category>>> = flow {
+        try {
+            emit(Responses.Loading())
+            val result = repository.getCategoryById(id)
+            emit(Responses.Success(result))
+        }catch (e: IOException) {
+            println(e.message.toString())
+        } catch (e: Exception) {
+            println(e.message.toString())
+        }
+    }
 
     fun getBookmarksByCategoryId(id:Int?):Flow<Responses<Flow<List<Bookmark>>>> =flow {
         try {

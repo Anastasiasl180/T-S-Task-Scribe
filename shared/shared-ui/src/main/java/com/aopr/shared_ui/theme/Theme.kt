@@ -119,8 +119,8 @@ fun TaskScribeTheme(
                 Themes.BLUE -> blueTheme
                 Themes.VIOLET -> violetTheme
                 Themes.HAKI -> hakiTheme
-                Themes.METALIC -> metalicTheme
-                Themes.`DUSKY-EVENING` -> dusky_evening
+                Themes.METALLIC -> metalicTheme
+                Themes.`DUSKY_EVENING` -> dusky_evening
                 Themes.ORANGE -> orangeTheme
                 Themes.PASTEL -> pastelTheme
             }

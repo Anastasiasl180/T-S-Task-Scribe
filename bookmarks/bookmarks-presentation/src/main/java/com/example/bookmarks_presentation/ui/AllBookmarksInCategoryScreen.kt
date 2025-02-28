@@ -40,9 +40,9 @@ import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.deletion_row.DeletionRow
 import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
 import com.example.bookmarks_presentation.R
-import com.example.bookmarks_presentation.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_in_category_event.AllBookmarksInCategoryEvents
 import com.example.bookmarks_presentation.ui.ui_elements.CustomCard
-import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_in_category_handler.AllBookmarksByCategoryUiEventHandler
+import com.example.bookmarks_presentation.view_models.ui_events_handlers.all_bookmarks_in_category_handler.AllBookmarksByCategoryUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksInCategoryViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -53,6 +53,7 @@ fun AllBookmarksInCategory() {
 
     AllBookmarksByCategoryUiEventHandler()
     val viewModel = koinViewModel<AllBookmarksInCategoryViewModel>()
+    val categoryTittle = viewModel.categoryTittle.value
     val listOfBookmarks = viewModel.listOfBookmarks.collectAsState()
     val isInSelectionMode = viewModel.isInSelectedMode.collectAsState()
     val backgroundTheme = background()
@@ -121,18 +122,22 @@ fun AllBookmarksInCategory() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(R.string.all_bookmarks),
+                            categoryTittle.toString(),
                             fontSize = 30.sp,
                             fontFamily = FontFamily(
                                 Font(com.aopr.shared_ui.R.font.open_sans_light)
                             )
                         )
-                        if (listOfBookmarks.value != null){
+                        if (listOfBookmarks.value != null) {
                             DeletionRow(
                                 isInSelectionMode.value,
-                                turnOnSelectionMode = { viewModel.onEvent(AllBookmarksInCategoryEvents.TurnOnSelectionModeForDelete) },
+                                turnOnSelectionMode = {
+                                    viewModel.onEvent(
+                                        AllBookmarksInCategoryEvents.TurnOnSelectionModeForDelete
+                                    )
+                                },
                                 deleteChosenItems = {
-                                    viewModel.deleteChosenCategories()
+                                    viewModel.onEvent(AllBookmarksInCategoryEvents.DeleteSeveralBookmarks)
                                 })
                         }
 
@@ -173,9 +178,17 @@ fun AllBookmarksInCategory() {
                                         isInSelectionMode = isInSelectionMode.value,
                                         isOnSelectedBookmark = { bookmark, isSelected ->
                                             if (isSelected) {
-                                                viewModel.addBookmarkToDelete(bookmark)
+                                                viewModel.onEvent(
+                                                    AllBookmarksInCategoryEvents.AddBookmarkForDeletion(
+                                                        bookmark
+                                                    )
+                                                )
                                             } else {
-                                                viewModel.removeBookmarkFromDeletion(bookmark)
+                                                viewModel.onEvent(
+                                                    AllBookmarksInCategoryEvents.RemoveBookmarkForDeletion(
+                                                        bookmark
+                                                    )
+                                                )
                                             }
                                         }
                                     )

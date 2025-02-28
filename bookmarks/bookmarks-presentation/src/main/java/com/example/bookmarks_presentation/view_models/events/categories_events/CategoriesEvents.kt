@@ -1,0 +1,21 @@
+package com.example.bookmarks_presentation.view_models.events.categories_events
+
+import com.example.bookmarks_domain.models.Bookmark
+import com.example.bookmarks_domain.models.Category
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksEvents
+
+sealed interface CategoriesEvents {
+    data object AddCategory: CategoriesEvents
+    data object NavigateBack: CategoriesEvents
+    data object NavigateToAllBookmarks: CategoriesEvents
+    data object ShowDialogForAddingCategory: CategoriesEvents
+    data object HideDialogForAddingCategory: CategoriesEvents
+    data object TurnOnSelectionModeForDelete : CategoriesEvents
+    data class NavigateToCreateBookmark(val id:Int?): CategoriesEvents
+    data class DeleteCategory(val category: Category): CategoriesEvents
+    data class UpdateTittleOfCategory(val tittle:String): CategoriesEvents
+    data class NavigateToBookmarksByCategoryId(val id:Int): CategoriesEvents
+    data object DeleteSeveralCategories:CategoriesEvents
+    data class RemoveCategoryForDeletion(val category: Category): CategoriesEvents
+    data class AddCategoryForDeletion(val category: Category): CategoriesEvents
+}

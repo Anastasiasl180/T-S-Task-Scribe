@@ -52,19 +52,20 @@ import com.aopr.shared_ui.cardsView.CircularCheckbox
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.cardViews
 import com.aopr.shared_ui.deletion_row.DeletionRow
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import com.example.bookmarks_domain.models.Category
 import com.example.bookmarks_presentation.R
-import com.example.bookmarks_presentation.events.categories_events.CategoriesEvents
+import com.example.bookmarks_presentation.view_models.events.categories_events.CategoriesEvents
 import com.example.bookmarks_presentation.ui.ui_elements.AddCategoryDialog
-import com.example.bookmarks_presentation.ui_events_handlers.main_handler.MainUiEventHandler
+import com.example.bookmarks_presentation.view_models.ui_events_handlers.main_handler.MainUiEventHandler
 import com.example.bookmarks_presentation.view_models.CategoriesViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainBookmarksScreen(modifier: Modifier = Modifier) {
-    val viewModel = koinViewModel<CategoriesViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+fun MainBookmarksScreen() {
+    val viewModel =
+        koinViewModel<CategoriesViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val tittleOfCategory by viewModel.tittleOfCategory
     val isDialogShowed by viewModel.isDialogForAddingCategoryIsShowed
     val backgroundTheme = background()
@@ -95,7 +96,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
             TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                 navigationIcon = {
                     IconButton(
-                        onClick = { },
+                        onClick = { viewModel.onEvent(CategoriesEvents.NavigateBack) },
                         modifier = Modifier
                             .clip(CircleShape)
                             .background(Color.DarkGray.copy(alpha = 0.6f))
@@ -114,7 +115,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
     ) { _ ->
 
         Box(
-            modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .background(backgroundTheme), contentAlignment = Alignment.BottomCenter
         ) {
@@ -232,7 +233,7 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                     DeletionRow(
                                         isInSelectionModeForDelete.value,
                                         turnOnSelectionMode = { viewModel.onEvent(CategoriesEvents.TurnOnSelectionModeForDelete) },
-                                        deleteChosenItems = { viewModel.deleteChosenCategories() })
+                                        deleteChosenItems = { viewModel.onEvent(CategoriesEvents.DeleteSeveralCategories) })
                                 }
                             }
                             LazyVerticalGrid(
@@ -258,10 +259,16 @@ fun MainBookmarksScreen(modifier: Modifier = Modifier) {
                                         },
                                         onSelectCategory = { selectedCategory, isOnSelected ->
                                             if (isOnSelected) {
-                                                viewModel.addCategoryToDelete(selectedCategory)
+                                                viewModel.onEvent(
+                                                    CategoriesEvents.AddCategoryForDeletion(
+                                                        selectedCategory
+                                                    )
+                                                )
                                             } else {
-                                                viewModel.removeCategoryFromDeletion(
-                                                    selectedCategory
+                                                viewModel.onEvent(
+                                                    CategoriesEvents.RemoveCategoryForDeletion(
+                                                        selectedCategory
+                                                    )
                                                 )
                                             }
                                         })

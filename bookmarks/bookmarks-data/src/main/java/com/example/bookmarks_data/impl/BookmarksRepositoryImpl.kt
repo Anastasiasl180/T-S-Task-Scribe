@@ -123,6 +123,10 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
 
         } ?: flowOf(emptyList())
     }
+
+    override suspend fun getCategoryById(id: Int): Flow<Category> {
+      return dao.getCategoryById(id).map { it.mapToCategory() }
+    }
     /*
        return dao.getBookmarksByCategoryId(id).map {entityList->
              entityList.map { entity ->

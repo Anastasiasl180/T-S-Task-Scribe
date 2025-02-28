@@ -12,8 +12,8 @@ import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
-import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskEvents
-import com.aopr.tasks_presentation.events.creating_task_events.CreatingTaskUiEvents
+import com.aopr.tasks_presentation.view_models.events.creating_task_events.CreatingTaskEvents
+import com.aopr.tasks_presentation.view_models.events.creating_task_events.CreatingTaskUiEvents
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

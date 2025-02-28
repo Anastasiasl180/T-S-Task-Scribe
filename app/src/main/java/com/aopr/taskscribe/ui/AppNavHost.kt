@@ -7,7 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.aopr.home.home_screen.drawers_screens.theme_screen.ThemeChooserScreen
+import com.aopr.home.home_screen.ui.drawers_screens.theme_screen.ThemeChooserScreen
 import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.home.home_screen.ui.HomeScreen
@@ -17,8 +17,8 @@ import com.aopr.notes_presentation.ui.CreatingNoteScreen
 import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
 import com.aopr.onboarding_presentation.ui.LoadingScreen
 import com.aopr.shared_ui.navigation.MainNavRoutes
-import com.aopr.shared_ui.util.LocalNavigator
-import com.aopr.shared_ui.util.currentOrThrow
+import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.navigation.currentOrThrow
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
 import com.aopr.tasks_presentation.ui.AllTasksScreen
 import com.aopr.tasks_presentation.ui.CreatingTaskScreen
@@ -29,7 +29,7 @@ import com.example.bookmarks_presentation.ui.AllBookmarksInCategory
 import com.example.bookmarks_presentation.ui.AllBookmarksScreen
 import com.example.bookmarks_presentation.ui.CreatingBookMarkScreen
 import com.example.bookmarks_presentation.ui.MainBookmarksScreen
-import com.example.bookmarks_presentation.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
+import com.example.bookmarks_presentation.view_models.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
 import kotlin.reflect.typeOf
 
 @RequiresApi(Build.VERSION_CODES.P)

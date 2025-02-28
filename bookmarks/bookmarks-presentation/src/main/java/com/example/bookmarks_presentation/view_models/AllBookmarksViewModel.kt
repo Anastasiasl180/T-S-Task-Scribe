@@ -6,9 +6,11 @@ import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
-import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksEvents
-import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksUiEvents
-import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksUiEvents.*
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksEvents
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksUiEvents
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksUiEvents.NavigateBack
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksUiEvents.NavigateToBookmarkById
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksUiEvents.NavigateToCreateBookmarkScreen
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,23 +40,6 @@ class AllBookmarksViewModel(private val bookmarksUseCase: BookmarksUseCase) :
         onEvent(AllBookmarksEvents.GetAllBookmarks)
     }
 
-
-    fun addBookmarkToDelete(bookmark: Bookmark) {
-        _listOfBookmarksToDelete.add(bookmark)
-    }
-
-    fun removeBookmarkFromDeletion(bookmark: Bookmark) {
-        _listOfBookmarksToDelete.remove(bookmark)
-    }
-
-    fun deleteChosenCategories() {
-        if (_listOfBookmarksToDelete.isNotEmpty()) {
-            val list = _listOfBookmarksToDelete.toList()
-            onEvent(AllBookmarksEvents.DeleteSeveralBookmarks(list))
-            _listOfBookmarksToDelete.clear()
-            _isInSelectionMode.value = false
-        }
-    }
 
     private fun deleteSeveralBookmarks(bookmarks: List<Bookmark>) {
         bookmarksUseCase.deleteSeveralBookmarks(bookmarks).onEach { result ->
@@ -145,7 +130,13 @@ class AllBookmarksViewModel(private val bookmarksUseCase: BookmarksUseCase) :
 
             is AllBookmarksEvents.DeleteSeveralBookmarks -> {
                 viewModelScope.launch {
-                    deleteSeveralBookmarks(event.bookmarks)
+                    if (_listOfBookmarksToDelete.isNotEmpty()) {
+                        val list = _listOfBookmarksToDelete.toList()
+                        deleteSeveralBookmarks(list)
+                        _listOfBookmarksToDelete.clear()
+                        _isInSelectionMode.value = false
+                    }
+
                 }
             }
 
@@ -157,8 +148,16 @@ class AllBookmarksViewModel(private val bookmarksUseCase: BookmarksUseCase) :
 
             AllBookmarksEvents.NavigateToCreateBookmarkScreen -> {
                 viewModelScope.launch {
-                    _event.emit(AllBookmarksUiEvents.NavigateToCreateBookmarkScreen)
+                    _event.emit(NavigateToCreateBookmarkScreen)
                 }
+            }
+
+            is AllBookmarksEvents.AddBookmarkForDeletion -> {
+                _listOfBookmarksToDelete.add(event.bookmark)
+            }
+
+            is AllBookmarksEvents.RemoveBookmarkForDeletion -> {
+                _listOfBookmarksToDelete.remove(event.bookmark)
             }
         }
     }

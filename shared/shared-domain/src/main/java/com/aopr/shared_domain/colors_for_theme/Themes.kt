@@ -1,12 +1,12 @@
 package com.aopr.shared_domain.colors_for_theme
 
 
-enum class Themes() {
+enum class Themes{
     BLUE,
     VIOLET,
     HAKI,
-    METALIC,
-    `DUSKY-EVENING`,
+    METALLIC,
+    DUSKY_EVENING,
     ORANGE,
     PASTEL
 }

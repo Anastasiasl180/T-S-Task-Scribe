@@ -42,12 +42,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.aopr.shared_ui.MainViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
-import com.aopr.shared_ui.util.MainViewModelStoreOwner
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import com.example.bookmarks_presentation.R
-import com.example.bookmarks_presentation.events.creating_bookmark_events.CreatingBookmarkEvents
+import com.example.bookmarks_presentation.view_models.events.creating_bookmark_events.CreatingBookmarkEvents
 import com.example.bookmarks_presentation.ui.ui_elements.CustomDropDownMenu
 import com.example.bookmarks_presentation.ui.ui_elements.FilePreview
 import com.example.bookmarks_presentation.ui.ui_elements.LinkPreview
@@ -60,7 +60,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatingBookMarkScreen(uiEventHandler: @Composable () -> Unit) {
     uiEventHandler()
     val viewModel = koinViewModel<CreatingBookmarkViewModel>()
-    val mainViewModel = koinViewModel<MainViewModel>(viewModelStoreOwner = MainViewModelStoreOwner)
+    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val backgroundTheme = background()
     val tittleOfBookmark by viewModel.tittle.collectAsState()
     val fileUri by viewModel.fileUri.collectAsState()
@@ -118,7 +118,7 @@ fun CreatingBookMarkScreen(uiEventHandler: @Composable () -> Unit) {
                                 onClick = {
                                     viewModel.onEvent(
                                         CreatingBookmarkEvents.SaveBookmark(
-                                            mainViewModel.userId.value.toString()
+                                            globalViewModel.userId.value.toString()
                                         )
                                     )
                                 },

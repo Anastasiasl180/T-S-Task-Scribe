@@ -40,9 +40,9 @@ import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.deletion_row.DeletionRow
 import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
 import com.example.bookmarks_presentation.R
-import com.example.bookmarks_presentation.events.all_bookmarks_event.AllBookmarksEvents
+import com.example.bookmarks_presentation.view_models.events.all_bookmarks_event.AllBookmarksEvents
 import com.example.bookmarks_presentation.ui.ui_elements.CustomCard
-import com.example.bookmarks_presentation.ui_events_handlers.all_bookmarks_handler.AllBookmarksUiEventHandler
+import com.example.bookmarks_presentation.view_models.ui_events_handlers.all_bookmarks_handler.AllBookmarksUiEventHandler
 import com.example.bookmarks_presentation.view_models.AllBookmarksViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -122,12 +122,12 @@ fun AllBookmarksScreen() {
                                 Font(com.aopr.shared_ui.R.font.open_sans_light)
                             )
                         )
-                        if (list.value!=null){
+                        if (list.value != null) {
                             DeletionRow(
                                 isInSelectionMode.value,
                                 turnOnSelectionMode = { viewModel.onEvent(AllBookmarksEvents.TurnOnSelectionModeForDelete) },
                                 deleteChosenItems = {
-                                    viewModel.deleteChosenCategories()
+                                    viewModel.onEvent(AllBookmarksEvents.DeleteSeveralBookmarks)
                                 })
                         }
 
@@ -164,9 +164,17 @@ fun AllBookmarksScreen() {
                                         isInSelectionMode = isInSelectionMode.value,
                                         isOnSelectedBookmark = { bookmark, isSelected ->
                                             if (isSelected) {
-                                                viewModel.addBookmarkToDelete(bookmark)
+                                                viewModel.onEvent(
+                                                    AllBookmarksEvents.AddBookmarkForDeletion(
+                                                        bookmark
+                                                    )
+                                                )
                                             } else {
-                                                viewModel.removeBookmarkFromDeletion(bookmark)
+                                                viewModel.onEvent(
+                                                    AllBookmarksEvents.RemoveBookmarkForDeletion(
+                                                        bookmark
+                                                    )
+                                                )
                                             }
                                         }
                                     )
