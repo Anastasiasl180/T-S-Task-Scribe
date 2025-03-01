@@ -3,6 +3,7 @@ package com.aopr.home.home_screen.view_model
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -101,6 +102,7 @@ class HomeViewModel(
                 is Responses.Success -> {
                     result.data?.collect { tasks->
                     _listOfTodaysTasks.value = tasks
+
                     }
                 }
             }

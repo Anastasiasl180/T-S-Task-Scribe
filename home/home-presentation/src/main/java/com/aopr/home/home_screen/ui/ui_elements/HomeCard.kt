@@ -2,7 +2,6 @@ package com.aopr.home.home_screen.ui.ui_elements
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -39,10 +38,7 @@ internal fun HomeCard(
     vararg buttons: @Composable () -> Unit
 ) {
 
-    val animatedAlpha by animateFloatAsState(
-        targetValue = if (isBlurred) 0.5f else 1f,
-        animationSpec = tween(durationMillis = 500), label = ""
-    )
+
     val animatedBlur by animateDpAsState(
         targetValue = if (isBlurred) 10.dp else 0.dp,
         animationSpec = tween(durationMillis = 500), label = ""

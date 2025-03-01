@@ -38,17 +38,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aopr.onboarding_presentation.R
 import com.aopr.onboarding_presentation.events.first_screen_events.FirstScreenEvents
 import com.aopr.onboarding_presentation.events.second_screen_events.SecondScreenEvents
 import com.aopr.onboarding_presentation.model.FirstOnBoardingViewModel
 import com.aopr.onboarding_presentation.model.SecondOnBoardingViewModel
 import com.aopr.onboarding_presentation.ui_events_handler.FirstScreenOnBoardingUiEventsHandler
 import com.aopr.onboarding_presentation.ui_events_handler.SecondScreenOnBoardingUiEventsHandler
+import com.aopr.shared_ui.cardsView.background
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import kotlin.math.roundToInt
@@ -57,9 +60,10 @@ import kotlin.math.roundToInt
 @Composable
 fun FirstOnBoardingScreen() {
     FirstScreenOnBoardingUiEventsHandler()
+    val background = background()
     val viewModel = koinViewModel<FirstOnBoardingViewModel>()
     Scaffold() { _ ->
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize().background(background), contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.95f)
@@ -136,10 +140,11 @@ fun FirstOnBoardingScreen() {
 @Composable
 fun SecondOnBoardingScreen() {
     val viewModel = koinViewModel<SecondOnBoardingViewModel>()
+    val background = background()
     SecondScreenOnBoardingUiEventsHandler()
     Scaffold() { _ ->
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize().background(background), contentAlignment = Alignment.Center) {
 
             Box(
                 modifier = Modifier
@@ -153,7 +158,20 @@ fun SecondOnBoardingScreen() {
                 ) {
                     Column {
                         Text(
-                            text = "Your all-in-one hub for organizing tasks, notes, reminders, and ideas \neffortlessly.",
+                            text = "Your",
+                            lineHeight = 50.sp,
+                            fontSize = 45.sp,
+                            fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
+                        )
+                        Text(
+                            text = "Your all-in-one",
+                            lineHeight = 50.sp,
+                            fontSize = 45.sp,
+                            fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
+                        )
+                       /* Text(text = stringResource())*/
+                        Text(
+                            text = "hub for organizing tasks, notes, reminders, and ideas effortlessly.",
                             lineHeight = 50.sp,
                             fontSize = 45.sp,
                             fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))

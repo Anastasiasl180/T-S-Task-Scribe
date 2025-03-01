@@ -7,7 +7,12 @@
     <string name="Account">Account</string>
     <string name="Settings">Settings</string>
     <string name="AboutApp">About app</string>
-    
+    <string name="Upcoming">Upcoming</string>
+    <string name="tasks_label">%d tasks</string>
+    <string name="choose_theme">Choose theme</string>
+    <string name="Log_out">Log out</string>
+    <string name="Hello_user">Hello user</string>
+    <string name="No_task_for_today">No task for today</string>
     <string name="Cancel">Cancel</string>
     <string name="NewNote">New Note</string>
     <string name="Done">Done</string>

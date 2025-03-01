@@ -48,8 +48,6 @@ internal fun BottomSheetContent(
     infoBarMessage:InfoBarMessage?
 ) {
 
-
-    val brush = background()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
@@ -103,7 +101,6 @@ internal fun BottomSheetContent(
                         TextField(
                             shape = MaterialTheme.shapes.medium,
                             modifier = Modifier
-                                //  .border(width = 3.dp, brush =text , shape = MaterialTheme.shapes.medium)
                                 .fillMaxWidth()
                                 .height(60.dp),
                             placeholder = {

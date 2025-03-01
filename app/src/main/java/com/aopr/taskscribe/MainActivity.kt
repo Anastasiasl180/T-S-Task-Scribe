@@ -49,8 +49,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(bottomBar = {
 
                     if (isBottomBarShowed.value) {
-                        Log.wtf("", "onCreate:BOTOTOM ", )
-                        BottomBar(navController = navHost)
+                       BottomBar(navController = navHost)
                     }
                 }) { _ ->
                     CompositionLocalProvider(
@@ -146,6 +145,9 @@ fun GlobalUiEventHandler(navHost: NavHostController) {
                     }
                 }
 
+                GlobalUiEvents.NavigateBack -> {
+                    navHost.navigate(MainNavRoutes.HomeNavHost)
+                }
             }
         }
     }

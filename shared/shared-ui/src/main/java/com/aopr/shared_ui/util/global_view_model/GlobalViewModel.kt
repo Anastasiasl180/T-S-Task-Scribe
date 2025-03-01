@@ -182,6 +182,12 @@ class GlobalViewModel(private val globalUseCase: GlobalUseCase) : ViewModel() {
                     _isBottomBarMoved.value = false
                 }
             }
+
+            GlobalEvents.NavigateBack -> {
+                viewModelScope.launch {
+                    _event.emit(GlobalUiEvents.NavigateBack)
+                }
+            }
         }
 
     }

@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -216,7 +218,7 @@ fun HomeScreen() {
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
-                                IconButton(
+                             /*   IconButton(
                                     onClick = {
                                         scope.launch {
                                             drawerState.apply {
@@ -229,9 +231,9 @@ fun HomeScreen() {
                                         imageVector = Icons.Default.Menu,
                                         contentDescription = "drawer", tint = Color.White
                                     )
-                                }
+                                }*/
                                 Text(
-                                    text = "Hello user",
+                                    text = stringResource(R.string.Hello_user),
                                     fontSize = 30.sp,
                                     fontWeight = FontWeight.Bold,
                                     style = TextStyle(
@@ -259,7 +261,20 @@ fun HomeScreen() {
                                 verticalArrangement = Arrangement.SpaceEvenly,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            drawerState.apply {
+                                                if (isClosed) open() else close()
+                                            }
+                                        }
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,
+                                        contentDescription = "drawer", tint = Color.White
+                                    )
+                                }
                                 CalendarCard(tasks = todayTasks.value)
 
                                 LazyVerticalGrid(
@@ -490,14 +505,14 @@ fun CalendarCard(tasks: List<Task>) {
 
                             Text(
                                 text = todayDate,
-                                fontSize = 20.sp, fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp, fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily(
                                     Font(com.aopr.shared_ui.R.font.open_sans_light)
                                 ),
                                 color = Color.White
                             )
                             Text(
-                                text = "${tasks.size} events", fontSize = 15.sp,
+                                text = stringResource(id = R.string.tasks_label, tasks.size), fontSize = 15.sp,
                                 fontFamily = FontFamily(
                                     Font(com.aopr.shared_ui.R.font.open_sans_light)
                                 )
@@ -523,36 +538,45 @@ fun CalendarCard(tasks: List<Task>) {
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Upcoming", fontFamily = FontFamily(
+                                text = stringResource(R.string.Upcoming), fontFamily = FontFamily(
                                     Font(com.aopr.shared_ui.R.font.open_sans_light)
                                 ), fontSize = 20.sp
                             )
                         }
                         if (tasks.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(15.dp))
-                            Box(
+                            LazyColumn (
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(start = 10.dp),
+                                    .padding(start = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                tasks.forEach { it ->
+
+
+
+                                items(tasks){ it ->
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .fillMaxHeight(0.2f).background(Color.Red),
+                                            .weight(1f),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                        horizontalArrangement = Arrangement.spacedBy(5.dp)
                                     ) {
-                                        Box(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.1f)) {
+                                        Box(modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(0.1f), contentAlignment = Alignment.CenterStart) {
                                             VerticalDivider(
-                                                thickness = 1.dp,
+                                                thickness = 3.dp,
                                                 color = Color.White,
-                                                modifier = Modifier.fillMaxHeight()
+                                                modifier = Modifier
+                                                    .height(30.dp)
+                                                    .clip(
+                                                        RoundedCornerShape(20.dp)
+                                                    )
                                             )
                                         }
-                                        Box(modifier = Modifier.fillMaxSize()) {
+                                       Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
                                             Text(
-                                                text = it.tittle,
+                                                text = if (it.tittle.length > 10) it.tittle.take(10) + "..." else it.tittle,
                                                 fontFamily = FontFamily(
                                                     Font(com.aopr.shared_ui.R.font.open_sans_light),
                                                 ), fontSize = 20.sp, color = Color.White
@@ -560,6 +584,7 @@ fun CalendarCard(tasks: List<Task>) {
                                             )
                                         }
                                     }
+                                    Spacer(modifier = Modifier.height(10.dp))
                                 }
                             }
                         } else {
@@ -568,7 +593,7 @@ fun CalendarCard(tasks: List<Task>) {
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    "No tasks for today", fontFamily = FontFamily(
+                                    stringResource(R.string.No_task_for_today), fontFamily = FontFamily(
                                         Font(com.aopr.shared_ui.R.font.open_sans_light),
                                     ), fontSize = 15.sp
                                 )

@@ -7,6 +7,7 @@ sealed interface GlobalEvents {
         data object NavigateToHomeScreen : GlobalEvents
         data object NavigateToAiScreen : GlobalEvents
         data object NavigateToDashBoardScreen : GlobalEvents
+        data object NavigateBack : GlobalEvents
         data object ShowBottomBar : GlobalEvents
         data object SetFirstLaunchToFalse : GlobalEvents
         data class ChosenTheme(val theme: Themes) : GlobalEvents

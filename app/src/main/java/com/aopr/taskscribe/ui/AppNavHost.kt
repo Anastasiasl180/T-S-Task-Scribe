@@ -15,7 +15,9 @@ import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.ui.AllNotesScreen
 import com.aopr.notes_presentation.ui.CreatingNoteScreen
 import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
+import com.aopr.onboarding_presentation.ui.FirstOnBoardingScreen
 import com.aopr.onboarding_presentation.ui.LoadingScreen
+import com.aopr.onboarding_presentation.ui.SecondOnBoardingScreen
 import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.navigation.LocalNavigator
 import com.aopr.shared_ui.navigation.currentOrThrow
@@ -38,13 +40,13 @@ fun AppNavHost() {
 
     val navigator = LocalNavigator.currentOrThrow()
 
-    NavHost(navController = navigator, startDestination = MainNavRoutes.HomeNavHost) {
-        composable<MainNavRoutes.HomeNavHost> {
+    NavHost(navController = navigator, startDestination = OnBoardingNavRoutes.LoadingScreen) {
+        composable<OnBoardingNavRoutes.LoadingScreen> {
             val innerNavigator = rememberNavController()
             CompositionLocalProvider(LocalNavigator provides innerNavigator) {
                 NavHost(
                     navController = innerNavigator,
-                    startDestination = HomeNavRoutes.HomeScreen
+                    startDestination = OnBoardingNavRoutes.LoadingScreen
                 ) {
                   /*  composable<AuthenticationRoutes.RegistrationScreen> {
                         RegistrationScreen()
@@ -55,12 +57,12 @@ fun AppNavHost() {
                     composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()
                     }
-               /*     composable<OnBoardingNavRoutes.FirstScreen> {
+                   composable<OnBoardingNavRoutes.FirstScreen> {
                         FirstOnBoardingScreen()
                     }
                     composable<OnBoardingNavRoutes.SecondScreen> {
                         SecondOnBoardingScreen()
-                    }*/
+                    }
                     composable<HomeNavRoutes.AllNotesScreen> {
                         AllNotesScreen()
                     }

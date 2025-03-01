@@ -1,7 +1,6 @@
 package com.aopr.home.home_screen.ui.drawers_screens.theme_screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,13 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,23 +30,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aopr.home.R
+import com.aopr.home.home_screen.ui.drawers_screens.ui_elements.CardsForThemes
+import com.aopr.home.home_screen.ui.drawers_screens.ui_elements.Oval
 import com.aopr.shared_domain.colors_for_theme.Themes
-import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.colorsForThemeCards
+import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
 import org.koin.androidx.compose.koinViewModel
@@ -54,9 +53,10 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeChooserScreen() {
-    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val globalViewModel =
+        koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
 
-    val brush1 = background()
+    val backgroundTheme = background()
     val colorsForCards = colorsForThemeCards()
     val brushCircle = Brush.radialGradient(
         0.0f to MaterialTheme.colorScheme.onPrimaryContainer,
@@ -67,19 +67,34 @@ fun ThemeChooserScreen() {
         0.95f to MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.01f),
         1.0f to MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.0f)
     )
-    Scaffold(topBar = {
-        TopAppBar( colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-        ), title = {},
-            navigationIcon = {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "", tint = Color.White
-                    )
-                }
-            })
-    }) { _ ->
+
+    val topAppBarDefaults = searchBarScrollBehaviour()
+    Scaffold(
+        topBar = {
+            TopAppBar(colors = TopAppBarDefaults.mediumTopAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent
+            ), scrollBehavior = topAppBarDefaults,
+                navigationIcon = {
+                    IconButton(
+                        onClick = { globalViewModel.onEvent(GlobalEvents.NavigateBack) },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.DarkGray.copy(alpha = 0.6f))
+                            .size(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            contentDescription = "",
+                            tint = Color.White, modifier = Modifier.size(20.dp)
+                        )
+                    }
+                },
+                title = { /*TODO*/
+                })
+        }
+
+    ) { _ ->
 
         val themesEntries = Themes.entries
 
@@ -88,7 +103,7 @@ fun ThemeChooserScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = brush1,
+                    brush = backgroundTheme,
                 ), contentAlignment = Alignment.Center
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -108,114 +123,53 @@ fun ThemeChooserScreen() {
         }
         Column(modifier = Modifier.fillMaxSize()) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxHeight(0.15f)
-                .fillMaxWidth(0.5f), contentAlignment = Alignment.BottomCenter
-        ) {
-            Text(text = "Choose theme", fontSize = 20.sp)
-        }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.81f)
-                    .clip(shape = RoundedCornerShape(20.dp))
-                    .fillMaxWidth(0.95f),
-                contentAlignment = Alignment.Center
+                    .fillMaxHeight(0.2f)
+                    .fillMaxWidth(0.6f), contentAlignment = Alignment.BottomCenter
             ) {
-                LazyColumn(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-
-                    items(themesEntries.zip(colorsForCards)) { (theme, brush) ->
-
-                        CardsForThemes(modifier = Modifier, colorsForCard = brush, name = theme.name, onChooseTheme = {
-                            globalViewModel.onEvent(GlobalEvents.ChosenTheme(theme))
-
-                        })
-
-                    }
-                }
-
-
+                Text(
+                    text = stringResource(
+                        R.string.choose_theme
+                    ),
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily(
+                        Font(com.aopr.shared_ui.R.font.open_sans_light)
+                    ),
+                )
             }
-        }
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight(0.81f)
+                        .clip(shape = RoundedCornerShape(20.dp))
+                        .fillMaxWidth(0.95f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyColumn(
+                        modifier = Modifier,
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
 
-    }
-    }
+                        items(themesEntries.zip(colorsForCards)) { (theme, brush) ->
 
-}
+                            CardsForThemes(
+                                modifier = Modifier,
+                                colorsForCard = brush,
+                                name = theme.name,
+                                onChooseTheme = {
+                                    globalViewModel.onEvent(GlobalEvents.ChosenTheme(theme))
 
-@Composable
-fun CardsForThemes(modifier: Modifier,name: String, onChooseTheme: () -> Unit,colorsForCard:Brush) {
+                                })
 
-    Card(
-        modifier = modifier
-            .height(140.dp)
-            .fillMaxWidth()
-            .clickable { onChooseTheme() },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(Color.Transparent)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = colorsForCard,
-                    shape = RoundedCornerShape(
-                        20.dp
-                    )
-                ), contentAlignment = Alignment.Center
-        ) {
-            Text(text = name)
-        }
+                        }
+                    }
 
-    }
-}
 
-class Oval(
-) : Shape {
-    fun createPath(size: Size, density: Density): Path = with(density) {
-
-        val width = size.width * 1f
-        val height = size.height * 1f
-        val offsetX = size.width * 0.0f
-        val offsetY = size.height * 0.0f
-
-        return Path().apply {
-
-            addOval(
-                oval = Rect(
-                    offset = Offset(offsetX, offsetY),
-                    size = Size(width, height)
-                )
-            )
+                }
+            }
 
         }
     }
 
-
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        val path = createPath(size, density)
-        return Outline.Generic(path)
-    }
 }
-
-
-/* .graphicsLayer { alpha = 0.99f }
-            .drawWithContent {
-                val colors = listOf(
-                    Color.Black,
-                    Color.Transparent
-
-                )
-                drawContent()
-                drawRect(
-
-                    brush = Brush.verticalGradient(colors),
-                    blendMode = BlendMode.DstIn,
-
-                    )
-            }*/
