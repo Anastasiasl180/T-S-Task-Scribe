@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.aopr.onboarding_presentation.events.loading_screen_events.LoadingEvents
-import com.aopr.onboarding_presentation.model.LoadingViewModel
-import com.aopr.onboarding_presentation.ui_events_handler.LoadingUiEventsHandler
+import androidx.compose.ui.res.stringResource
+import com.aopr.onboarding_presentation.R
+import com.aopr.onboarding_presentation.view_models.events.loading_screen_events.LoadingEvents
+import com.aopr.onboarding_presentation.view_models.LoadingViewModel
+import com.aopr.onboarding_presentation.view_models.ui_events_handler.LoadingUiEventsHandler
+import com.aopr.shared_ui.cardsView.background
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
@@ -19,6 +21,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LoadingScreen() {
     LoadingUiEventsHandler()
     val viewModel = koinViewModel<LoadingViewModel>()
+    val background = background()
     LaunchedEffect(key1 = Unit) {
         delay(5000)
         viewModel.onEvent(LoadingEvents.NavigateToFirstOnBoardingScreenOrHomeScreen)
@@ -26,9 +29,9 @@ fun LoadingScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Red), contentAlignment = Alignment.Center
+            .background(background), contentAlignment = Alignment.Center
     ) {
-        Text(text = "Task Scribe")
+        Text(text = stringResource(R.string.Task_Scribe))
     }
 
 }

@@ -7,10 +7,6 @@ import androidx.annotation.RequiresApi
 import com.aopr.authentication_domain.interactors.AuthenticationRepository
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_data.proto_data_store.UserDataDataStoreManager
-import com.aopr.shared_domain.inter.UserData
-import com.aopr.shared_domain.inter.UserDataForFireBase
-import com.aopr.shared_domain.inter.mapToBase64FromUri
-import com.aopr.shared_domain.inter.mapToBitmapFromString
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore

@@ -48,7 +48,7 @@ android {
     }
 }
 dependencies {
-
+    implementation(libs.android.image.cropper)
     //haze for mainBottomBar
     implementation(libs.haze.jetpack.compose)
 

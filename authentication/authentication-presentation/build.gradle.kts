@@ -44,6 +44,7 @@ dependencies {
 
     dependencies {
 
+        implementation(libs.android.image.cropper)
         //modules
 
         implementation(project(":firebase:firebase-domain"))

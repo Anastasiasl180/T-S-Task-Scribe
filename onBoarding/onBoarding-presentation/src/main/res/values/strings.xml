@@ -3,5 +3,8 @@
 
     <string name="your">Your</string>
     <string name="all_in_one">all-in-one</string>
+    <string name="performance">performance</string>
+    <string name="your_organization">Your organization</string>
+    <string name="Task_Scribe">Task&amp;Scribe</string>
     <string name="description">hub for organizing tasks, notes, reminders, and ideas effortlessly.</string>
 </resources>

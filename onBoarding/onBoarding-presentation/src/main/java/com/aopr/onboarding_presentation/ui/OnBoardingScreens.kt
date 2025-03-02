@@ -1,10 +1,6 @@
 package com.aopr.onboarding_presentation.ui
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,56 +10,48 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.onboarding_presentation.R
-import com.aopr.onboarding_presentation.events.first_screen_events.FirstScreenEvents
-import com.aopr.onboarding_presentation.events.second_screen_events.SecondScreenEvents
-import com.aopr.onboarding_presentation.model.FirstOnBoardingViewModel
-import com.aopr.onboarding_presentation.model.SecondOnBoardingViewModel
-import com.aopr.onboarding_presentation.ui_events_handler.FirstScreenOnBoardingUiEventsHandler
-import com.aopr.onboarding_presentation.ui_events_handler.SecondScreenOnBoardingUiEventsHandler
-import com.aopr.shared_ui.cardsView.background
-import kotlinx.coroutines.launch
+import com.aopr.onboarding_presentation.view_models.events.first_screen_events.FirstScreenEvents
+import com.aopr.onboarding_presentation.view_models.events.second_screen_events.SecondScreenEvents
+import com.aopr.onboarding_presentation.view_models.FirstOnBoardingViewModel
+import com.aopr.onboarding_presentation.view_models.SecondOnBoardingViewModel
+import com.aopr.onboarding_presentation.ui.ui_elements.BackButton
+import com.aopr.onboarding_presentation.ui.ui_elements.HorizontalPageIndicator
+import com.aopr.onboarding_presentation.ui.ui_elements.NavigationButton
+import com.aopr.onboarding_presentation.view_models.ui_events_handler.FirstScreenOnBoardingUiEventsHandler
+import com.aopr.onboarding_presentation.view_models.ui_events_handler.SecondScreenOnBoardingUiEventsHandler
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.roundToInt
 
 
 @Composable
 fun FirstOnBoardingScreen() {
     FirstScreenOnBoardingUiEventsHandler()
-    val background = background()
+    val backgroundTheme = Brush.linearGradient(
+        colorStops = arrayOf(
+            0.1f to  Color(0xFF1D0E36),
+            0.4f to  Color(0xFF461851),
+            0.6f to Color(0xFF1E0C27),
+            1.0f to  Color(0xFF000000),
+
+            ), start = Offset.Zero,
+        end = Offset.Infinite)
     val viewModel = koinViewModel<FirstOnBoardingViewModel>()
     Scaffold() { _ ->
-        Box(modifier = Modifier.fillMaxSize().background(background), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize().background(backgroundTheme), contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.95f)
@@ -77,7 +65,7 @@ fun FirstOnBoardingScreen() {
                             .fillMaxWidth(), contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
-                            text = "Task&Scribe",
+                            text = stringResource(R.string.Task_Scribe),
                             color = Color.White,
                             fontSize = 25.sp,
                             fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
@@ -92,13 +80,19 @@ fun FirstOnBoardingScreen() {
 
 
                             Text(
-                                text = "Your\nperformance.",
+                                text = stringResource(R.string.your),
                                 lineHeight = 50.sp,
                                 fontSize = 50.sp,
                                 fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
                             )
                             Text(
-                                text = "Your organization.",
+                                text = stringResource(R.string.performance),
+                                lineHeight = 50.sp,
+                                fontSize = 50.sp,
+                                fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
+                            )
+                            Text(
+                                text = stringResource(R.string.your_organization),
                                 lineHeight = 50.sp,
                                 fontSize = 50.sp,
                                 fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
@@ -140,11 +134,19 @@ fun FirstOnBoardingScreen() {
 @Composable
 fun SecondOnBoardingScreen() {
     val viewModel = koinViewModel<SecondOnBoardingViewModel>()
-    val background = background()
+    val backgroundTheme = Brush.linearGradient(
+        colorStops = arrayOf(
+            0.1f to  Color(0xFF1D0E36),
+            0.4f to  Color(0xFF461851),
+            0.6f to Color(0xFF1E0C27),
+            1.0f to  Color(0xFF000000),
+
+            ), start = Offset.Zero,
+        end = Offset.Infinite)
     SecondScreenOnBoardingUiEventsHandler()
     Scaffold() { _ ->
 
-        Box(modifier = Modifier.fillMaxSize().background(background), contentAlignment = Alignment.Center) {
+        Box(modifier = Modifier.fillMaxSize().background(backgroundTheme), contentAlignment = Alignment.Center) {
 
             Box(
                 modifier = Modifier
@@ -158,20 +160,20 @@ fun SecondOnBoardingScreen() {
                 ) {
                     Column {
                         Text(
-                            text = "Your",
+                            text = stringResource(R.string.your),
                             lineHeight = 50.sp,
                             fontSize = 45.sp,
                             fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
                         )
                         Text(
-                            text = "Your all-in-one",
+                            text = stringResource(R.string.all_in_one),
                             lineHeight = 50.sp,
                             fontSize = 45.sp,
                             fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
                         )
-                       /* Text(text = stringResource())*/
+
                         Text(
-                            text = "hub for organizing tasks, notes, reminders, and ideas effortlessly.",
+                            text = stringResource((R.string.description)),
                             lineHeight = 50.sp,
                             fontSize = 45.sp,
                             fontFamily = FontFamily(Font(com.aopr.shared_ui.R.font.roboto))
@@ -200,7 +202,7 @@ fun SecondOnBoardingScreen() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            Button2(onClickUp = {
+                            BackButton(onClickUp = {
                                 viewModel.onEvent(SecondScreenEvents.NavigateToBack)
                             })
                             Spacer(modifier = Modifier.padding(5.dp))
@@ -216,120 +218,3 @@ fun SecondOnBoardingScreen() {
 
     }
 }
-
-@Composable
-fun NavigationButton(onDragComplete: () -> Unit, modifier: Modifier = Modifier) {
-    var offsetX by remember { mutableStateOf(0f) }
-    val animatedOffsetX = remember { Animatable(0f) }
-    val scope = rememberCoroutineScope()
-
-    var cardWidth by remember { mutableStateOf(0f) }
-
-    Box(
-        modifier = modifier
-            .onGloballyPositioned { layoutCoordinates ->
-                cardWidth = layoutCoordinates.size.width.toFloat()
-            }
-            .width(290.dp)
-            .height(90.dp)
-            .background(Color.DarkGray, shape = RoundedCornerShape(50.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        val dragThreshold = cardWidth * 0.6f
-        Row(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(0.94f),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .offset { IntOffset(animatedOffsetX.value.roundToInt(), 0) }
-                    .height(75.dp)
-                    .width(75.dp)
-                    .background(Color.White, shape = CircleShape)
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                            onDrag = { change, dragAmount ->
-                                change.consume()
-                                offsetX =
-                                    (offsetX + dragAmount.x).coerceIn(0f, cardWidth - 90.dp.toPx())
-                                scope.launch {
-                                    animatedOffsetX.snapTo(offsetX)
-                                }
-                            },
-                            onDragEnd = {
-                                scope.launch {
-                                    if (offsetX >= dragThreshold) {
-                                        onDragComplete()
-                                    }
-                                    animatedOffsetX.animateTo(0f)
-                                    offsetX = 0f
-                                }
-                            }
-                        )
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = "",
-                    modifier = modifier
-                        .size(25.dp),
-                    tint = Color.DarkGray,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun Button2(onClickUp: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .height(75.dp)
-            .width(75.dp)
-            .clickable { onClickUp() }
-            .background(Color.Transparent, shape = CircleShape)
-            .border(width = 2.dp, color = Color.DarkGray, shape = CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-
-        Icon(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "",
-            modifier = Modifier
-                .size(25.dp)
-        )
-    }
-}
-
-@Composable
-fun HorizontalPageIndicator(
-    currentPage: Int,
-    totalPages: Int,
-    activeColor: Color = Color.White,
-    inactiveColor: Color = Color.Gray
-) {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        repeat(totalPages) { index ->
-            val isActive = index == currentPage
-            val color = if (isActive) activeColor else inactiveColor
-
-            val indicatorWidth = if (isActive) 20.dp else 8.dp
-            val indicatorHeight = 4.dp
-
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp)
-                    .size(width = indicatorWidth, height = indicatorHeight)
-                    .background(color, shape = RoundedCornerShape(50))
-            )
-        }
-    }
-}
-

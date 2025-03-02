@@ -1,10 +1,9 @@
 package com.aopr.firebase_data.helpers
 
-import android.util.Log
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
-import com.aopr.shared_domain.inter.SettingsDto
+import com.aopr.shared_domain.interactors.SettingsDto
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.Task
 import com.example.bookmarks_domain.interactors.BookmarksUseCase

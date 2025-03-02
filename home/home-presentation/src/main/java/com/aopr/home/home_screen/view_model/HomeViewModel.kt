@@ -3,7 +3,6 @@ package com.aopr.home.home_screen.view_model
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +12,7 @@ import com.aopr.home.home_screen.view_model.events.homeEvents.HomeUiEvents
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
 import com.aopr.shared_domain.Responses
-import com.aopr.shared_domain.inter.UserDataForFireBase
+import com.aopr.shared_domain.interactors.UserDataForFireBase
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
 import com.aopr.tasks_domain.models.ImportanceOfTask

@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io")
     }
 }
 
@@ -45,3 +46,5 @@ include(":authentication:authentication-domain")
 include(":authentication:authentication-data")
 include(":firebase:firebase-domain")
 include(":firebase:firebase-data")
+include(":calendar:calendar-data")
+include(":calendar:calendar-presentation")

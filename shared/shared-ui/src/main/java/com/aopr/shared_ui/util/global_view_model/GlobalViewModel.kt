@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.colors_for_theme.Themes
-import com.aopr.shared_domain.inter.GlobalUseCase
+import com.aopr.shared_domain.interactors.GlobalUseCase
 import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
 import com.aopr.shared_ui.util.global_view_model.events.GlobalUiEvents
 import kotlinx.coroutines.flow.MutableSharedFlow

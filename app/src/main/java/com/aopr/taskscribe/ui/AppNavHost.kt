@@ -40,13 +40,13 @@ fun AppNavHost() {
 
     val navigator = LocalNavigator.currentOrThrow()
 
-    NavHost(navController = navigator, startDestination = OnBoardingNavRoutes.LoadingScreen) {
-        composable<OnBoardingNavRoutes.LoadingScreen> {
+    NavHost(navController = navigator, startDestination = HomeNavRoutes.HomeScreen) {
+        composable<HomeNavRoutes.HomeScreen> {
             val innerNavigator = rememberNavController()
             CompositionLocalProvider(LocalNavigator provides innerNavigator) {
                 NavHost(
                     navController = innerNavigator,
-                    startDestination = OnBoardingNavRoutes.LoadingScreen
+                    startDestination =HomeNavRoutes.HomeScreen
                 ) {
                   /*  composable<AuthenticationRoutes.RegistrationScreen> {
                         RegistrationScreen()
@@ -54,7 +54,7 @@ fun AppNavHost() {
                     composable<AuthenticationRoutes.LogInScreen> {
                         LogInScreen()
                     }*/
-                    composable<OnBoardingNavRoutes.LoadingScreen> {
+                 /*   composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()
                     }
                    composable<OnBoardingNavRoutes.FirstScreen> {
@@ -62,7 +62,7 @@ fun AppNavHost() {
                     }
                     composable<OnBoardingNavRoutes.SecondScreen> {
                         SecondOnBoardingScreen()
-                    }
+                    }*/
                     composable<HomeNavRoutes.AllNotesScreen> {
                         AllNotesScreen()
                     }

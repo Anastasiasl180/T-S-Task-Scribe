@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="gmail">Gmail</string>
+    <string name="pick_photo">Pick photo</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="login">Log in</string>
+    <string name="restoring_account">Restore account</string>
+    <string name="register">Register</string>
+    <string name="already_have_an_acc">Already have an account?</string>
+    <string name="Registration">Registration</string>
+</resources>

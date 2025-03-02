@@ -6,8 +6,8 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStoreFile
 import com.aopr.shared_domain.colors_for_theme.Themes
-import com.aopr.shared_domain.inter.SettingsDto
-import com.aopr.shared_domain.inter.UserDataForFireBase
+import com.aopr.shared_domain.interactors.SettingsDto
+import com.aopr.shared_domain.interactors.UserDataForFireBase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException

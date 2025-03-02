@@ -2,7 +2,6 @@ package com.aopr.authentication_domain.interactors
 
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.shared_domain.Responses
-import com.aopr.shared_domain.inter.UserDataForFireBase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Single
