@@ -10,12 +10,10 @@ import androidx.lifecycle.viewModelScope
 import com.aopr.home.home_screen.view_model.events.homeEvents.HomeEvent
 import com.aopr.home.home_screen.view_model.events.homeEvents.HomeUiEvents
 import com.aopr.notes_domain.interactors.NotesUseCase
-import com.aopr.notes_domain.models.Note
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_domain.interactors.UserDataForFireBase
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
-import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_domain.models.Subtasks
 import com.aopr.tasks_domain.models.Task
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
@@ -67,13 +65,13 @@ class HomeViewModel(
     val bitmapImage: StateFlow<Bitmap?> = _bitMapImage
 
     private val _userName = MutableStateFlow<String?>(null)
-    val userName:StateFlow<String?> = _userName
+    val userName: StateFlow<String?> = _userName
 
     private val _listOfSubTasks = mutableStateListOf<Subtasks>()
     val listOfSubTasks: List<Subtasks> = _listOfSubTasks
 
     private val _listOfTodaysTasks = MutableStateFlow<List<Task>>(emptyList())
-    val listOfTodaysTasks:StateFlow<List<Task>> = _listOfTodaysTasks
+    val listOfTodaysTasks: StateFlow<List<Task>> = _listOfTodaysTasks
 
     private val _event = MutableSharedFlow<HomeUiEvents>()
     val uiEvents = _event
@@ -89,18 +87,20 @@ class HomeViewModel(
     }
 
 
-    private fun filterTasksByDate(){
-        tasksUseCase.filterTaskByTodayDate().onEach { result->
-            when(result){
+    private fun filterTasksByDate() {
+        tasksUseCase.filterTaskByTodayDate().onEach { result ->
+            when (result) {
                 is Responses.Error -> {
 
                 }
+
                 is Responses.Loading -> {
 
                 }
+
                 is Responses.Success -> {
-                    result.data?.collect { tasks->
-                    _listOfTodaysTasks.value = tasks
+                    result.data?.collect { tasks ->
+                        _listOfTodaysTasks.value = tasks
 
                     }
                 }
@@ -147,44 +147,6 @@ class HomeViewModel(
     }
 
 
-    private fun createNote(note: Note) {
-        notesUseCase.createNote(note).onEach { result ->
-            when (result) {
-                is Responses.Error -> {
-                    hideInfoBar()
-                    result.message?.let { showShortInfoBar(it, 2) }
-                }
-
-                is Responses.Loading -> {
-
-                }
-
-                is Responses.Success -> {
-                }
-            }
-
-        }.launchIn(viewModelScope)
-    }
-
-    private fun createTask(task: Task) {
-        tasksUseCase.createTask(task).onEach { result ->
-            when (result) {
-                is Responses.Error<*> -> {
-
-                }
-
-                is Responses.Loading<*> -> {
-
-                }
-
-                is Responses.Success<*> -> {
-
-                }
-            }
-
-        }.launchIn(viewModelScope)
-    }
-
     override fun onEvent(event: HomeEvent) {
         when (event) {
 
@@ -194,55 +156,10 @@ class HomeViewModel(
                 }
             }
 
-            is HomeEvent.SaveNote -> {
-                viewModelScope.launch {
-                    val note = Note(
-                        tittle = _tittleOfNote.value,
-                        description = _descriptionOfNote.value,
-                        id = 0
-                    )
-                    createNote(note)
-                }
-            }
-
-            is HomeEvent.UpdateDescriptionOfNote -> {
-                _descriptionOfNote.value = event.description
-            }
-
-            is HomeEvent.UpdateTittleOfNote -> {
-                _tittleOfNote.value = event.tittle
-            }
-
             HomeEvent.NavigateToAllTasks -> {
                 viewModelScope.launch {
                     _event.emit(HomeUiEvents.NavigateToAllTasks)
                 }
-            }
-
-            HomeEvent.SaveTask -> {
-                viewModelScope.launch {
-                    val task = Task(
-                        id = 0,
-                        tittle = _tittleOfTask.value,
-                        description = _descriptionOfTask.value,
-                        dateForReminder = _dataOfTaskForReminder.value,
-                        timeForReminder = _timeOfTask.value,
-                        listOfSubtasks = _listOfSubTasks as List<Subtasks>,
-                        isCompleted = false,
-                        importance = ImportanceOfTask.MEDIUM,
-                        dateOfTaskToBeDone = _dataOfTaskToBeDone.value,
-
-                        )
-                    createTask(task)
-                }
-            }
-
-            is HomeEvent.UpdateDescriptionOfTask -> {
-                _descriptionOfTask.value = event.description
-            }
-
-            is HomeEvent.UpdateTittleOFTask -> {
-                _tittleOfTask.value = event.tittle
             }
 
             HomeEvent.NavigateToAllCategoriesOfBookmarks -> {
@@ -261,6 +178,30 @@ class HomeViewModel(
                 viewModelScope.launch {
                     deleteAllDataFromRoom()
                     //  _event.emit(HomeUiEvents.NavigateToRegistrationScreen)
+                }
+            }
+
+            HomeEvent.NavigateToCreateBookmark -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToCreateBookmarkScreen)
+                }
+            }
+
+            HomeEvent.NavigateToCreateNote -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToCreateNotesScreen)
+                }
+            }
+
+            HomeEvent.NavigateToCreateTask -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToCreateTaskScreen)
+                }
+            }
+
+            is HomeEvent.NavigateToCalendarScreen -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToCalendarScreen)
                 }
             }
         }

@@ -40,9 +40,11 @@ android {
 
 dependencies {
 
-
+    implementation(project(":calendar:calendar-presentation"))
     implementation(project(":home:home-domain"))
     implementation(project(":tasks:tasks-domain"))
+    implementation(project(":tasks:tasks-presentation"))
+    implementation(project(":bookmarks:bookmarks-presentation"))
     implementation(project(":bookmarks:bookmarks-domain"))
     implementation(project(":notes:notes-domain"))
     implementation(project(":shared:shared-domain"))

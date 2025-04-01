@@ -5,7 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewModelScope
+import com.aopr.notes_presentation.R
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
 import com.aopr.tasks_domain.interactors.TasksUseCase
@@ -324,8 +326,14 @@ class CreatingTaskViewModel(private val tasksUseCase: TasksUseCase) :
             }
 
             is CreatingTaskEvents.UpdateDateOfTaskToBeDone -> {
+
                 if (_calendarMode.value == CalendarMode.TASK_DONE) {
-                    _dateOfTaskToBeDone.value = event.date
+                 if (event.date.isBefore(LocalDate.now())){
+                       hideInfoBar()
+                        showShortInfoBar(R.string.thePastDateCantBeChosen, 10)
+                    }else{
+                        _dateOfTaskToBeDone.value = event.date
+                    }
                 }
             }
 

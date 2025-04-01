@@ -54,6 +54,7 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     //modules
+    implementation(project(":calendar:calendar-presentation"))
     implementation(project(":firebase:firebase-domain"))
     implementation(project(":firebase:firebase-data"))
     implementation(project(":authentication:authentication-domain"))

@@ -7,10 +7,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.aopr.home.home_screen.ui.drawers_screens.theme_screen.ThemeChooserScreen
+import com.aopr.authentication_presentation.ui.LogInScreen
+import com.aopr.authentication_presentation.ui.RegistrationScreen
 import com.aopr.home.home_screen.navigation.DrawerNavRoutes
 import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.home.home_screen.ui.HomeScreen
+import com.aopr.home.home_screen.ui.drawers_screens.theme_screen.ThemeChooserScreen
 import com.aopr.notes_presentation.navigation.AllNotesRoutes
 import com.aopr.notes_presentation.ui.AllNotesScreen
 import com.aopr.notes_presentation.ui.CreatingNoteScreen
@@ -18,8 +20,9 @@ import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
 import com.aopr.onboarding_presentation.ui.FirstOnBoardingScreen
 import com.aopr.onboarding_presentation.ui.LoadingScreen
 import com.aopr.onboarding_presentation.ui.SecondOnBoardingScreen
-import com.aopr.shared_ui.navigation.MainNavRoutes
+import com.aopr.shared_ui.navigation.AuthenticationRoutes
 import com.aopr.shared_ui.navigation.LocalNavigator
+import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.navigation.currentOrThrow
 import com.aopr.tasks_presentation.navigation.AllTasksNavRoutes
 import com.aopr.tasks_presentation.ui.AllTasksScreen
@@ -32,6 +35,8 @@ import com.example.bookmarks_presentation.ui.AllBookmarksScreen
 import com.example.bookmarks_presentation.ui.CreatingBookMarkScreen
 import com.example.bookmarks_presentation.ui.MainBookmarksScreen
 import com.example.bookmarks_presentation.view_models.ui_events_handlers.creating_bookmark_handler.CreatingBookmarkUiEventHandlerWithCategoryId
+import com.example.calendar_presentation.navigation.CalendarNavRoutes
+import com.example.calendar_presentation.ui.CalendarScreen
 import kotlin.reflect.typeOf
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -48,13 +53,13 @@ fun AppNavHost() {
                     navController = innerNavigator,
                     startDestination =HomeNavRoutes.HomeScreen
                 ) {
-                  /*  composable<AuthenticationRoutes.RegistrationScreen> {
+                /*   composable<AuthenticationRoutes.RegistrationScreen> {
                         RegistrationScreen()
                     }
                     composable<AuthenticationRoutes.LogInScreen> {
                         LogInScreen()
-                    }*/
-                 /*   composable<OnBoardingNavRoutes.LoadingScreen> {
+                    }
+                  composable<OnBoardingNavRoutes.LoadingScreen> {
                         LoadingScreen()
                     }
                    composable<OnBoardingNavRoutes.FirstScreen> {
@@ -96,6 +101,9 @@ fun AppNavHost() {
                     }
                     composable<DrawerNavRoutes.ThemesScreen> {
                         ThemeChooserScreen()
+                    }
+                    composable<HomeNavRoutes.CalendarScreen> {
+                        CalendarScreen()
                     }
                 }
             }

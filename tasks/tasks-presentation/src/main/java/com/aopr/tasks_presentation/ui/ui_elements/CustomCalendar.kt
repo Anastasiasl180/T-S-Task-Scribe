@@ -1,5 +1,6 @@
 package com.aopr.tasks_presentation.ui.ui_elements
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -126,7 +127,8 @@ fun CustomCalendar(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth().fillMaxHeight(0.1f), contentAlignment = Alignment.CenterEnd
+                .fillMaxWidth()
+                .fillMaxHeight(0.1f), contentAlignment = Alignment.CenterEnd
         ) {
             Row(
                 modifier = Modifier
@@ -151,10 +153,11 @@ fun CustomCalendar(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
+
                 Button(
                     onClick = {
                         selectedDate.value?.let {
-                            onDateSelected(it)
+                                onDateSelected(it)
                         }
                         onDismiss()
                     }, colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
@@ -321,7 +324,7 @@ fun DatesGrid(
                         val isTaskDate = listOfDates.contains(date)
 
                         val textColor = when {
-                            isPastDate -> Color.Gray
+                            isPastDate -> if (isTaskDate) colorForDate.copy(alpha = 0.5f) else Color.Gray
                             isTaskDate -> colorForDate
                             else -> Color.White
                         }
@@ -342,7 +345,7 @@ fun DatesGrid(
                                         ?: Color.Transparent,
                                     shape = CircleShape
                                 )
-                                .clickable(enabled = date != null && !isPastDate) {
+                                .clickable(enabled = date != null /*&& !isPastDate*/) {
                                     date?.let {
                                         onDateSelected(it)
                                         getTasks(it)
@@ -366,7 +369,8 @@ fun DatesGrid(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxHeight().fillMaxWidth(0.95f)
+                        .fillMaxHeight()
+                        .fillMaxWidth(0.95f)
                         .clip(RoundedCornerShape(30.dp)),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
@@ -396,7 +400,8 @@ fun DatesGrid(
                                 Card(
                                     modifier = Modifier
                                         .fillMaxHeight()
-                                        .fillMaxWidth(0.9f).clickable {
+                                        .fillMaxWidth(0.9f)
+                                        .clickable {
                                             if (task != null) {
                                                 navigateToTask(task.id)
                                             }

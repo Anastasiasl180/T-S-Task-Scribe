@@ -24,4 +24,6 @@
     <string name="NewBookmark">New bookmark</string>
     <string name="AllBookmarks">All bookmarks</string>
     <string name="AllEvents">All events</string>
+    <string name="NotificationSettings">Notification settings</string>
+
 </resources>

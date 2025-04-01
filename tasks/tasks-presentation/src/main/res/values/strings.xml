@@ -13,7 +13,7 @@
     <string name="selectTimeForReminderOfSubtask"> Select time for reminder</string>
     <string name="doneOrNo">Done</string>
     <string name="noTasks">No tasks</string>
-
+    <string name="thePastDateCantBeChosen">The past time cant be chosen</string>
     <string name="noTimeSelected"> "No time selected</string>
     <string name="selectedTimeNotSet">Selected Time: Not Set</string>
 

@@ -1,34 +1,28 @@
 package com.aopr.home.home_screen.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.BorderStroke
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +31,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,38 +43,35 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import coil3.compose.AsyncImage
 import com.aopr.home.R
 import com.aopr.home.home_screen.navigation.DrawerItems
-import com.aopr.home.home_screen.ui.ui_elements.BottomSheetContent
-import com.aopr.home.home_screen.ui.ui_elements.BottomSheetContentForTasks
+import com.aopr.home.home_screen.ui.ui_elements.CalendarCard
 import com.aopr.home.home_screen.ui.ui_elements.HomeCard
-import com.aopr.home.home_screen.view_model.ui_events_handler.HomeUiEventHandler
+import com.aopr.home.home_screen.ui.ui_elements.getBookMarksButtons
+import com.aopr.home.home_screen.ui.ui_elements.getCalendarButton
+import com.aopr.home.home_screen.ui.ui_elements.getNotesButtons
+import com.aopr.home.home_screen.ui.ui_elements.getTasksButtons
 import com.aopr.home.home_screen.view_model.HomeViewModel
 import com.aopr.home.home_screen.view_model.events.homeEvents.HomeEvent
-import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
+import com.aopr.home.home_screen.view_model.ui_events_handler.HomeUiEventHandler
 import com.aopr.shared_ui.cardsView.background
-import com.aopr.shared_ui.cardsView.cardViews
 import com.aopr.shared_ui.cardsView.textGradient
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
 import com.aopr.shared_ui.util.global_view_model.events.GlobalEvents
-import com.aopr.tasks_domain.models.Task
 import com.radusalagean.infobarcompose.InfoBar
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun HomeScreen() {
@@ -90,7 +80,28 @@ fun HomeScreen() {
     }
     HomeUiEventHandler()
     val brush = background()
-
+val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Log.d("RegistrationScreen", "Notification permission granted.")
+        } else {
+            Log.d("RegistrationScreen", "Notification permission denied.")
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                Log.d("RegistrationScreen", "Notification permission already granted.")
+            }
+        }
+    }
     val viewModel = koinViewModel<HomeViewModel>()
     val bitMaoImage by viewModel.bitmapImage.collectAsState()
     val todayTasks = viewModel.listOfTodaysTasks.collectAsState()
@@ -115,20 +126,20 @@ fun HomeScreen() {
     var showBottomSheetForBookmarks by remember { mutableStateOf(false) }
     var blurredCardIndex by remember { mutableIntStateOf(-1) }
     val listOfButtons = listOf(
-        getNotesButtons(onShowBottomSheetChange = {
-            showBottomSheetForNotes = it
+        getNotesButtons(navigateToCreateNote = {
+viewModel.onEvent(HomeEvent.NavigateToCreateNote)
         }, navigateToAllNotes = {
             viewModel.onEvent(HomeEvent.NavigateToAllNotes)
         }), getTasksButtons(navigateToAllTasks = {
             viewModel.onEvent(HomeEvent.NavigateToAllTasks)
-        }, onShowBottomSheetChange = {
-            showBottomSheetForTasks = it
+        }, navigateToCreateTask = {
+viewModel.onEvent(HomeEvent.NavigateToCreateTask)
         }), getBookMarksButtons(navigateToAllCategoriesOfBookmarks = {
             viewModel.onEvent(HomeEvent.NavigateToAllCategoriesOfBookmarks)
-        }, onShowBottomSheetChange = {
-            showBottomSheetForBookmarks = it
+        }, navigateToCreateBookmark = {
+viewModel.onEvent(HomeEvent.NavigateToCreateBookmark)
         }),
-        getCalendarButton()
+        getCalendarButton(navigateToCalendarScreen = {viewModel.onEvent(HomeEvent.NavigateToCalendarScreen)})
     )
     val globalViewModel =
         koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
@@ -305,7 +316,7 @@ fun HomeScreen() {
             }
 
 
-            if (showBottomSheetForNotes) {
+        /*    if (showBottomSheetForNotes) {
                 BottomSheetContent(
                     onDismiss = { showBottomSheetForNotes = false },
                     saveNote = {
@@ -327,285 +338,9 @@ fun HomeScreen() {
                     updateDescription = { viewModel.onEvent(HomeEvent.UpdateDescriptionOfTask(it)) },
                     infoBarMessage = viewModel.infoBar.value
                 )
-            }
+            }*/
 
         }
     }
 
-}
-/*
-
-@Composable
-fun getDrawerSettingButton(
-    onShowBottomSheetChange: (Boolean) -> Unit,
-    navigateToSettings: () -> Unit
-): Array<@Composable () -> Unit> {
-    return arrayOf<@Composable () -> Unit>({
-        Button(
-            onClick = {
-                navigateToSettings()
-            },
-            modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text =, color = Color.White)
-        }
-    }, {
-        Button(
-            onClick = {
-                onShowBottomSheetChange(true)
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.NewNote), color = Color.White)
-        }
-    })
-}*/
-
-
-@Composable
-fun getNotesButtons(
-    onShowBottomSheetChange: (Boolean) -> Unit,
-    navigateToAllNotes: () -> Unit
-): Array<@Composable () -> Unit> {
-    return arrayOf<@Composable () -> Unit>({
-        Button(
-            onClick = {
-                navigateToAllNotes()
-            },
-            modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.AllNotes), color = Color.White)
-        }
-    }, {
-        Button(
-            onClick = {
-                onShowBottomSheetChange(true)
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.NewNote), color = Color.White)
-        }
-    })
-}
-
-@Composable
-internal fun getTasksButtons(
-    navigateToAllTasks: () -> Unit,
-    onShowBottomSheetChange: (Boolean) -> Unit
-): Array<@Composable () -> Unit> {
-    return arrayOf<@Composable () -> Unit>({
-        Button(
-            onClick = {
-                navigateToAllTasks()
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.AllTasks), color = Color.White)
-        }
-    }, {
-        Button(
-            onClick = {
-                onShowBottomSheetChange(true)
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.NewTask), color = Color.White)
-        }
-    })
-}
-
-@Composable
-fun getBookMarksButtons(
-    navigateToAllCategoriesOfBookmarks: () -> Unit,
-    onShowBottomSheetChange: (Boolean) -> Unit
-): Array<@Composable () -> Unit> {
-    return arrayOf<@Composable () -> Unit>({
-        Button(
-            onClick = {
-                navigateToAllCategoriesOfBookmarks()
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.AllBookmarks), color = Color.White)
-        }
-    }, {
-        Button(
-            onClick = {
-                onShowBottomSheetChange(true)
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.NewBookmark), color = Color.White)
-        }
-    })
-}
-
-@Composable
-fun getCalendarButton(modifier: Modifier = Modifier): Array<@Composable () -> Unit> {
-    return arrayOf<@Composable () -> Unit>({
-        Button(
-            onClick = {
-            }, modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-            border = BorderStroke(width = 0.5.dp, color = Color.White.copy(alpha = 0.5f))
-        ) {
-            Text(text = stringResource(id = R.string.AllEvents), color = Color.White)
-        }
-    })
-}
-
-@Composable
-fun CalendarCard(tasks: List<Task>) {
-    val todayDate = remember {
-        SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date())
-    }
-    Card(
-        modifier = Modifier
-            .fillMaxHeight(0.3f)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(30.dp)),
-        colors = CardDefaults.cardColors(containerColor = Color.LightGray.copy(alpha = 0.2f))
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .fillMaxHeight(0.9f),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.5f)
-                        .clip(RoundedCornerShape(30.dp))
-                        .background(cardViews())
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(30.dp)),
-                        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-
-                            Text(
-                                text = todayDate,
-                                fontSize = 15.sp, fontWeight = FontWeight.Bold,
-                                fontFamily = FontFamily(
-                                    Font(com.aopr.shared_ui.R.font.open_sans_light)
-                                ),
-                                color = Color.White
-                            )
-                            Text(
-                                text = stringResource(id = R.string.tasks_label, tasks.size), fontSize = 15.sp,
-                                fontFamily = FontFamily(
-                                    Font(com.aopr.shared_ui.R.font.open_sans_light)
-                                )
-                            )
-
-                        }
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(0.95f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(0.95f)
-                                .fillMaxHeight(0.2f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.Upcoming), fontFamily = FontFamily(
-                                    Font(com.aopr.shared_ui.R.font.open_sans_light)
-                                ), fontSize = 20.sp
-                            )
-                        }
-                        if (tasks.isNotEmpty()) {
-                            Spacer(modifier = Modifier.height(15.dp))
-                            LazyColumn (
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(start = 10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-
-
-
-                                items(tasks){ it ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(5.dp)
-                                    ) {
-                                        Box(modifier = Modifier
-                                            .fillMaxHeight()
-                                            .fillMaxWidth(0.1f), contentAlignment = Alignment.CenterStart) {
-                                            VerticalDivider(
-                                                thickness = 3.dp,
-                                                color = Color.White,
-                                                modifier = Modifier
-                                                    .height(30.dp)
-                                                    .clip(
-                                                        RoundedCornerShape(20.dp)
-                                                    )
-                                            )
-                                        }
-                                       Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
-                                            Text(
-                                                text = if (it.tittle.length > 10) it.tittle.take(10) + "..." else it.tittle,
-                                                fontFamily = FontFamily(
-                                                    Font(com.aopr.shared_ui.R.font.open_sans_light),
-                                                ), fontSize = 20.sp, color = Color.White
-
-                                            )
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.height(10.dp))
-                                }
-                            }
-                        } else {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    stringResource(R.string.No_task_for_today), fontFamily = FontFamily(
-                                        Font(com.aopr.shared_ui.R.font.open_sans_light),
-                                    ), fontSize = 15.sp
-                                )
-                            }
-                        }
-                    }
-                }
-
-            }
-
-
-        }
-
-    }
 }

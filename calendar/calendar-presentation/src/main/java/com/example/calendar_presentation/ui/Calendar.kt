@@ -1,7 +1,6 @@
 package com.example.calendar_presentation.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,23 +15,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,60 +48,102 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.calendar_presentation.R
+import com.aopr.shared_domain.colors_for_theme.Themes
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
+import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
+import com.aopr.tasks_domain.models.Task
+import com.example.calendar_presentation.view_model.CalendarViewModel
+import com.example.calendar_presentation.view_model.events.CalendarEvents
+import com.example.calendar_presentation.view_model.ui_event_handler.CalendarUiEventHandler
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-/*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheetForCalendar(
-    onDismiss: () -> Unit,
-    sheetState: SheetState,
-    initialSelectedDate: LocalDate?,
-    calendarMode: CreatingTaskViewModel.CalendarMode,
-    updateDateOfTaskToBeDone: (LocalDate) -> Unit,
-    updateDateOfTaskForReminder: (LocalDate) -> Unit,
-    updateDateForSubtask: (LocalDate) -> Unit,
-    hideCalendar: () -> Unit,
-    getTasksByDate: (LocalDate) -> Unit,
-    heightScreen: Int,
-    listOfDatesWithTask: List<LocalDate?>,
-    listOfTasks: List<Task?>, navigateToTask: (Int) -> Unit
+fun CalendarScreen() {
+    val calendarViewModel = koinViewModel<CalendarViewModel>()
+    val listOfDates = calendarViewModel.datesWithTasks
+    CalendarUiEventHandler()
+    Scaffold(
 
-) {
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    calendarViewModel.onEvent(CalendarEvents.NavigateToCreateNewTaskOrExhistingTask(null))
+                }, modifier = Modifier
+                    .clip(CircleShape)
+                    .size(60.dp), containerColor = Color.DarkGray.copy(alpha = 0.6f)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "AddFloatingActionButton",
+                    modifier = Modifier.size(20.dp)
+                )
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((heightScreen * 0.9f).dp)
-        ) {
-            CustomCalendar(
-                initialSelectedDate = initialSelectedDate,
-                onDateSelected = { selectedDate ->
-                    when (calendarMode) {
-                        CreatingTaskViewModel.CalendarMode.TASK_DONE ->
-                            updateDateOfTaskToBeDone(selectedDate)
-
-                        CreatingTaskViewModel.CalendarMode.REMINDER ->
-                            updateDateOfTaskForReminder(selectedDate)
-
-                        CreatingTaskViewModel.CalendarMode.SUB_REMINDER ->
-                            updateDateForSubtask(selectedDate)
+            }
+        }, topBar = {
+            TopAppBar(colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                navigationIcon = {
+                    IconButton(
+                        onClick = { calendarViewModel.onEvent(CalendarEvents.NavigateBack) },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(Color.DarkGray.copy(alpha = 0.6f))
+                            .size(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            contentDescription = "",
+                            tint = Color.White, modifier = Modifier.size(20.dp)
+                        )
                     }
                 },
-                onDismiss = {
-                    hideCalendar()
-                }, listOfDates = listOfDatesWithTask, getTasks = {
-                    getTasksByDate(it)
-                }, listOfTasks = listOfTasks, navigateToTask = {
-                    navigateToTask(it)
-                }
-            )
+                title = { /*TODO*/ })
         }
+
+    ) { _ ->
+        Calendar(
+            getTasksByDate = { calendarViewModel.onEvent(CalendarEvents.GetTasksByDate(it)) },
+            listOfDatesWithTask = listOfDates,
+            listOfTasks = calendarViewModel.tasksByDate,
+            navigateToTask = {
+                calendarViewModel.onEvent(CalendarEvents.NavigateToCreateNewTaskOrExhistingTask(it))
+            }
+        )
+    }
+
+
+}
+
+
+@Composable
+fun Calendar(
+    getTasksByDate: (LocalDate) -> Unit,
+    listOfDatesWithTask: List<LocalDate?>,
+    listOfTasks: List<Task?>,
+    navigateToTask: (Int) -> Unit,
+
+    ) {
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
+        CustomCalendar(
+            onDateSelected = { selectedDate ->
+
+            },
+            listOfDates = listOfDatesWithTask, getTasks = {
+                getTasksByDate(it)
+            }, listOfTasks = listOfTasks, navigateToTask = {
+                navigateToTask(it)
+            }
+        )
     }
 
 
@@ -106,7 +154,6 @@ fun BottomSheetForCalendar(
 fun CustomCalendar(
     initialSelectedDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit,
     listOfDates: List<LocalDate?>,
     getTasks: (LocalDate) -> Unit,
     listOfTasks: List<Task?>, navigateToTask: (Int) -> Unit
@@ -115,43 +162,29 @@ fun CustomCalendar(
     val selectedDate = remember { mutableStateOf(initialSelectedDate) }
 
     Column(
-        modifier = androidx.compose.ui.Modifier
+        modifier = Modifier
             .fillMaxSize()
 
     ) {
         Box(
-            modifier =androidx.compose.ui.Modifier
-                .fillMaxWidth().fillMaxHeight(0.1f), contentAlignment = Alignment.CenterEnd
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.1f), contentAlignment = Alignment.CenterEnd
         ) {
             Row(
-                modifier = androidx.compose.ui.Modifier
+                modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(0.5f)
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Button(
-                    onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
-                    border = BorderStroke(
-                        width = 0.5.dp,
-                        color = Color.White.copy(alpha = 0.5f)
-                    ),
-                    enabled = selectedDate.value != null
-                ) {
-                    Text(
-                        text = stringResource(id = com.aopr.shared_ui.R.string.cancel),
-                        color = Color.White
-                    )
-                }
-                Spacer(modifier = androidx.compose.ui.Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = {
                         selectedDate.value?.let {
                             onDateSelected(it)
                         }
-                        onDismiss()
                     }, colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
                     border = BorderStroke(
                         width = 0.5.dp,
@@ -253,7 +286,6 @@ fun WeekdayLabels() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DatesGrid(
     currentDate: LocalDate,
@@ -262,29 +294,36 @@ fun DatesGrid(
     listOfDates: List<LocalDate?>,
     getTasks: (LocalDate) -> Unit,
     listOfTasks: List<Task?>,
-    navigateToTask:(Int)->Unit
+    navigateToTask: (Int) -> Unit
 ) {
-    val globalViewModel = koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
+    val globalViewModel =
+        koinViewModel<GlobalViewModel>(viewModelStoreOwner = GlobalViewModelStoreOwner)
     val chosenTheme = globalViewModel.chosenTheme.collectAsState()
-    val colorForDate = when(chosenTheme.value){
+    val colorForDate = when (chosenTheme.value) {
         Themes.BLUE -> {
             MaterialTheme.colorScheme.onPrimary
         }
+
         Themes.VIOLET -> {
             MaterialTheme.colorScheme.secondary
         }
+
         Themes.HAKI -> {
             MaterialTheme.colorScheme.primaryContainer
         }
+
         Themes.METALLIC -> {
             MaterialTheme.colorScheme.secondary
         }
+
         Themes.`DUSKY_EVENING` -> {
             MaterialTheme.colorScheme.onBackground
         }
+
         Themes.ORANGE -> {
             MaterialTheme.colorScheme.onBackground
         }
+
         Themes.PASTEL -> {
             MaterialTheme.colorScheme.secondary
         }
@@ -317,7 +356,7 @@ fun DatesGrid(
                         val isTaskDate = listOfDates.contains(date)
 
                         val textColor = when {
-                            isPastDate -> Color.Gray
+                            isPastDate -> if (isTaskDate) colorForDate.copy(alpha = 0.5f) else Color.Gray
                             isTaskDate -> colorForDate
                             else -> Color.White
                         }
@@ -338,7 +377,7 @@ fun DatesGrid(
                                         ?: Color.Transparent,
                                     shape = CircleShape
                                 )
-                                .clickable(enabled = date != null && !isPastDate) {
+                                .clickable(enabled = date != null /*&& !isPastDate*/) {
                                     date?.let {
                                         onDateSelected(it)
                                         getTasks(it)
@@ -362,7 +401,8 @@ fun DatesGrid(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxHeight().fillMaxWidth(0.95f)
+                            .fillMaxHeight()
+                            .fillMaxWidth(0.95f)
                             .clip(RoundedCornerShape(30.dp)),
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
@@ -374,7 +414,10 @@ fun DatesGrid(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                Text(text = stringResource(id = R.string.tasks), color = Color.White)
+                                Text(
+                                    text = stringResource(id = com.aopr.notes_presentation.R.string.tasks),
+                                    color = Color.White
+                                )
                             }
                         }
 
@@ -384,15 +427,15 @@ fun DatesGrid(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(100.dp)
-                                        .padding(vertical = 5.dp)
-                                    ,
+                                        .padding(vertical = 5.dp),
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Card(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .fillMaxWidth(0.9f).clickable {
+                                            .fillMaxWidth(0.9f)
+                                            .clickable {
                                                 if (task != null) {
                                                     navigateToTask(task.id)
                                                 }
@@ -420,10 +463,9 @@ fun DatesGrid(
                         .fillMaxSize()
                         .padding(start = 10.dp, top = 15.dp),
                 ) {
-                    Text(text = stringResource(id = R.string.noTasks))
+                    Text(text = stringResource(id = com.aopr.notes_presentation.R.string.noTasks))
                 }
             }
         }
     }
 }
-*/

@@ -21,6 +21,7 @@ import com.aopr.tasks_presentation.di.TasksPresentationModule
 import com.example.bookmarks_data.di.BookmarksDataModule
 import com.example.bookmarks_domain.di.BookmarksDomainModule
 import com.example.bookmarks_presentation.di.BookmarksPresentationModule
+import com.example.calendar_presentation.di.CalendarPresentationModule
 import com.example.home_data.impl.di.HomeDataModule
 import com.example.home_domain.di.HomeDomainModule
 import org.koin.android.ext.koin.androidContext
@@ -56,7 +57,8 @@ class Application : Application() {
                 OnBoardingPresentationModule().module,
                 AuthenticationPresentationModule().module,
                 AuthenticationDataModule().module,
-                AuthenticationDomainModule().module
+                AuthenticationDomainModule().module,
+                CalendarPresentationModule().module
             )
 
         }

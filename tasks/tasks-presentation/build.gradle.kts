@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     ksp(libs.koin.ksp)
 
-    implementation (libs.material3) // Update to the latest version
+    implementation (libs.material3)
 
 
     implementation(libs.kotlinx.serialization.json)
