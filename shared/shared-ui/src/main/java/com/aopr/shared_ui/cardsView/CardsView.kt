@@ -408,7 +408,6 @@ fun gradientOfDialogs(): Brush {
     return backgroundLooks
 }
 
-
 @Composable
 fun CircularCheckbox(
     checked: Boolean,

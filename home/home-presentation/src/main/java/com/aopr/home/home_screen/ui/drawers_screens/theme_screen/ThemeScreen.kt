@@ -39,8 +39,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.home.R
-import com.aopr.home.home_screen.ui.drawers_screens.ui_elements.CardsForThemes
-import com.aopr.home.home_screen.ui.drawers_screens.ui_elements.Oval
+import com.aopr.home.home_screen.ui.ui_elements.CardsForThemes
+import com.aopr.home.home_screen.ui.ui_elements.Oval
 import com.aopr.shared_domain.colors_for_theme.Themes
 import com.aopr.shared_ui.cardsView.background
 import com.aopr.shared_ui.cardsView.colorsForThemeCards
@@ -148,7 +148,7 @@ fun ThemeChooserScreen() {
                 ) {
                     LazyColumn(
                         modifier = Modifier,
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
 
                         items(themesEntries.zip(colorsForCards)) { (theme, brush) ->

@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.aopr.home.home_screen.navigation.HomeNavRoutes
 import com.aopr.shared_ui.navigation.LocalNavigator
 import com.aopr.shared_ui.navigation.MainNavRoutes
 import com.aopr.shared_ui.theme.TaskScribeTheme
@@ -103,7 +104,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     GlobalUiEvents.NavigateBack -> {
-                        navHost.navigate(MainNavRoutes.HomeNavHost)
+                        navHost.navigate(HomeNavRoutes.HomeScreen)
                     }
                 }
             }

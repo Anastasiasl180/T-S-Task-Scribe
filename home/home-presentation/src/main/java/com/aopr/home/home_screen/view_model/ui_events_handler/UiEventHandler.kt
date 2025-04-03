@@ -59,6 +59,23 @@ fun HomeUiEventHandler() {
                 HomeUiEvents.NavigateToCalendarScreen -> {
                     navigator.navigate(HomeNavRoutes.CalendarScreen)
                 }
+
+                HomeUiEvents.NavigateToAboutAppByDrawer -> {
+                    navigator.navigate(DrawerNavRoutes.AboutAppScreen)
+
+                }
+                HomeUiEvents.NavigateToPrivacyPolicyByDrawer -> {
+                    navigator.navigate(DrawerNavRoutes.PrivacyPolicyScreen)
+
+                }
+                HomeUiEvents.NavigateToProfileByDrawer -> {
+                    navigator.navigate(DrawerNavRoutes.ProfileScreen)
+
+                }
+                HomeUiEvents.NavigateToSettingsByDrawer -> {
+                    navigator.navigate(DrawerNavRoutes.SettingsScreen)
+
+                }
             }
 
         }

@@ -12,6 +12,10 @@ sealed class HomeUiEvents:UiEventsType {
     data object NavigateToAllTasks: HomeUiEvents()
     data object NavigateToAllCategoriesOfBookmarks: HomeUiEvents()
     data object NavigateToThemesByDrawer: HomeUiEvents()
+    data object NavigateToSettingsByDrawer:HomeUiEvents()
+    data object NavigateToProfileByDrawer: HomeUiEvents()
+    data object NavigateToAboutAppByDrawer: HomeUiEvents()
+    data object NavigateToPrivacyPolicyByDrawer: HomeUiEvents()
     data object NavigateToRegistrationScreen: HomeUiEvents()
 
 }

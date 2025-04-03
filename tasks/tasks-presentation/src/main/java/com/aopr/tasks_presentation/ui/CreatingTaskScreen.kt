@@ -1,19 +1,10 @@
 package com.aopr.tasks_presentation.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.AnimationSpec
-import androidx.compose.animation.core.AnimationState
-import androidx.compose.animation.core.DecayAnimationSpec
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDecay
-import androidx.compose.animation.core.animateTo
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -42,25 +33,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aopr.notes_presentation.R
@@ -70,7 +54,7 @@ import com.aopr.shared_ui.infoBar.CustomInfoBar
 import com.aopr.shared_ui.top_app_bar.searchBarScrollBehaviour
 import com.aopr.tasks_domain.models.ImportanceOfTask
 import com.aopr.tasks_presentation.view_models.events.creating_task_events.CreatingTaskEvents
-import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForCalendar
+import com.aopr.tasks_presentation.ui.ui_elements.CustomCalendar
 import com.aopr.tasks_presentation.ui.ui_elements.BottomSheetForClock
 import com.aopr.tasks_presentation.ui.ui_elements.SegmentedDemo
 import com.aopr.tasks_presentation.ui.ui_elements.SubTasksList
@@ -78,7 +62,6 @@ import com.aopr.tasks_presentation.view_models.CreatingTaskViewModel
 import com.aopr.tasks_presentation.view_models.ui_event_handlers.CreatingTaskUiEventHandler
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
-import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -204,7 +187,7 @@ fun CreatingTaskScreen() {
                 }
 
                 if (isCalendarVisible) {
-                    BottomSheetForCalendar(
+                    CustomCalendar(
                         onDismiss = {
                             viewModel.onEvent(CreatingTaskEvents.HideCalendar)
 
@@ -239,7 +222,7 @@ fun CreatingTaskScreen() {
                         listOfTasks = viewModel.tasksByDate,
                         listOfDatesWithTask = listOfDatesWithTasks, navigateToTask = {
                             viewModel.onEvent(CreatingTaskEvents.GetTakById(it))
-                        }
+                        }, isCreatingTaskScreen = true
                     )
 
                 }

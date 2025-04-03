@@ -6,11 +6,13 @@
     <string name="Calendar">Calendar</string>
     <string name="Account">Account</string>
     <string name="Settings">Settings</string>
+    <string name="Themes">Themes</string>
+    <string name="Privacy_policy">Privacy policy</string>
+    <string name="Profile">Profile</string>
     <string name="AboutApp">About app</string>
     <string name="Upcoming">Upcoming</string>
     <string name="tasks_label">%d tasks</string>
     <string name="choose_theme">Choose theme</string>
-    <string name="Log_out">Log out</string>
     <string name="Hello_user">Hello user</string>
     <string name="No_task_for_today">No task for today</string>
     <string name="Cancel">Cancel</string>
@@ -25,5 +27,20 @@
     <string name="AllBookmarks">All bookmarks</string>
     <string name="AllEvents">All events</string>
     <string name="NotificationSettings">Notification settings</string>
+    <string name="AllowNotifications">Allow notifications</string>
+    <string name="LogOut">Log out</string>
+    <string name="AboutApp1">Our app is your all-in-one assistant for organizing tasks, notes, and important reminders. It will help you structure your thoughts, monitor deadlines, and keep useful information in one place.</string>
+    <string name="AboutApp2">What can you do?</string>
+    <string name="AboutApp3">Create notes - save ideas, lists and important information.</string>
+    <string name="AboutApp4">Plan tasks and subtasks - set deadlines and add reminders so you dont forget anything.</string>
+    <string name="AboutApp5">Save useful materials - add links to articles, videos or files for quick access.</string>
+    <string name="AboutApp6">Use bookmarks - conveniently save your favorite resources and important links.</string>
+    <string name="Benefits">Benefits:</string>
+    <string name="Benefits1">Simple and convenient interface - quickly manage tasks and notes.</string>
+    <string name="Benefits2">Flexibility - organize your information in a way that is convenient for you.</string>
+    <string name="Benefits3">Effective time management - reminders and deadlines will help you not to lose focus.</string>
+    <string name="Benefits4">Accessibility - all your materials are at your fingertips, wherever you are.</string>
+    <string name="FuturePlans">In the future, the application will receive even more features: integration with ChatGPT, an advanced dashboard and many other features!
+    Organize your affairs easily and efficiently with our application!</string>
 
 </resources>

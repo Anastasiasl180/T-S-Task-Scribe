@@ -1,4 +1,4 @@
-package com.aopr.home.home_screen.ui.drawers_screens.ui_elements
+package com.aopr.home.home_screen.ui.ui_elements
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

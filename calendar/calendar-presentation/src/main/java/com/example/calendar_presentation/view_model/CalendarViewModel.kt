@@ -1,9 +1,6 @@
 package com.example.calendar_presentation.view_model
 
-import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.aopr.shared_domain.Responses
 import com.aopr.shared_ui.util.ViewModelKit
@@ -23,9 +20,6 @@ import java.time.LocalDate
 class CalendarViewModel(private val tasksUseCase: TasksUseCase) :
     ViewModelKit<CalendarEvents, CalendarUiEvents>() {
 
-    private val _listOfTasks = mutableStateOf(emptyList<Task>())
-    val listOfTasks: State<List<Task>> = _listOfTasks
-
     private val _datesWithTasks = mutableStateListOf<LocalDate?>()
     val datesWithTasks: List<LocalDate?> = _datesWithTasks
 
@@ -35,9 +29,9 @@ class CalendarViewModel(private val tasksUseCase: TasksUseCase) :
     private val _event = MutableSharedFlow<CalendarUiEvents>()
     val event = _event.asSharedFlow()
 
-        init {
-            onEvent(CalendarEvents.LoadDatesWithTask)
-        }
+    init {
+        onEvent(CalendarEvents.LoadDatesWithTask)
+    }
 
 
     private fun getTasksByDate(date: LocalDate) {
@@ -80,14 +74,12 @@ class CalendarViewModel(private val tasksUseCase: TasksUseCase) :
                             task.dateOfTaskToBeDone
                         }
                         _datesWithTasks.addAll(dates)
-                        Log.wtf("ioioio", dates.toString(), )
                     }
                 }
             }
 
         }.launchIn(viewModelScope)
     }
-
 
 
     override fun onEvent(event: CalendarEvents) {
@@ -98,7 +90,7 @@ class CalendarViewModel(private val tasksUseCase: TasksUseCase) :
                 }
             }
 
-          is  CalendarEvents.NavigateToCreateNewTaskOrExhistingTask -> {
+            is CalendarEvents.NavigateToCreateNewTaskOrExhistingTask -> {
                 viewModelScope.launch {
                     _event.emit(CalendarUiEvents.NavigateToCreateTaskScreen(event.id))
                 }

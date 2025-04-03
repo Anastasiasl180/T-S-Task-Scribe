@@ -30,9 +30,7 @@ import java.time.LocalTime
 
 @KoinViewModel
 class HomeViewModel(
-    private val notesUseCase: NotesUseCase,
     private val tasksUseCase: TasksUseCase,
-    private val bookmarksUseCase: BookmarksUseCase,
     private val homeUseCase: HomeUseCase
 ) :
     ViewModelKit<HomeEvent, HomeUiEvents>() {
@@ -202,6 +200,27 @@ class HomeViewModel(
             is HomeEvent.NavigateToCalendarScreen -> {
                 viewModelScope.launch {
                     _event.emit(HomeUiEvents.NavigateToCalendarScreen)
+                }
+            }
+
+            HomeEvent.NavigateToAboutAppByDrawer -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToAboutAppByDrawer)
+                }
+            }
+            HomeEvent.NavigateToPrivacyPolicyByDrawer -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToPrivacyPolicyByDrawer)
+                }
+            }
+            HomeEvent.NavigateToProfileByDrawer -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToProfileByDrawer)
+                }
+            }
+            HomeEvent.NavigateToSettingsByDrawer -> {
+                viewModelScope.launch {
+                    _event.emit(HomeUiEvents.NavigateToSettingsByDrawer)
                 }
             }
         }

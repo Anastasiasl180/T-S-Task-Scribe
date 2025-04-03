@@ -11,6 +11,10 @@ sealed interface HomeEvent:EventsType {
     data object NavigateToCreateTask: HomeEvent
     data object NavigateToAllCategoriesOfBookmarks: HomeEvent
     data object NavigateToThemesByDrawer: HomeEvent
+    data object NavigateToSettingsByDrawer: HomeEvent
+    data object NavigateToProfileByDrawer: HomeEvent
+    data object NavigateToAboutAppByDrawer: HomeEvent
+    data object NavigateToPrivacyPolicyByDrawer: HomeEvent
     data object LogOut: HomeEvent
 
 }

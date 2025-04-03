@@ -1,6 +1,5 @@
 package com.aopr.tasks_presentation.ui.ui_elements
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,55 +52,85 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheetForCalendar(
-    onDismiss: () -> Unit,
-    sheetState: SheetState,
-    initialSelectedDate: LocalDate?,
-    calendarMode: CreatingTaskViewModel.CalendarMode,
-    updateDateOfTaskToBeDone: (LocalDate) -> Unit,
-    updateDateOfTaskForReminder: (LocalDate) -> Unit,
-    updateDateForSubtask: (LocalDate) -> Unit,
-    hideCalendar: () -> Unit,
+fun CustomCalendar(
+    onDismiss: () -> Unit = {},
+    sheetState: SheetState? = null,
+    initialSelectedDate: LocalDate? = null,
+    calendarMode: CreatingTaskViewModel.CalendarMode? = null,
+    updateDateOfTaskToBeDone: (LocalDate) -> Unit ={},
+    updateDateOfTaskForReminder: (LocalDate) -> Unit ={},
+    updateDateForSubtask: (LocalDate) -> Unit ={},
+    hideCalendar: () -> Unit = {},
     getTasksByDate: (LocalDate) -> Unit,
-    heightScreen: Int,
+    heightScreen: Int? = null,
     listOfDatesWithTask: List<LocalDate?>,
-    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit
+    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit,isCreatingTaskScreen: Boolean
 
 ) {
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+    if (sheetState != null) {
+        ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((heightScreen * 0.9f).dp)
-        ) {
-            CustomCalendar(
-                initialSelectedDate = initialSelectedDate,
-                onDateSelected = { selectedDate ->
-                    when (calendarMode) {
-                        CreatingTaskViewModel.CalendarMode.TASK_DONE ->
-                            updateDateOfTaskToBeDone(selectedDate)
+            if (heightScreen != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height((heightScreen * 0.9f).dp)
+                ) {
+                    Calendar(
+                        initialSelectedDate = initialSelectedDate,
+                        onDateSelected = { selectedDate ->
+                            when (calendarMode) {
+                                CreatingTaskViewModel.CalendarMode.TASK_DONE ->
+                                    updateDateOfTaskToBeDone(selectedDate)
 
-                        CreatingTaskViewModel.CalendarMode.REMINDER ->
-                            updateDateOfTaskForReminder(selectedDate)
+                                CreatingTaskViewModel.CalendarMode.REMINDER ->
+                                    updateDateOfTaskForReminder(selectedDate)
 
-                        CreatingTaskViewModel.CalendarMode.SUB_REMINDER ->
-                            updateDateForSubtask(selectedDate)
-                    }
-                },
-                onDismiss = {
-                    hideCalendar()
-                }, listOfDates = listOfDatesWithTask, getTasks = {
-                    getTasksByDate(it)
-                }, listOfTasks = listOfTasks, navigateToTask = {
-                    navigateToTask(it)
+                                CreatingTaskViewModel.CalendarMode.SUB_REMINDER ->
+                                    updateDateForSubtask(selectedDate)
+
+                                null -> TODO()
+                            }
+                        },
+                        onDismiss = {
+                            hideCalendar()
+                        }, listOfDates = listOfDatesWithTask, getTasks = {
+                            getTasksByDate(it)
+                        }, listOfTasks = listOfTasks, navigateToTask = {
+                            navigateToTask(it)
+                        }, isCreatingTaskScreen = isCreatingTaskScreen
+                    )
                 }
-            )
+            }
         }
+    }else{
+        Calendar(
+            initialSelectedDate = initialSelectedDate,
+            onDateSelected = { selectedDate ->
+                when (calendarMode) {
+                    CreatingTaskViewModel.CalendarMode.TASK_DONE ->
+                        updateDateOfTaskToBeDone(selectedDate)
+
+                    CreatingTaskViewModel.CalendarMode.REMINDER ->
+                        updateDateOfTaskForReminder(selectedDate)
+
+                    CreatingTaskViewModel.CalendarMode.SUB_REMINDER ->
+                        updateDateForSubtask(selectedDate)
+
+                    null -> TODO()
+                }
+            },
+            onDismiss = {
+                hideCalendar()
+            }, listOfDates = listOfDatesWithTask, getTasks = {
+                getTasksByDate(it)
+            }, listOfTasks = listOfTasks, navigateToTask = {
+                navigateToTask(it)
+            }, isCreatingTaskScreen = isCreatingTaskScreen
+        )
     }
 
 
@@ -109,13 +138,13 @@ fun BottomSheetForCalendar(
 
 
 @Composable
-fun CustomCalendar(
+fun Calendar(
     initialSelectedDate: LocalDate? = null,
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit ={},
     listOfDates: List<LocalDate?>,
     getTasks: (LocalDate) -> Unit,
-    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit
+    listOfTasks: List<Task?>,navigateToTask: (Int) -> Unit,isCreatingTaskScreen:Boolean
 ) {
     val currentDate = remember { mutableStateOf(LocalDate.now()) }
     val selectedDate = remember { mutableStateOf(initialSelectedDate) }
@@ -137,7 +166,7 @@ fun CustomCalendar(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
+                if (isCreatingTaskScreen) {
                 Button(
                     onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
@@ -157,7 +186,7 @@ fun CustomCalendar(
                 Button(
                     onClick = {
                         selectedDate.value?.let {
-                                onDateSelected(it)
+                            onDateSelected(it)
                         }
                         onDismiss()
                     }, colors = ButtonDefaults.buttonColors(Color.White.copy(alpha = 0.2f)),
@@ -172,6 +201,7 @@ fun CustomCalendar(
                         color = Color.White
                     )
                 }
+            }
             }
         }
         CalendarHeader(
@@ -367,54 +397,55 @@ fun DatesGrid(
             if (listOfTasks.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(30.dp))
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.95f)
-                        .clip(RoundedCornerShape(30.dp)),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(0.2f)
-                                .fillMaxHeight(0.1f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(text = stringResource(id = R.string.tasks), color = Color.White)
-                        }
-                    }
-
-                    listOfTasks.forEach { task ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(0.95f)
+                            .clip(RoundedCornerShape(30.dp)),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
                         item {
                             Row(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(100.dp)
-                                    .padding(vertical = 5.dp)
-                                ,
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
+                                    .fillMaxWidth(0.2f)
+                                    .fillMaxHeight(0.1f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Card(
+                                Text(text = stringResource(id = R.string.tasks), color = Color.White)
+                            }
+                        }
+
+                        listOfTasks.forEach { task ->
+                            item {
+                                Row(
                                     modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth(0.9f)
-                                        .clickable {
-                                            if (task != null) {
-                                                navigateToTask(task.id)
-                                            }
-                                        }
+                                        .fillMaxWidth()
+                                        .height(100.dp)
+                                        .padding(vertical = 5.dp)
+                                    ,
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    if (task != null) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .padding(start = 10.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(text = task.tittle, color = Color.White)
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth(0.9f)
+                                            .clickable {
+                                                if (task != null) {
+                                                    navigateToTask(task.id)
+                                                }
+                                            }
+                                    ) {
+                                        if (task != null) {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .padding(start = 10.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(text = task.tittle, color = Color.White)
+                                            }
                                         }
                                     }
                                 }
@@ -422,7 +453,6 @@ fun DatesGrid(
                         }
                     }
                 }
-            }
             } else {
                 Row(
                     modifier = Modifier
