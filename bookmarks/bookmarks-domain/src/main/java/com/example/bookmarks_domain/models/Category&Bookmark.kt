@@ -17,7 +17,33 @@ data class Bookmark(
     val fileUri: String? = null,
     val gptDialog: String? = null,
     val categoryId: Int? = null
-){
+)
+
+
+fun Bookmark.toFirestoreMap(): Map<String, Any?> {
+    return mapOf(
+        "id" to id,
+        "tittle" to tittle,
+        "url" to url,
+        "fileUri" to fileUri,
+        "gptDialog" to gptDialog,
+        "categoryId" to categoryId
+    )
+}
+
+fun bookmarkFromFirestore(data: Map<String, Any?>): Bookmark {
+    return Bookmark(
+        id = (data["id"] as? Long)?.toInt() ?: 0,
+        tittle = data["tittle"] as? String ?: "",
+        url = data["url"] as? String,
+        fileUri = data["fileUri"] as? String,
+        gptDialog = data["gptDialog"] as? String,
+        categoryId = (data["categoryId"] as? Long)?.toInt()
+    )
+}
+
+
+/*
     fun toFirestore(): Map<String, Any?> {
         return mapOf(
             "id" to id,
@@ -28,8 +54,8 @@ data class Bookmark(
             "categoryId" to categoryId
         ).also {
         }
-    }
-
+    }*/
+/*
     companion object {
         fun fromFirestore(data: Map<String, Any?>): Bookmark {
             return Bookmark(
@@ -41,5 +67,6 @@ data class Bookmark(
                 categoryId = (data["categoryId"] as? Long)?.toInt()
             )
         }
-    }
-}
+    }*/
+
+

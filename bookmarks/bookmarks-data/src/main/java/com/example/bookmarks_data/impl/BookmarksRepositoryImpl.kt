@@ -11,6 +11,7 @@ import com.example.bookmarks_data.room.BookmarksDao
 import com.example.bookmarks_domain.interactors.BookmarksRepository
 import com.example.bookmarks_domain.models.Bookmark
 import com.example.bookmarks_domain.models.Category
+import com.example.bookmarks_domain.models.toFirestoreMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -32,7 +33,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
             updateBookmark(bookmark, userId)
             if (isInternetAvailable(context)) {
                 val listUpdated = getAllBookmarks().first()
-                val firestoreData = listUpdated.map { it.toFirestore() }
+                val firestoreData = listUpdated.map { it.toFirestoreMap() }
                 Helpers.FirebaseHelper.updateUserDataBookmark(
                     userId,
                     mapOf("listOfBookmarks" to firestoreData)
@@ -45,7 +46,7 @@ class BookmarksRepositoryImpl(private val dao: BookmarksDao, private val context
                 if (isInternetAvailable(context)) {
                     val listUpdated =
                         getAllBookmarks().first()
-                    val firestoreData = listUpdated.map { it.toFirestore() }
+                    val firestoreData = listUpdated.map { it.toFirestoreMap() }
                    Helpers.FirebaseHelper.updateUserDataBookmark(
                         userId,
                         mapOf("listOfBookmarks" to firestoreData)

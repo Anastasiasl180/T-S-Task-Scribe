@@ -11,6 +11,7 @@ import com.aopr.onboarding_presentation.view_models.FirstOnBoardingViewModel
 import com.aopr.onboarding_presentation.view_models.LoadingViewModel
 import com.aopr.onboarding_presentation.view_models.SecondOnBoardingViewModel
 import com.aopr.onboarding_presentation.navigation.OnBoardingNavRoutes
+import com.aopr.shared_ui.navigation.AuthenticationRoutes
 import com.aopr.shared_ui.util.global_view_model.GlobalViewModel
 import com.aopr.shared_ui.navigation.LocalNavigator
 import com.aopr.shared_ui.util.global_view_model.GlobalViewModelStoreOwner
@@ -67,8 +68,12 @@ fun SecondScreenOnBoardingUiEventsHandler() {
         viewModel.event.collect { events ->
             when (events) {
                 SecondScreenUiEvents.NavigateToHome -> {
-                  //  navigator.navigate(AuthenticationRoutes.RegistrationScreen)
-                  //  navigator.navigate(HomeNavRoutes.HomeScreen)
+                    if(globalViewModel.isFirstLaunch.value){
+                        navigator.navigate(AuthenticationRoutes.RegistrationScreen)
+
+                    }else{
+                        navigator.navigate(HomeNavRoutes.HomeScreen)
+                    }
 
                 }
 

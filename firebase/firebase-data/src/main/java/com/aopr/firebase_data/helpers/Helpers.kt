@@ -3,11 +3,14 @@ package com.aopr.firebase_data.helpers
 import com.aopr.firebase_domain.firestore_user_data.FireUser
 import com.aopr.notes_domain.interactors.NotesUseCase
 import com.aopr.notes_domain.models.Note
+import com.aopr.notes_domain.models.noteFromFirestore
 import com.aopr.shared_domain.interactors.SettingsDto
 import com.aopr.tasks_domain.interactors.TasksUseCase
+import com.aopr.tasks_domain.mappers.taskFromFirestore
 import com.aopr.tasks_domain.models.Task
 import com.example.bookmarks_domain.interactors.BookmarksUseCase
 import com.example.bookmarks_domain.models.Bookmark
+import com.example.bookmarks_domain.models.bookmarkFromFirestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -109,7 +112,7 @@ class Helpers {
 
                 if (document != null) {
                     val bookmarks = document.get("bookmarks") as? List<Map<String, Any?>>
-                    bookmarks?.map { Bookmark.fromFirestore(it) } ?: emptyList()
+                    bookmarks?.map { bookmarkFromFirestore(it) } ?: emptyList()
                 } else {
                     emptyList()
                 }
@@ -141,17 +144,17 @@ class Helpers {
                 val name = document.getString("userName")
 
                 val listOfBookmarks = (document.get("listOfBookmarks") as? List<Map<String, Any?>>)
-                    ?.map { Bookmark.fromFirestore(it) }
+                    ?.map { bookmarkFromFirestore(it) }
                 scope.launch(NonCancellable) {
                     bookmarksUseCase.setBookmarksFromFire(listOfBookmarks).launchIn(scope)
                 }
                 val listOfNotes = (document.get("listOfNotes") as? List<Map<String, Any?>>)
-                    ?.map { Note.fromFirestore(it) }
+                    ?.map { noteFromFirestore(it) }
 
                 notesUseCase.setNotesFromFire(listOfNotes)
 
                 val listOfTasks = (document.get("listOfTasks") as? List<Map<String, Any?>>)
-                    ?.map { Task.fromFirestore(it) }
+                    ?.map { taskFromFirestore(it) }
 
                 tasksUseCase.setTasksFromFire(listOfTasks)
                 FireUser(

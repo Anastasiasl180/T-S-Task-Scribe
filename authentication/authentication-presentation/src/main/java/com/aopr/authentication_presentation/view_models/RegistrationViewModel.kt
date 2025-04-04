@@ -93,7 +93,7 @@ class RegistrationViewModel(
                         _userName.value, profileImage = _bitmapImage.value
                     )
                     saveUser(userr)
-                  // setUserDataIntoDB(user)
+                //   setUserDataIntoDB(user)
                 }
             }
 
